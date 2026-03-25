@@ -1,0 +1,43 @@
+.fx-input-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: var(--space-2);
+  width: 100%;
+}
+
+.fx-input-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-1);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  transition: color 0.2s ease;
+}
+
+.fx-input-field {
+  background-color: #121212;
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  font-size: 1rem;
+  font-family: inherit;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  outline: none;
+}
+
+.fx-input-field:focus {
+  border-color: var(--accent-neon);
+  box-shadow: 0 0 0 4px var(--accent-neon-dim);
+  background-color: #171717;
+  transform: translateY(-2px);
+}
+
+.fx-input-group:focus-within .fx-input-label {
+  color: var(--accent-neon);
+}
+
+.fx-input-field::placeholder {
+  color: #444;
+}

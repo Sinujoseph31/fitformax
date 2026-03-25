@@ -1,0 +1,53 @@
+.fx-btn {
+  padding: 14px 24px;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 1rem;
+  border: 1px solid transparent;
+  outline: none;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  cursor: pointer;
+  user-select: none;
+}
+
+.fx-btn-fluid {
+  width: 100%;
+}
+
+.fx-btn-primary {
+  background-color: var(--accent-neon);
+  color: #000;
+  box-shadow: 0 4px 14px 0 rgba(0, 255, 156, 0.2);
+}
+
+.fx-btn-primary:active {
+  transform: scale(0.96);
+  background-color: #00e68d;
+  box-shadow: 0 2px 8px 0 rgba(0, 255, 156, 0.2);
+}
+
+.fx-btn-secondary {
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+.fx-btn-secondary:active {
+  transform: scale(0.96);
+  background-color: var(--bg-card-hover);
+}
+
+.fx-btn-text {
+  background-color: transparent;
+  color: var(--text-secondary);
+  padding: 8px 12px;
+}
+
+.fx-btn-text:active {
+  color: var(--text-primary);
+  transform: scale(0.96);
+}

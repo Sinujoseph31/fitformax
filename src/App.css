@@ -1,0 +1,36 @@
+.fx-floating-ai-btn {
+  position: fixed;
+  bottom: 90px;
+  right: 20px;
+  width: 56px;
+  height: 56px;
+  border-radius: 28px;
+  background-color: var(--accent-neon);
+  color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 255, 156, 0.4);
+  border: none;
+  cursor: pointer;
+  z-index: 999;
+  transition: transform 0.2s ease;
+}
+
+.fx-floating-ai-btn:hover {
+  transform: scale(1.05);
+}
+
+.fx-ai-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--bg-dark);
+  z-index: 2000;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+}

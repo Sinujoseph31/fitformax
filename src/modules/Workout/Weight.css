@@ -1,0 +1,111 @@
+.weight-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.weight-input-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  background-color: var(--bg-card);
+  padding: var(--space-3);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+}
+
+.weight-visual h3, .weight-history h3 {
+  font-size: 0.85rem;
+  margin-bottom: var(--space-2);
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.graph-container-real {
+  background-color: #111;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-2);
+  position: relative;
+  overflow: hidden;
+}
+
+.weight-graph-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.empty-chart-msg {
+  font-size: 0.8rem;
+  color: #444;
+  text-align: center;
+}
+
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: var(--space-2);
+}
+
+.current-stat {
+  font-size: 0.75rem;
+  color: var(--accent-neon);
+  font-weight: 700;
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-card);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+}
+
+.history-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px var(--space-2);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.history-item:last-child {
+  border-bottom: none;
+}
+
+.h-left {
+  display: flex;
+  flex-direction: column;
+}
+
+.h-date {
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.h-right {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.h-value {
+  font-family: var(--font-head);
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--accent-neon);
+}
+
+.h-unit {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}

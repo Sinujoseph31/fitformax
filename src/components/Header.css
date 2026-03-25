@@ -1,0 +1,29 @@
+.fx-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 0;
+  margin-bottom: 16px;
+}
+
+.fx-header-left {
+  display: flex;
+  flex-direction: column;
+}
+
+.fx-header-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.fx-header-subtitle {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.fx-header-right {
+  display: flex;
+  align-items: center;
+}

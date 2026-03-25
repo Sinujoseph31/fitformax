@@ -1,0 +1,56 @@
+.fx-bottom-nav {
+  position: fixed;
+  bottom: var(--space-2);
+  left: var(--space-2);
+  right: var(--space-2);
+  background-color: rgba(17, 17, 17, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border-color);
+  border-radius: 24px;
+  display: flex;
+  justify-content: space-around;
+  padding: 12px 0;
+  z-index: 1000;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.fx-nav-item {
+  background: transparent;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: var(--text-secondary);
+  transition: all 0.2s ease;
+  width: 20%;
+  cursor: pointer;
+}
+
+.fx-nav-icon {
+  font-size: 1.25rem;
+  margin-bottom: 4px;
+  opacity: 0.5;
+  transition: all 0.2s ease;
+}
+
+.fx-nav-label {
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.fx-nav-item.active {
+  color: var(--accent-neon);
+}
+
+.fx-nav-item.active .fx-nav-icon {
+  opacity: 1;
+  transform: translateY(-2px);
+  text-shadow: 0 0 10px var(--accent-neon-dim);
+}
+
+.fx-nav-item:active {
+  transform: scale(0.9);
+}
