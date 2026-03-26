@@ -1,19 +1,32 @@
 .fx-card {
-  background-color: var(--bg-card);
+  background: var(--bg-card-glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  padding: var(--space-2);
-  border: 1px solid var(--border-color);
-  overflow: hidden;
+  padding: 1.5rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
+  overflow: hidden;
+}
+
+.fx-card:hover {
+  border-color: var(--border-bright);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
 }
 
 .fx-card-highlight {
-  border-color: var(--accent-neon);
-  background: linear-gradient(145deg, #111111 0%, #151515 100%);
-  box-shadow: 0 4px 20px rgba(0, 255, 156, 0.05);
+  border-color: hsla(210, 100%, 60%, 0.3);
+  box-shadow: 0 0 20px -5px var(--primary-glow);
 }
 
-.fx-card-stats {
-  padding: var(--space-2);
-  text-align: center;
+.fx-card-highlight::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--primary);
 }

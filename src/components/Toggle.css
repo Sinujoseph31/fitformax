@@ -1,0 +1,73 @@
+.fx-toggle-group {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+}
+
+.fx-toggle-label-box {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.fx-toggle-icon {
+  color: var(--text-dim);
+  display: flex;
+  align-items: center;
+}
+
+.fx-toggle-text {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.fx-toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+}
+
+.fx-toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.fx-toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border);
+  transition: .4s;
+  border-radius: 34px;
+}
+
+.fx-toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 3px;
+  bottom: 3px;
+  background-color: var(--text-dim);
+  transition: .4s;
+  border-radius: 50%;
+}
+
+input:checked + .fx-toggle-slider {
+  background-color: var(--primary-glow);
+  border-color: var(--primary);
+}
+
+input:checked + .fx-toggle-slider:before {
+  transform: translateX(20px);
+  background-color: var(--primary);
+  box-shadow: 0 0 10px var(--primary-glow);
+}

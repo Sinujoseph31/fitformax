@@ -1,28 +1,27 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import AppLayout from './layouts/AppLayout';
 import AuthContainer from './modules/User/AuthContainer';
 import Dashboard from './modules/Dashboard/Dashboard';
 import Progress from './modules/BodyTracking/Progress';
-import Weight from './modules/Workout/Weight';
+import WorkoutHistory from './modules/Workout/WorkoutHistory';
+import ExerciseLibrary from './modules/Workout/ExerciseLibrary';
 import Profile from './modules/User/Profile';
 import Coach from './modules/Coach/Coach';
+import Diet from './modules/Diet/Diet';
 import { useApp } from './context/AppContext';
+import NotificationService from './services/NotificationService';
 import './styles/global.css';
 
 function App() {
-  const { isAuthenticated, loading } = useApp();
-  const [activeTab, setActiveTab] = useState('dashboard');
+  const { isAuthenticated, isInitializing, loading } = useApp();
 
-  const renderContent = () => {
-    switch(activeTab) {
-      case 'dashboard': return <Dashboard onNavigate={setActiveTab} />;
-      case 'progress': return <Progress />;
-      case 'weight': return <Weight />;
-      case 'profile': return <Profile />;
-      case 'coach': return <Coach />;
-      default: return <Dashboard onNavigate={setActiveTab} />;
-    }
-  };
+  useEffect(() => {
+    // Initialize notifications
+    NotificationService.init().catch(err => {
+      console.warn('Notification init failed', err);
+    });
+  }, []);
 
   // Global Loading Spinner Overlay
   const LoadingOverlay = () => (
@@ -31,21 +30,25 @@ function App() {
     </div>
   );
 
+  if (isInitializing) return <LoadingOverlay />;
+
   if (!isAuthenticated) {
-    return (
-      <>
-        <AuthContainer />
-        {loading && <LoadingOverlay />}
-      </>
-    );
+    return <AuthContainer />;
   }
 
   return (
-    <AppLayout activeTab={activeTab} onTabSelect={setActiveTab}>
-      <div style={{ position: 'relative', minHeight: '100%' }}>
-        {renderContent()}
-        {loading && <LoadingOverlay />}
-      </div>
+    <AppLayout>
+      <Routes>
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/workout" element={<WorkoutHistory />} />
+        <Route path="/exercises" element={<ExerciseLibrary />} />
+        <Route path="/track" element={<Progress />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/meal" element={<Diet />} />
+        <Route path="/coach" element={<Coach />} />
+        <Route path="/settings" element={<div>Settings Component (TBD)</div>} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
     </AppLayout>
   );
 }

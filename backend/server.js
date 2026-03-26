@@ -15,6 +15,8 @@ const weightRoutes = require('./routes/weightRoutes');
 const photoRoutes = require('./routes/photoRoutes');
 const insightRoutes = require('./routes/insightRoutes');
 const aiRoutes = require('./routes/aiRoutes');
+const notificationRoutes = require('./routes/notificationRoutes');
+const workoutRoutes = require('./routes/workoutRoutes');
 
 // Connect to database
 connectDB();
@@ -41,6 +43,8 @@ app.use('/api/weight', weightRoutes);
 app.use('/api/photos', photoRoutes);
 app.use('/api/insights', insightRoutes);
 app.use('/api/ai', aiRoutes);
+app.use('/api/notifications', notificationRoutes);
+app.use('/api/workouts', workoutRoutes);
 
 app.get('/', (req, res) => {
     res.json({ message: 'Welcome to FitformaX API' });

@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import Button from '../../components/Button';
 import Input from '../../components/Input';
 import { useApp } from '../../context/AppContext';
-import './Onboarding.css'; // Reusing the dark premium styles
+import './Auth.css';
 
 export default function Login({ onSwitchToSignup }) {
   const { login, loading, error, setError } = useApp();
   
   const [credentials, setCredentials] = useState({
     email: '',
-    password: 'password123'
+    password: ''
   });
 
   const handleSubmit = async (e) => {
@@ -23,55 +24,70 @@ export default function Login({ onSwitchToSignup }) {
   };
 
   return (
-    <div className="fx-onboarding">
-      <div className="onboarding-view animate-fade-in">
-        <div className="onboarding-brand">
-          <span className="brand-dot"></span>
-          <h1>FitformaX</h1>
+    <div className="auth-page">
+      <div className="auth-bg-blob auth-bg-blob-1" />
+      <div className="auth-bg-blob auth-bg-blob-2" />
+      
+      <motion.div 
+        className="auth-card glass-card"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <div className="auth-header">
+          <h1 className="auth-logo text-gradient">FitformaX</h1>
+          <p className="auth-subtitle">Elevate your performance</p>
         </div>
 
-        <div className="onboarding-content" style={{ marginTop: '40px' }}>
-          <h2>Welcome back.</h2>
-          <p className="onboarding-caption" style={{ marginBottom: '32px' }}>
-            Enter your details to access your dashboard.
-          </p>
-
-          <form onSubmit={handleSubmit} style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
-            {error && <div className="error-text">{error}</div>}
-            
-            <Input 
-              label="Email Address" 
-              type="email"
-              placeholder="alexdoe@fitformax.com" 
-              value={credentials.email} 
-              onChange={e => setCredentials({...credentials, email: e.target.value})} 
-            />
-            
-            <Input 
-              label="Password" 
-              type="password"
-              placeholder="••••••••" 
-              value={credentials.password} 
-              onChange={e => setCredentials({...credentials, password: e.target.value})} 
-            />
-
-            <Button 
-              type="submit" 
-              fluid 
-              disabled={loading || !credentials.email || !credentials.password}
+        <form onSubmit={handleSubmit} className="auth-form">
+          {error && (
+            <motion.div 
+              className="error-text"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
             >
-              {loading ? 'Authenticating...' : 'Log In'}
-            </Button>
-          </form>
+              {error}
+            </motion.div>
+          )}
+          
+          <Input 
+            label="Email" 
+            type="email"
+            placeholder="name@example.com" 
+            value={credentials.email} 
+            onChange={e => setCredentials({...credentials, email: e.target.value})} 
+          />
+          
+          <Input 
+            label="Password" 
+            type="password"
+            placeholder="••••••••" 
+            value={credentials.password} 
+            onChange={e => setCredentials({...credentials, password: e.target.value})} 
+          />
 
-          <div style={{ marginTop: '32px', textAlign: 'center' }}>
-            <span style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>New to FitformaX? </span>
-            <Button variant="text" onClick={onSwitchToSignup}>
-              Start Journey
-            </Button>
-          </div>
+          <Button 
+            type="submit" 
+            fluid 
+            disabled={loading || !credentials.email || !credentials.password}
+          >
+            {loading ? 'Authenticating...' : 'Sign In'}
+          </Button>
+        </form>
+
+        <div className="auth-footer">
+          <p>
+            New here?{' '}
+            <button 
+              className="fx-btn-text" 
+              onClick={onSwitchToSignup}
+              style={{ padding: 0, fontWeight: 700 }}
+            >
+              Create Account
+            </button>
+          </p>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }

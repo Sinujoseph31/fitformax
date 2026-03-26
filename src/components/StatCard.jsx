@@ -1,12 +1,23 @@
+import React from 'react';
 import Card from './Card';
+import './StatCard.css';
 
-export default function StatCard({ label, value, unit, icon }) {
+export default function StatCard({ label, value, unit, icon, trend, highlight = false }) {
   return (
-    <Card className="fx-card-stats">
-      <div style={{ fontSize: '1.25rem', marginBottom: '4px' }}>{icon}</div>
-      <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{label}</div>
-      <div style={{ fontWeight: '700', fontSize: '1.1rem', marginTop: '2px' }}>
-        {value} <span style={{ fontSize: '0.8rem', fontWeight: '400', color: 'var(--text-secondary)' }}>{unit}</span>
+    <Card className={`fx-stat-card ${highlight ? 'highlight' : ''}`}>
+      <div className="stat-header">
+        <span className="stat-icon">{icon}</span>
+        {trend && (
+          <span className={`stat-trend ${trend > 0 ? 'up' : 'down'}`}>
+            {trend > 0 ? '+' : ''}{trend}%
+          </span>
+        )}
+      </div>
+      <div className="stat-body">
+        <div className="stat-label">{label}</div>
+        <div className="stat-value">
+          {value} <span className="stat-unit">{unit}</span>
+        </div>
       </div>
     </Card>
   );

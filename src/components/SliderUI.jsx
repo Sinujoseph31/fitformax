@@ -1,32 +1,54 @@
 import React, { useState } from 'react';
 import './SliderUI.css';
 
-export default function SliderUI() {
+export default function SliderUI({ beforeImage, afterImage, beforeDate, afterDate }) {
   const [sliderPos, setSliderPos] = useState(50);
 
+  if (!beforeImage || !afterImage) {
+    return (
+      <div className="fx-slider-placeholder glass">
+        <p>Log more photos to see your transformation!</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="fx-slider-container">
-      <div className="fx-slider-image before" />
+    <div className="fx-slider-container glass">
+      <div 
+        className="fx-slider-image before" 
+        style={{ backgroundImage: `url(${beforeImage})` }} 
+      />
       <div 
         className="fx-slider-image after" 
-        style={{ clipPath: `inset(0 0 0 ${sliderPos}%)` }}
+        style={{ 
+          backgroundImage: `url(${afterImage})`,
+          clipPath: `inset(0 0 0 ${sliderPos}%)` 
+        }}
       />
+      
       <input 
         type="range" 
         min="0" 
         max="100" 
         value={sliderPos} 
         onChange={(e) => setSliderPos(e.target.value)} 
-        className="fx-slider-handle"
+        className="fx-slider-range"
       />
-      <div className="fx-slider-line" style={{ left: `${sliderPos}%` }}>
-        <div className="fx-slider-knob">
+      
+      <div className="fx-slider-divider" style={{ left: `${sliderPos}%` }}>
+        <div className="fx-slider-handle">
           <span>⟷</span>
         </div>
       </div>
       
-      <div className="fx-slider-label before-label">BEFORE</div>
-      <div className="fx-slider-label after-label">AFTER</div>
+      <div className="fx-slider-label before-label">
+        <span>BEFORE</span>
+        {beforeDate && <small>{beforeDate}</small>}
+      </div>
+      <div className="fx-slider-label after-label">
+        <span>AFTER</span>
+        {afterDate && <small>{afterDate}</small>}
+      </div>
     </div>
   );
 }

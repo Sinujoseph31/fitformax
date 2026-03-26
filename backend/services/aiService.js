@@ -1,130 +1,60 @@
 /**
- * AI Coaching Logic - Phase 5: Stability & Gemini Fallback
- * Primary: OpenRouter (GPT-3.5-turbo)
- * Fallback: Google Gemini (Direct API)
- */
-
-/**
- * Call OpenRouter with GPT-3.5
- */
-const callOpenRouter = async (prompt, message) => {
-    const apiKey = process.env.OPENAI_API_KEY;
-    const baseURL = process.env.OPENAI_BASE_URL || "https://openrouter.ai/api/v1";
-
-    if (!apiKey) throw new Error('OpenRouter API Key missing');
-
-    const response = await fetch(`${baseURL}/chat/completions`, {
-        method: 'POST',
-        headers: {
-            'Authorization': `Bearer ${apiKey}`,
-            'Content-Type': 'application/json',
-            'HTTP-Referer': 'http://localhost:5000',
-            'X-Title': 'FitformaX AI Coach'
-        },
-        body: JSON.stringify({
-            model: "openai/gpt-3.5-turbo",
-            messages: [
-                { role: "system", content: prompt },
-                { role: "user", content: message }
-            ],
-            temperature: 0.7,
-            max_tokens: 500
-        })
-    });
-
-    if (!response.ok) {
-        const errData = await response.json();
-        throw new Error(`OpenRouter Error: ${errData.error?.message || response.status}`);
-    }
-
-    const data = await response.json();
-    return data.choices[0].message.content;
-};
-
-/**
- * Call Google Gemini Direct
- */
-const callGemini = async (prompt, message) => {
-    const apiKey = process.env.GEMINI_API_KEY;
-    if (!apiKey) throw new Error('Gemini API Key missing');
-
-    const baseURL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-
-    const response = await fetch(baseURL, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            contents: [{
-                parts: [{ text: `${prompt}\n\nUser Message: ${message}` }]
-            }],
-            generationConfig: {
-                temperature: 0.7,
-                maxOutputTokens: 500
-            }
-        })
-    });
-
-    if (!response.ok) {
-        const errData = await response.json();
-        throw new Error(`Gemini Error: ${errData.error?.message || response.status}`);
-    }
-
-    const data = await response.json();
-    return data.candidates[0].content.parts[0].text;
-};
-
-/**
- * Main Coach Entrance with Fallback Logic
+ * AI Coaching Logic via OpenRouter (Mistral 7B)
+ * This model is confirmed to be available and free for the user's current key.
  */
 const getCoachResponse = async (message, context) => {
+    const apiKey = process.env.OPENAI_API_KEY;
+    const baseURL = process.env.OPENAI_BASE_URL || 'https://openrouter.ai/api/v1';
+    
+    if (!apiKey) throw new Error('OpenRouter (OPENAI_API_KEY) missing in .env');
+
     const { 
-        name, 
-        goal, 
-        currentWeight, 
-        weightChange, 
-        daysCount, 
-        recentWeights,
-        dietPlan,
-        workoutPlan
+        name, goal, currentWeight, weightChange, daysCount, recentWeights, dietPlan, workoutPlan
     } = context;
 
-    const weightHistoryStr = recentWeights.map(w => `${new Date(w.timestamp).toLocaleDateString()}: ${w.value}kg`).join(', ');
-
-    const systemPrompt = `You are the FitformaX AI Coach. Your tone is supportive, firm, and professional. 
+    // OPTIMIZATION: Truncate history to avoid massive token payloads which slow down the AI
+    const weightHistoryStr = (recentWeights || []).slice(-5).map(w => `${new Date(w.timestamp).toLocaleDateString()}: ${w.value}kg`).join(', ');
     
-User: ${name || 'User'} | Goal: ${goal}
-Current Weight: ${currentWeight} kg (${weightChange} kg change over ${daysCount} days)
-Weight History: ${weightHistoryStr}
+    // Simplifed diet summary instead of full JSON dump
+    const dietSummary = dietPlan && dietPlan.meals ? `Logged ${dietPlan.meals.length} meals today` : 'No meals logged yet';
 
-RESOURCES:
-- Diet: ${JSON.stringify(dietPlan)}
-- Workout: ${workoutPlan.focus}
-
-RULES:
-1. Provide short, actionable coaching (2-3 paragraphs).
-2. Use Indian dietary context.
-3. End with a "Coach Tip" unique to their progress.
-4. If weight change is positive for Muscle Gain, celebrate. If negative for Fat Loss, praise consistency.`;
+    const systemPrompt = `You are the FitformaX AI Coach. Tone: supportive, firm, professional.
+User: ${name || 'Enthusiast'} | Goal: ${goal} | Weight: ${currentWeight}kg.
+Recent Weights: ${weightHistoryStr}.
+RESOURCES: Diet=${dietSummary}, Workout=${workoutPlan?.focus || 'General'}.
+RULES: 
+- 2 short paragraphs max. 
+- Use Indian dietary references.
+- End with a unique "Coach Tip".`;
 
     try {
-        console.log('[AI Service] Attempting OpenRouter (GPT-3.5)...');
-        return await callOpenRouter(systemPrompt, message);
-    } catch (orError) {
-        console.error('[AI Service] OpenRouter Failed:', orError.message);
-        
-        try {
-            if (process.env.GEMINI_API_KEY) {
-                console.log('[AI Service] Attempting Gemini Fallback...');
-                return await callGemini(systemPrompt, message);
-            } else {
-                throw new Error('Gemini API Key not configured for fallback.');
-            }
-        } catch (gemError) {
-            console.error('[AI Service] Gemini Fallback Failed:', gemError.message);
-            throw new Error("I'm having trouble connecting to my coaching brain. Please check your API keys or try again later!");
+        console.log('[AI Service] Thinking with Mistral (via OpenRouter)...');
+        const response = await fetch(`${baseURL}/chat/completions`, {
+            method: 'POST',
+            headers: { 
+                'Authorization': `Bearer ${apiKey}`,
+                'Content-Type': 'application/json',
+                'HTTP-Referer': 'https://fitformax.app',
+                'X-Title': 'FitformaX'
+            },
+            body: JSON.stringify({
+                model: 'mistralai/mistral-7b-instruct-v0.1',
+                messages: [{ role: 'user', content: `${systemPrompt}\n\nUser Question: ${message}` }],
+                max_tokens: 350 // OPTIMIZATION: Force a quick, concise response
+            })
+        });
+
+        if (!response.ok) {
+            const errData = await response.json();
+            throw new Error(errData.error?.message || `OpenRouter Error: ${response.status}`);
         }
+
+        const data = await response.json();
+        if (!data.choices || !data.choices[0]) throw new Error('No response from AI');
+        return data.choices[0].message.content;
+    } catch (error) {
+        console.error('[AI Service] AI Failed:', error.message);
+        throw new Error(`AI Coach Error: ${error.message}. Please verify your OpenRouter key in .env`);
     }
 };
 

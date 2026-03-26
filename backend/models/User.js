@@ -9,6 +9,7 @@ const userSchema = new mongoose.Schema({
     height: { type: Number },
     weight: { type: Number },
     goal: { type: String },
+    deviceTokens: [{ type: String }],
 }, { timestamps: true });
 
 // Hash password before saving

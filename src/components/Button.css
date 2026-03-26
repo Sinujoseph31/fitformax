@@ -1,53 +1,78 @@
 .fx-btn {
-  padding: 14px 24px;
-  border-radius: var(--radius-md);
-  font-weight: 600;
-  font-size: 1rem;
-  border: 1px solid transparent;
-  outline: none;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--space-1);
+  padding: 0.8rem 1.5rem;
+  border-radius: var(--radius-md);
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 0.95rem;
   cursor: pointer;
-  user-select: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: none;
+  outline: none;
+  gap: 0.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.fx-btn:active {
+  transform: scale(0.98);
+}
+
+.fx-btn-primary {
+  background: var(--primary);
+  color: white;
+  box-shadow: 0 4px 15px var(--primary-glow);
+}
+
+.fx-btn-primary:hover {
+  background: hsl(210, 100%, 65%);
+  box-shadow: 0 6px 20px var(--primary-glow);
+  transform: translateY(-1px);
+}
+
+.fx-btn-secondary {
+  background: var(--bg-card);
+  color: var(--text-main);
+  border: 1px solid var(--border);
+}
+
+.fx-btn-secondary:hover {
+  background: hsla(var(--h), var(--s), 20%, 0.5);
+  border-color: var(--border-bright);
+}
+
+.fx-btn-text {
+  background: transparent;
+  color: var(--primary);
+  padding: 0.5rem 1rem;
+}
+
+.fx-btn-text:hover {
+  background: hsla(210, 100%, 60%, 0.1);
+}
+
+.fx-btn-highlight {
+  background: var(--primary-gradient);
+  color: black;
+  font-weight: 800;
+  box-shadow: 0 8px 24px var(--primary-glow);
+  border: none;
+}
+
+.fx-btn-highlight:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px var(--primary-glow);
+  filter: brightness(1.1);
 }
 
 .fx-btn-fluid {
   width: 100%;
 }
 
-.fx-btn-primary {
-  background-color: var(--accent-neon);
-  color: #000;
-  box-shadow: 0 4px 14px 0 rgba(0, 255, 156, 0.2);
-}
-
-.fx-btn-primary:active {
-  transform: scale(0.96);
-  background-color: #00e68d;
-  box-shadow: 0 2px 8px 0 rgba(0, 255, 156, 0.2);
-}
-
-.fx-btn-secondary {
-  background-color: var(--bg-card);
-  color: var(--text-primary);
-  border-color: var(--border-color);
-}
-
-.fx-btn-secondary:active {
-  transform: scale(0.96);
-  background-color: var(--bg-card-hover);
-}
-
-.fx-btn-text {
-  background-color: transparent;
-  color: var(--text-secondary);
-  padding: 8px 12px;
-}
-
-.fx-btn-text:active {
-  color: var(--text-primary);
-  transform: scale(0.96);
+.fx-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
 }
