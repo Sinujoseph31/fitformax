@@ -24,20 +24,24 @@
 .ed-modal {
   position: relative;
   width: 100%;
-  max-width: 560px;
-  max-height: 96vh;
+  max-width: 500px;
+  max-height: 90vh;
   display: flex;
   flex-direction: column;
-  gap: 0;
   background: #111114;
   border: 1px solid rgba(255,255,255,0.09);
   border-radius: 30px 30px 0 0;
   overflow: hidden;
+}
+
+.ed-scroll-content {
+  flex: 1;
   overflow-y: auto;
+  padding-bottom: 2rem;
   scrollbar-width: none;
 }
 
-.ed-modal::-webkit-scrollbar { display: none; }
+.ed-scroll-content::-webkit-scrollbar { display: none; }
 
 @media (min-width: 600px) {
   .ed-modal {
@@ -92,10 +96,10 @@
   justify-content: center;
 }
 
-.ed-gif {
+.ed-gif, .ed-ref-img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
 }
 
 .ed-no-gif {
@@ -371,7 +375,7 @@
 
 /* CTA */
 .ed-cta {
-  margin: 0 1.75rem 1.75rem;
+  margin: 1.5rem 1.75rem;
   background: var(--primary-gradient, linear-gradient(135deg, #00f5a0, #00d9f5));
   border: none;
   padding: 1.1rem;
@@ -387,6 +391,7 @@
   cursor: pointer;
   transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   box-shadow: 0 8px 25px rgba(0, 245, 160, 0.3);
+  flex-shrink: 0; /* Keep button fixed at bottom */
 }
 
 .ed-cta:hover {

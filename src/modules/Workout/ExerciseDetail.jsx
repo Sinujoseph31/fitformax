@@ -4,6 +4,39 @@ import { motion, AnimatePresence } from 'framer-motion';
 import MuscleHighlighter from './MuscleHighlighter';
 import './ExerciseDetail.css';
 
+// Professional Graphics
+import guideMain from '../../assets/library/guide_main.png';
+import anatomyMain from '../../assets/library/anatomy_main.png';
+import guideChest from '../../assets/library/guide_chest.png';
+import anatomyChest from '../../assets/library/anatomy_chest.png';
+import guideBack from '../../assets/library/guide_back.png';
+import anatomyBack from '../../assets/library/anatomy_back.png';
+import guideLegs from '../../assets/library/guide_legs.png';
+import anatomyLegs from '../../assets/library/anatomy_legs.png';
+import guideShoulders from '../../assets/library/guide_shoulders.png';
+import anatomyShoulders from '../../assets/library/anatomy_shoulders.png';
+import guideArms from '../../assets/library/guide_arms.png';
+
+const GUIDE_MAP = {
+  'Chest': guideChest,
+  'Back': guideBack,
+  'Legs': guideLegs,
+  'Shoulders': guideShoulders,
+  'Arms': guideArms
+};
+
+const ANATOMY_MAP = {
+  'Chest': anatomyChest,
+  'Back': anatomyBack,
+  'Legs': anatomyLegs,
+  'Shoulders': anatomyShoulders,
+  'Arms': anatomyShoulders
+};
+
+// This allows for individual exercise overrides by ID
+const INDIVIDUAL_GUIDE_MAP = {}; 
+const INDIVIDUAL_ANATOMY_MAP = {};
+
 export default function ExerciseDetail({ exercise, onClose }) {
   const [activeVisualTab, setActiveVisualTab] = useState('guide');
   const [activeCoachTab, setActiveCoachTab] = useState('steps');
@@ -24,7 +57,8 @@ export default function ExerciseDetail({ exercise, onClose }) {
           {/* Close */}
           <button className="ed-close" onClick={onClose}><X size={20} /></button>
 
-          {/* ── HERO VISUAL ── */}
+          <div className="ed-scroll-content">
+            {/* ── HERO VISUAL ── */}
           <div className="ed-hero">
             {/* tabs */}
             <div className="ed-vis-tabs">
@@ -43,15 +77,15 @@ export default function ExerciseDetail({ exercise, onClose }) {
                   {exercise.gifUrl ? (
                     <img src={exercise.gifUrl} alt={exercise.name} className="ed-gif" />
                   ) : (
-                    <div className="ed-no-gif">
-                      <div className="ed-no-gif-icon">{exercise.icon}</div>
-                      <p>Follow the step-by-step guide below</p>
-                    </div>
+                    <img src={INDIVIDUAL_GUIDE_MAP[exercise.id] || GUIDE_MAP[exercise.category] || guideMain} alt="Exercise Guide" className="ed-ref-img" />
                   )}
                 </motion.div>
               ) : (
                 <motion.div key="anatomy" className="ed-anatomy-view" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                  <MuscleHighlighter targetedMuscles={exercise.muscles} />
+                  <img src={INDIVIDUAL_ANATOMY_MAP[exercise.id] || ANATOMY_MAP[exercise.category] || anatomyMain} alt="Anatomy Guide" className="ed-ref-img" />
+                  <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
+                    <MuscleHighlighter targetedMuscles={exercise.muscles} />
+                  </div>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -117,8 +151,9 @@ export default function ExerciseDetail({ exercise, onClose }) {
               )}
             </AnimatePresence>
           </div>
+        </div>
 
-          {/* ── CTA ── */}
+        {/* ── CTA ── */}
           <button className="ed-cta" onClick={onClose}>
             <Zap size={18} /> Got it, Let's Lift!
           </button>
