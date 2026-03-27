@@ -26,4 +26,16 @@ const getWeightHistory = async (req, res) => {
     }
 };
 
-module.exports = { addWeight, getWeightHistory };
+// @desc    Delete weight entry
+// @route   DELETE /api/weight/:id
+const deleteWeight = async (req, res) => {
+    try {
+        const weight = await Weight.findOneAndDelete({ _id: req.params.id, user: req.user._id });
+        if (!weight) return res.status(404).json({ message: 'Weight entry not found' });
+        res.json({ message: 'Weight entry removed' });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+module.exports = { addWeight, getWeightHistory, deleteWeight };

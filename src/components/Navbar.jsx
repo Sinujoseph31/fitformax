@@ -1,5 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import { useApp } from '../context/AppContext';
 import { 
   LayoutDashboard, 
   User, 
@@ -8,19 +9,23 @@ import {
   MessageSquare, 
   BookOpen,
   Utensils,
+  Shield,
   Settings 
 } from 'lucide-react';
 import './Navbar.css';
 
 const Navbar = () => {
+  const { userProfile } = useApp();
   const navItems = [
     { path: '/', icon: <LayoutDashboard size={24} />, label: 'Dashboard' },
     { path: '/workout', icon: <Dumbbell size={24} />, label: 'Workout' },
     { path: '/exercises', icon: <BookOpen size={24} />, label: 'Library' },
     { path: '/meal', icon: <Utensils size={24} />, label: 'Meals' },
     { path: '/track', icon: <TrendingUp size={24} />, label: 'Progress' },
+    { path: '/composition', icon: <User size={24} />, label: 'Metrics' },
     { path: '/coach', icon: <MessageSquare size={24} />, label: 'AI Coach' },
     { path: '/profile', icon: <User size={24} />, label: 'Profile' },
+    ...(userProfile?.role === 'admin' ? [{ path: '/admin', icon: <Shield size={24} />, label: 'Admin' }] : []),
   ];
 
   return (

@@ -9,12 +9,15 @@ import ExerciseLibrary from './modules/Workout/ExerciseLibrary';
 import Profile from './modules/User/Profile';
 import Coach from './modules/Coach/Coach';
 import Diet from './modules/Diet/Diet';
+import BodyMetricsSetup from './modules/User/BodyMetricsSetup';
+import BodyComposition from './modules/User/BodyComposition';
+import AdminPanel from './modules/Admin/AdminPanel';
 import { useApp } from './context/AppContext';
 import NotificationService from './services/NotificationService';
 import './styles/global.css';
 
 function App() {
-  const { isAuthenticated, isInitializing, loading } = useApp();
+  const { isAuthenticated, isInitializing, loading, userProfile } = useApp();
 
   useEffect(() => {
     // Initialize notifications
@@ -36,6 +39,11 @@ function App() {
     return <AuthContainer />;
   }
 
+  // Force onboarding if logged in but missing core body metrics
+  if (isAuthenticated && userProfile && (!userProfile.gender || !userProfile.bmi)) {
+    return <BodyMetricsSetup />;
+  }
+
   return (
     <AppLayout>
       <Routes>
@@ -43,9 +51,11 @@ function App() {
         <Route path="/workout" element={<WorkoutHistory />} />
         <Route path="/exercises" element={<ExerciseLibrary />} />
         <Route path="/track" element={<Progress />} />
+        <Route path="/composition" element={<BodyComposition />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/meal" element={<Diet />} />
         <Route path="/coach" element={<Coach />} />
+        {userProfile?.role === 'admin' && <Route path="/admin" element={<AdminPanel />} />}
         <Route path="/settings" element={<div>Settings Component (TBD)</div>} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

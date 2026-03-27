@@ -1,22 +1,27 @@
 .history-container {
-  max-width: var(--max-width);
+  max-width: 1000px;
   margin: 0 auto;
-  padding: 1rem;
-}
-
-.page-header {
-  margin-bottom: 2.5rem;
+  padding: 2.5rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
 }
 
 .page-header h1 {
-  font-size: 2.5rem;
+  font-size: 3rem;
   font-weight: 800;
   margin-bottom: 0.5rem;
+  background: linear-gradient(135deg, #fff 0%, #a5a5a5 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -1.5px;
 }
 
 .page-header p {
-  color: var(--text-muted);
-  font-size: 1.1rem;
+  color: var(--text-dim);
+  font-size: 1.15rem;
+  max-width: 500px;
 }
 
 .history-tabs {
@@ -141,15 +146,19 @@
 
 /* Session Card */
 .session-card {
-  padding: 1.5rem !important;
+  padding: 1.75rem !important;
   cursor: pointer;
-  transition: all 0.3s ease;
-  border: 1px solid var(--border) !important;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  background: rgba(255, 255, 255, 0.025) !important;
+  backdrop-filter: blur(10px);
 }
 
 .session-card:hover {
   border-color: var(--primary) !important;
-  transform: translateX(4px);
+  transform: translateY(-4px) scale(1.01);
+  background: rgba(255, 255, 255, 0.04) !important;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.4);
 }
 
 .session-summary-row {
@@ -198,8 +207,33 @@
   font-weight: 600;
 }
 
+.delete-btn-mini {
+  background: rgba(221, 44, 44, 0.05);
+  border: 1px solid rgba(221, 44, 44, 0.1);
+  color: #ff4d4d;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  opacity: 0;
+}
+
+.session-card:hover .delete-btn-mini {
+  opacity: 1;
+}
+
+.delete-btn-mini:hover {
+  background: #ff4d4d;
+  color: white;
+  transform: scale(1.1);
+  box-shadow: 0 0 15px rgba(255, 77, 77, 0.3);
+}
+
 .expand-icon {
-  margin-left: auto;
   color: var(--text-dim);
 }
 

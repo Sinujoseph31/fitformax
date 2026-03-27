@@ -9,8 +9,10 @@ import {
   Dumbbell, 
   Scale, 
   BookOpen,
-  Plus
+  Plus,
+  Trash2
 } from 'lucide-react';
+import { apiCall } from '../../utils/api';
 import { useApp } from '../../context/AppContext';
 import { useNavigate } from 'react-router-dom';
 import Card from '../../components/Card';
@@ -19,13 +21,29 @@ import ExerciseLibrary from './ExerciseLibrary';
 import './WorkoutHistory.css';
 
 export default function WorkoutHistory() {
-  const { workouts, loading } = useApp();
+  const { workouts, loading, loadAllData } = useApp();
   const navigate = useNavigate();
   const [expandedId, setExpandedId] = useState(null);
   const [activeTab, setActiveTab] = useState('sessions');
+  const [deletingId, setDeletingId] = useState(null);
 
   const toggleExpand = (id) => {
     setExpandedId(expandedId === id ? null : id);
+  };
+
+  const handleDeleteWorkout = async (e, id) => {
+    e.stopPropagation(); // prevent card expansion
+    if (!window.confirm("Are you sure you want to delete this session?")) return;
+    
+    setDeletingId(id);
+    try {
+      await apiCall(`/workouts/${id}`, 'DELETE');
+      await loadAllData();
+    } catch (err) {
+      console.error("Failed to delete workout", err);
+    } finally {
+      setDeletingId(null);
+    }
   };
 
   return (
@@ -107,8 +125,18 @@ export default function WorkoutHistory() {
                         <span>{new Date(w.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                       </div>
                     </div>
-                    <div className="expand-icon">
-                      {expandedId === w._id ? <ChevronDown size={20} /> : <ChevronRight size={20} />}
+                    <div className="expand-icon-group" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                      <button 
+                        className="delete-btn-mini" 
+                        onClick={(e) => handleDeleteWorkout(e, w._id)}
+                        disabled={deletingId === w._id}
+                        title="Delete Session"
+                      >
+                        {deletingId === w._id ? '...' : <Trash2 size={16} />}
+                      </button>
+                      <div className="expand-icon">
+                        {expandedId === w._id ? <ChevronDown size={20} /> : <ChevronRight size={20} />}
+                      </div>
                     </div>
                   </div>
 

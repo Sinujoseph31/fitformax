@@ -9,6 +9,7 @@ export function AppProvider({ children }) {
   const [photos, setPhotos] = useState([]);
   const [weights, setWeights] = useState([]);
   const [workouts, setWorkouts] = useState([]);
+  const [compositions, setCompositions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isInitializing, setIsInitializing] = useState(true);
   const [error, setError] = useState(null);
@@ -37,16 +38,18 @@ export function AppProvider({ children }) {
 
   const loadAllData = async () => {
     try {
-      const [profile, weightData, photoData, workoutData] = await Promise.all([
+      const [profile, weightData, photoData, workoutData, compData] = await Promise.all([
         apiCall('/user/profile'),
         apiCall('/weight'),
         apiCall('/photos'),
-        apiCall('/workouts')
+        apiCall('/workouts'),
+        apiCall('/composition')
       ]);
       setUserProfile(profile);
       setWeights(weightData);
       setPhotos(photoData);
       setWorkouts(workoutData);
+      setCompositions(compData);
     } catch (err) {
       if (err.message.includes('authorized') || err.message.includes('token')) {
         logout();
@@ -101,6 +104,7 @@ export function AppProvider({ children }) {
     setPhotos([]);
     setWeights([]);
     setWorkouts([]);
+    setCompositions([]);
   }, []);
 
   const addPhoto = async (formData) => {
@@ -128,6 +132,18 @@ export function AppProvider({ children }) {
     }
   };
 
+  const deleteWeight = async (id) => {
+    setLoading(true);
+    try {
+      await apiCall(`/weight/${id}`, 'DELETE');
+      setWeights(prev => prev.filter(w => w._id !== id));
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const saveWorkout = async (workoutData) => {
     setLoading(true);
     try {
@@ -142,12 +158,27 @@ export function AppProvider({ children }) {
     }
   };
 
+  const updateProfile = async (data) => {
+    setLoading(true);
+    try {
+      const updated = await apiCall('/user/profile', 'PUT', data);
+      setUserProfile(updated);
+      return updated;
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <AppContext.Provider value={{
-      isAuthenticated, signup, login, logout,
+      isAuthenticated, signup, login, logout, updateProfile,
       userProfile, photos, addPhoto,
-      weights, addWeight,
+      weights, addWeight, deleteWeight,
       workouts, saveWorkout,
+      compositions, loadAllData,
       hapticsEnabled, setHapticsEnabled,
       biometricsEnabled, setBiometricsEnabled,
       loading, isInitializing, error, setError

@@ -6,9 +6,13 @@ const userSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     age: { type: Number },
-    height: { type: Number },
-    weight: { type: Number },
+    height: { type: Number }, // in cm
+    weight: { type: Number }, // in kg
+    gender: { type: String, enum: ['male', 'female'] },
+    bmi: { type: Number },
+    bmiCategory: { type: String },
     goal: { type: String },
+    role: { type: String, enum: ['user', 'admin'], default: 'user' },
     deviceTokens: [{ type: String }],
 }, { timestamps: true });
 

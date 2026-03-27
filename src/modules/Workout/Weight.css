@@ -176,6 +176,28 @@
   color: var(--text-dim);
 }
 
+.h-delete-btn {
+  background: rgba(221, 44, 44, 0.05);
+  border: 1px solid rgba(221, 44, 44, 0.1);
+  color: #ff4d4d;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-left: 0.5rem;
+}
+
+.h-delete-btn:hover {
+  background: #ff4d4d;
+  color: white;
+  transform: scale(1.1);
+  box-shadow: 0 0 15px rgba(255, 77, 77, 0.3);
+}
+
 .empty-state {
   text-align: center;
   padding: 3rem;

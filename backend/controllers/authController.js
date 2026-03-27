@@ -15,6 +15,9 @@ const signup = async (req, res) => {
                 _id: user._id,
                 name: user.name,
                 email: user.email,
+                role: user.role,
+                gender: user.gender,
+                bmi: user.bmi,
                 token: generateToken(user._id)
             });
         }
@@ -34,6 +37,9 @@ const login = async (req, res) => {
                 _id: user._id,
                 name: user.name,
                 email: user.email,
+                role: user.role,
+                gender: user.gender,
+                bmi: user.bmi,
                 token: generateToken(user._id)
             });
         } else {

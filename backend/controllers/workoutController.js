@@ -31,3 +31,12 @@ exports.getWorkoutById = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+exports.deleteWorkout = async (req, res) => {
+  try {
+    const workout = await Workout.findOneAndDelete({ _id: req.params.id, user: req.user.id });
+    if (!workout) return res.status(404).json({ message: 'Workout not found' });
+    res.json({ message: 'Workout removed' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};

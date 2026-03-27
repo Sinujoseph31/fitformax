@@ -7,6 +7,7 @@ import {
   TrendingUp, 
   Target, 
   ImageIcon, 
+  Activity,
   Zap, 
   Utensils, 
   Dumbbell as WorkoutIcon,
@@ -24,7 +25,7 @@ import './Dashboard.css';
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const { userProfile, weights, photos, workouts } = useApp();
+  const { userProfile, weights, photos, workouts, compositions } = useApp();
   const [insights, setInsights] = useState({ recommendation: null, diet: null, workout: null });
   const [loadingInsights, setLoadingInsights] = useState(true);
   const [isWorkoutActive, setIsWorkoutActive] = useState(false);
@@ -92,7 +93,7 @@ export default function Dashboard() {
             value={latestWeight} 
             unit="kg" 
             icon={<TrendingUp size={20} />} 
-            trend={weightTrend ? -weightTrend : null} // Negative trend shown as "good" usually for weight loss
+            trend={weightTrend ? -weightTrend : null} 
             highlight
           />
           <StatCard 
@@ -102,10 +103,32 @@ export default function Dashboard() {
             icon={<Target size={20} />} 
           />
           <StatCard 
-            label="Gallery" 
+            label="Photos" 
             value={photos.length} 
-            unit="Photos" 
+            unit="Saved" 
             icon={<ImageIcon size={20} />} 
+          />
+        </section>
+
+        {/* Body Composition Summary */}
+        <section className="stats-row" style={{ marginTop: '-1rem', marginBottom: '1rem' }}>
+          <StatCard 
+            label="BMI" 
+            value={compositions?.[0]?.bmi || userProfile?.bmi || '--'} 
+            unit={userProfile?.bmiCategory || ''} 
+            icon={<Activity size={20} />} 
+          />
+          <StatCard 
+            label="Body Fat" 
+            value={compositions?.[0]?.bodyFatPercent || '--'} 
+            unit="%" 
+            icon={<Activity size={20} />} 
+          />
+          <StatCard 
+            label="Muscle" 
+            value={compositions?.[0]?.skeletalMuscle || '--'} 
+            unit="kg" 
+            icon={<Activity size={20} />} 
           />
         </section>
 
@@ -115,11 +138,11 @@ export default function Dashboard() {
             <Play size={20} fill="currentColor" />
             <span>Start Workout</span>
           </Button>
-          <Button onClick={() => navigate('/weight')} className="action-btn">
+          <Button onClick={() => navigate('/composition')} className="action-btn">
             <Plus size={20} />
             <span>Log Weight</span>
           </Button>
-          <Button variant="secondary" onClick={() => navigate('/weight')} className="action-btn">
+          <Button variant="secondary" onClick={() => navigate('/composition')} className="action-btn">
             <Camera size={20} />
             <span>Add Photo</span>
           </Button>

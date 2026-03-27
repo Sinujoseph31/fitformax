@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Scale, History, TrendingUp, Plus } from 'lucide-react';
+import { Scale, History, TrendingUp, Plus, Trash2 } from 'lucide-react';
 import Card from '../../components/Card';
 import Button from '../../components/Button';
 import Input from '../../components/Input';
@@ -9,7 +9,7 @@ import HapticService from '../../services/HapticService';
 import './Weight.css';
 
 export default function Weight() {
-  const { weights, addWeight, userProfile, loading } = useApp();
+  const { weights, addWeight, deleteWeight, userProfile, loading } = useApp();
   const [newWeight, setNewWeight] = useState('');
 
   const handleLogWeight = async () => {
@@ -18,6 +18,12 @@ export default function Weight() {
       await addWeight(newWeight);
       HapticService.notification(); // Success haptic
       setNewWeight('');
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (window.confirm("Delete this weight entry?")) {
+      await deleteWeight(id);
     }
   };
 
@@ -154,6 +160,13 @@ export default function Weight() {
                       <span className="h-value">{item.value}</span>
                       <span className="h-unit">kg</span>
                     </div>
+                    <button 
+                      className="h-delete-btn" 
+                      onClick={() => handleDelete(item._id || item.id)}
+                      disabled={loading}
+                    >
+                      <Trash2 size={14} />
+                    </button>
                   </div>
                 </motion.div>
               );

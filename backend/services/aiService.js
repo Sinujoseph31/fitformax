@@ -1,21 +1,28 @@
+const fs = require('fs');
+const path = require('path');
+
 /**
- * AI Coaching Logic via OpenRouter (Mistral 7B)
- * This model is confirmed to be available and free for the user's current key.
+ * FitformaX AI Coaching Logic
+ * Simplified & Robust: Direct fetch-based Gemini integration (bypassing SDK quirks)
+ * Fallback: OpenRouter (Mistral 7B)
  */
 const getCoachResponse = async (message, context) => {
-    const apiKey = process.env.OPENAI_API_KEY;
-    const baseURL = process.env.OPENAI_BASE_URL || 'https://openrouter.ai/api/v1';
+    const geminiKey = process.env.GEMINI_API_KEY;
+    const openRouterKey = process.env.OPENAI_API_KEY;
+    const openRouterBaseURL = process.env.OPENAI_BASE_URL || 'https://openrouter.ai/api/v1';
     
-    if (!apiKey) throw new Error('OpenRouter (OPENAI_API_KEY) missing in .env');
+    // Create a diagnostic log path (accessible to the agent)
+    const logPath = path.join(process.cwd(), 'ai-debug.log');
+    const logData = (data) => fs.appendFileSync(logPath, `[${new Date().toISOString()}] ${data}\n`);
 
     const { 
         name, goal, currentWeight, weightChange, daysCount, recentWeights, dietPlan, workoutPlan
     } = context;
 
-    // OPTIMIZATION: Truncate history to avoid massive token payloads which slow down the AI
+    logData(`Starting AI request for: ${name}. GeminiKey: ${!!geminiKey}, ORKey: ${!!openRouterKey}`);
+
+    // OPTIMIZATION: Context Truncation
     const weightHistoryStr = (recentWeights || []).slice(-5).map(w => `${new Date(w.timestamp).toLocaleDateString()}: ${w.value}kg`).join(', ');
-    
-    // Simplifed diet summary instead of full JSON dump
     const dietSummary = dietPlan && dietPlan.meals ? `Logged ${dietPlan.meals.length} meals today` : 'No meals logged yet';
 
     const systemPrompt = `You are the FitformaX AI Coach. Tone: supportive, firm, professional.
@@ -27,35 +34,71 @@ RULES:
 - Use Indian dietary references.
 - End with a unique "Coach Tip".`;
 
-    try {
-        console.log('[AI Service] Thinking with Mistral (via OpenRouter)...');
-        const response = await fetch(`${baseURL}/chat/completions`, {
-            method: 'POST',
-            headers: { 
-                'Authorization': `Bearer ${apiKey}`,
-                'Content-Type': 'application/json',
-                'HTTP-Referer': 'https://fitformax.app',
-                'X-Title': 'FitformaX'
-            },
-            body: JSON.stringify({
-                model: 'mistralai/mistral-7b-instruct-v0.1',
-                messages: [{ role: 'user', content: `${systemPrompt}\n\nUser Question: ${message}` }],
-                max_tokens: 350 // OPTIMIZATION: Force a quick, concise response
-            })
-        });
+    const fullPrompt = `${systemPrompt}\n\nUser Question: ${message}`;
 
-        if (!response.ok) {
-            const errData = await response.json();
-            throw new Error(errData.error?.message || `OpenRouter Error: ${response.status}`);
+    // --- STEP 1: Attempt Gemini (Direct API Fetch - Most Robust) ---
+    if (geminiKey) {
+        logData('Attempting Gemini 1.5 Flash...');
+        try {
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiKey}`;
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contents: [{ parts: [{ text: fullPrompt }] }],
+                    generationConfig: {
+                        maxOutputTokens: 350,
+                        temperature: 0.7
+                    }
+                })
+            });
+
+            const data = await response.json();
+            if (response.ok && data.candidates && data.candidates[0]?.content?.parts[0]?.text) {
+                logData('Gemini Success!');
+                return data.candidates[0].content.parts[0].text;
+            } else {
+                logData(`Gemini API Error: ${JSON.stringify(data)}`);
+            }
+        } catch (err) {
+            logData(`Gemini Network Failure: ${err.message}`);
         }
-
-        const data = await response.json();
-        if (!data.choices || !data.choices[0]) throw new Error('No response from AI');
-        return data.choices[0].message.content;
-    } catch (error) {
-        console.error('[AI Service] AI Failed:', error.message);
-        throw new Error(`AI Coach Error: ${error.message}. Please verify your OpenRouter key in .env`);
     }
+
+    // --- STEP 2: Final Fallback to OpenRouter ---
+    if (openRouterKey) {
+        logData('Attempting OpenRouter Fallback...');
+        try {
+            const response = await fetch(`${openRouterBaseURL}/chat/completions`, {
+                method: 'POST',
+                headers: { 
+                    'Authorization': `Bearer ${openRouterKey}`,
+                    'Content-Type': 'application/json',
+                    'HTTP-Referer': 'https://fitformax.app',
+                    'X-Title': 'FitformaX'
+                },
+                body: JSON.stringify({
+                    model: 'mistralai/mistral-7b-instruct-v0.1',
+                    messages: [{ role: 'user', content: fullPrompt }],
+                    max_tokens: 350
+                })
+            });
+
+            const data = await response.json();
+            if (response.ok && data.choices && data.choices[0]) {
+                logData('OpenRouter Success!');
+                return data.choices[0].message.content;
+            } else {
+                logData(`OpenRouter API Error: ${JSON.stringify(data)}`);
+            }
+        } catch (err) {
+            logData(`OpenRouter Network Failure: ${err.message}`);
+        }
+    }
+
+    // --- STEP 3: Fallback Mock response (to prevent white error screens for user) ---
+    logData('FATAL: Both providers failed.');
+    return `${name || 'Friend'}, I'm currently having a small technical glitch with my satellite connection. Keep crushing your ${goal} goals and check back in a few minutes! Coach Tip: Consistency is better than intensity.`;
 };
 
 module.exports = { getCoachResponse };

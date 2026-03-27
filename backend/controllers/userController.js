@@ -12,7 +12,11 @@ const getUserProfile = async (req, res) => {
             age: user.age,
             height: user.height,
             weight: user.weight,
-            goal: user.goal
+            goal: user.goal,
+            gender: user.gender,
+            bmi: user.bmi,
+            bmiCategory: user.bmiCategory,
+            role: user.role
         });
     } else {
         res.status(404).json({ message: 'User not found' });
@@ -30,6 +34,9 @@ const updateUserProfile = async (req, res) => {
         user.height = req.body.height || user.height;
         user.weight = req.body.weight || user.weight;
         user.goal = req.body.goal || user.goal;
+        user.gender = req.body.gender || user.gender;
+        user.bmi = req.body.bmi || user.bmi;
+        user.bmiCategory = req.body.bmiCategory || user.bmiCategory;
 
         if (req.body.password) {
             user.password = req.body.password;
@@ -40,6 +47,14 @@ const updateUserProfile = async (req, res) => {
             _id: updatedUser._id,
             name: updatedUser.name,
             email: updatedUser.email,
+            age: updatedUser.age,
+            height: updatedUser.height,
+            weight: updatedUser.weight,
+            goal: updatedUser.goal,
+            gender: updatedUser.gender,
+            bmi: updatedUser.bmi,
+            bmiCategory: updatedUser.bmiCategory,
+            role: updatedUser.role,
             token: req.headers.authorization.split(' ')[1] // Keep existing token
         });
     } else {
