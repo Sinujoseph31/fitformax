@@ -217,6 +217,38 @@
   text-transform: uppercase;
 }
 
+.ex-actions {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 2rem;
+}
+
+.ai-coach-trigger {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px;
+  border-radius: 12px;
+  background: rgba(255, 59, 48, 0.05) !important;
+  border: 1px solid rgba(255, 59, 48, 0.2) !important;
+  color: #ff3b30 !important;
+  font-weight: 800;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.ai-coach-trigger:hover {
+  background: rgba(255, 59, 48, 0.1) !important;
+  border-color: #ff3b30 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(255, 59, 48, 0.1);
+}
+
 .sets-table {
   width: 100%;
 }

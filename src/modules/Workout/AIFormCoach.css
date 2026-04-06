@@ -1,0 +1,179 @@
+.ai-coach-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #000;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+}
+
+.coach-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.coach-header {
+  height: 60px;
+  background: rgba(14, 14, 18, 0.9);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.coach-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #fff;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.pulse-icon {
+  color: #ff3b30;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.1); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  padding: 10px;
+}
+
+.video-viewport {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  background: #0a0a0c;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.render-canvas {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scaleX(-1); /* Mirror view */
+}
+
+.hidden-video {
+  display: none;
+}
+
+.hud-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 24px;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.hud-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  pointer-events: auto;
+}
+
+.stat-box {
+  background: rgba(20, 20, 25, 0.7);
+  backdrop-filter: blur(12px);
+  padding: 12px 20px;
+  border-radius: 12px;
+  border-left: 4px solid #ff3b30;
+  width: fit-content;
+  min-width: 120px;
+  animation: slideInRight 0.5s ease-out;
+}
+
+.feedback-glow {
+  border-left-color: #34c759;
+  box-shadow: 0 0 20px rgba(52, 199, 89, 0.2);
+  min-width: 200px;
+}
+
+.stat-label {
+  display: block;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.stat-value {
+  display: block;
+  font-size: 28px;
+  font-weight: 800;
+  color: #fff;
+}
+
+.feedback-text {
+  font-size: 18px;
+  color: #34c759;
+}
+
+.audio-toggle {
+  pointer-events: auto;
+  align-self: flex-end;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: white;
+  padding: 12px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.coach-instructions {
+  padding: 20px;
+  background: #0e0e12;
+  color: rgba(255, 255, 255, 0.7);
+  text-align: center;
+  font-size: 14px;
+}
+
+.model-loader {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  color: white;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(255, 255, 255, 0.1);
+  border-left-color: #ff3b30;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(-30px); }
+  to { opacity: 1; transform: translateX(0); }
+}

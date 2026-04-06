@@ -10,7 +10,8 @@ import {
   ChevronRight, 
   X, 
   Search,
-  Check
+  Check,
+  Activity
 } from 'lucide-react';
 import Button from '../../components/Button';
 import Card from '../../components/Card';
@@ -18,6 +19,7 @@ import Input from '../../components/Input';
 import { useApp } from '../../context/AppContext';
 import HapticService from '../../services/HapticService';
 import { EXERCISES, MUSCLE_GROUPS } from '../../data/exercises';
+import AIFormCoach from './AIFormCoach';
 import './WorkoutSession.css';
 
 export default function WorkoutSession({ onFinish }) {
@@ -28,6 +30,7 @@ export default function WorkoutSession({ onFinish }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [startTime] = useState(new Date());
+  const [activeCoachExercise, setActiveCoachExercise] = useState(null);
   
   // Timer State
   const [isTimerRunning, setIsTimerRunning] = useState(false);
@@ -233,6 +236,15 @@ export default function WorkoutSession({ onFinish }) {
                       </button>
                     </div>
 
+                    <div className="ex-actions">
+                      <button 
+                        className="ai-coach-trigger glass"
+                        onClick={() => setActiveCoachExercise(ex)}
+                      >
+                        <Activity size={14} /> <span>AI Form Coach</span>
+                      </button>
+                    </div>
+
                     <div className="sets-table">
                       <div className="table-row labels">
                         <span>SET</span>
@@ -347,6 +359,21 @@ export default function WorkoutSession({ onFinish }) {
                 ))}
               </div>
             </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {activeCoachExercise && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <AIFormCoach 
+              exercise={activeCoachExercise} 
+              onClose={() => setActiveCoachExercise(null)} 
+            />
           </motion.div>
         )}
       </AnimatePresence>
