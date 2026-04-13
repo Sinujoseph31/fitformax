@@ -19,8 +19,9 @@ const Navbar = () => {
   const navItems = [
     { path: '/', icon: <LayoutDashboard size={24} />, label: 'Dashboard' },
     { path: '/workout', icon: <Dumbbell size={24} />, label: 'Workout' },
-    { path: '/exercises', icon: <BookOpen size={24} />, label: 'Library' },
-    { path: '/meal', icon: <Utensils size={24} />, label: 'Meals' },
+    { path: '/exercises', icon: <BookOpen size={24} />, label: 'Workout Library' },
+    { path: '/meal', icon: <Utensils size={24} />, label: 'Meals Tracker' },
+    { path: '/diets', icon: <BookOpen size={24} />, label: 'Diet Library' },
     { path: '/track', icon: <TrendingUp size={24} />, label: 'Progress' },
     { path: '/composition', icon: <User size={24} />, label: 'Metrics' },
     { path: '/coach', icon: <MessageSquare size={24} />, label: 'AI Coach' },

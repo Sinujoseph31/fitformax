@@ -765,3 +765,431 @@
 
 .spin { animation: spin 1s linear infinite; }
 @keyframes spin { to { transform: translateY(-50%) rotate(360deg); } }
+
+/* ========================
+   Tabs Navigation
+   ======================== */
+
+.diet-tabs-nav {
+  display: flex;
+  background: rgba(255,255,255,0.05);
+  border-radius: 12px;
+  padding: 4px;
+  margin-bottom: 1rem;
+}
+
+.diet-tab {
+  flex: 1;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  color: rgba(255,255,255,0.5);
+  font-weight: 700;
+  font-size: 0.9rem;
+  padding: 10px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.diet-tab.active {
+  background: #00f5a0;
+  color: #000;
+  box-shadow: 0 4px 15px rgba(0, 245, 160, 0.2);
+}
+
+.diet-tab-content {
+  position: relative;
+}
+
+/* ========================
+   Diet Discovery Wizard
+   ======================== */
+
+.diet-discovery {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 1rem 0;
+}
+
+.wizard-progress {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.progress-track {
+  width: 100%;
+  height: 4px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: #00f5a0;
+  border-radius: 4px;
+}
+
+.wizard-progress span {
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.5);
+  font-weight: 700;
+}
+
+.wizard-question-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 1.5rem;
+}
+
+.icon-wrap {
+  width: 48px;
+  height: 48px;
+  background: rgba(0, 245, 160, 0.1);
+  color: #00f5a0;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wizard-question-header h2 {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  color: #fff;
+  margin: 0;
+}
+
+.wizard-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.wizard-option {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 16px;
+  padding: 1.25rem 1.5rem;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.3s;
+}
+
+.wizard-option:hover {
+  background: rgba(255,255,255,0.08);
+  transform: translateY(-2px);
+}
+
+.wizard-option.selected {
+  background: rgba(0, 245, 160, 0.1);
+  border-color: #00f5a0;
+}
+
+.wizard-option.selected .opt-indicator {
+  background: #00f5a0;
+  border-color: #00f5a0;
+}
+
+.opt-left h4 {
+  margin: 0 0 4px;
+  font-size: 1.05rem;
+  color: #fff;
+}
+
+.opt-left p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.6);
+}
+
+.opt-indicator {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.3);
+  transition: all 0.3s;
+}
+
+.wizard-footer {
+  display: flex;
+  justify-content: space-between;
+}
+
+.btn-back {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.5);
+  font-weight: 700;
+  cursor: pointer;
+}
+.btn-back:hover { color: #fff; }
+
+/* ========================
+   Diet Plan Dashboard Viewer
+   ======================== */
+
+.diet-plan-viewer {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.active-plan-header {
+  padding: 2rem;
+  text-align: left;
+  position: relative;
+  overflow: hidden;
+}
+
+.active-plan-header.ai-glow {
+  background: linear-gradient(135deg, rgba(82, 0, 255, 0.15) 0%, rgba(255, 0, 153, 0.05) 100%) !important;
+  border: 1px solid rgba(139, 92, 246, 0.4) !important;
+}
+
+.icon-ai {
+  color: #8b5cf6;
+}
+
+.badge-ai {
+  background: #8b5cf6;
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 12px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.ap-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.ap-title h2 {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  margin: 0;
+}
+
+.ap-desc {
+  color: rgba(255,255,255,0.7);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+.btn-retake {
+  background: rgba(255,255,255,0.1);
+  border: none;
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.8rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-retake:hover { background: rgba(255,255,255,0.2); }
+
+.plan-dashboard-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.plan-dashboard-grid h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 1.25rem;
+  font-size: 1.1rem;
+}
+
+.plan-macros-card { padding: 1.5rem !important; }
+.plan-gamification { padding: 1.5rem !important; }
+.plan-habits-card { padding: 1.5rem !important; }
+
+.plan-rings {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 1rem;
+}
+
+.target-notes {
+  background: rgba(0, 245, 160, 0.05);
+  border-left: 3px solid #00f5a0;
+  padding: 12px;
+  border-radius: 4px;
+}
+
+.target-notes p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #00f5a0;
+  opacity: 0.9;
+}
+
+.score-display {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+.score-val {
+  font-family: var(--font-display);
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: #fbbf24;
+}
+.score-lvl {
+  background: rgba(251, 191, 36, 0.2);
+  color: #fbbf24;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+.score-desc {
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.5);
+}
+
+.habit-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.habit-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: rgba(255,255,255,0.03);
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: #fff;
+}
+
+.habit-icon {
+  color: #8b5cf6;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* ========================
+   Discovery Result Styles
+   ======================== */
+.discovery-result {
+  display: flex;
+  justify-content: center;
+}
+
+.plan-result-card {
+  background: #111214;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 20px;
+  padding: 2rem;
+  width: 100%;
+}
+
+.plan-result-card.ai-glow {
+  background: linear-gradient(135deg, rgba(82, 0, 255, 0.1) 0%, rgba(17, 18, 20, 1) 50%);
+  border-color: rgba(139, 92, 246, 0.5);
+  box-shadow: 0 10px 40px rgba(139, 92, 246, 0.15);
+}
+
+.icon-success { color: #00f5a0; margin-bottom: 12px; }
+
+.result-header { text-align: center; margin-bottom: 2rem; }
+.result-header h2 { font-family: var(--font-display); font-size: 2rem; margin: 0 0 10px; }
+.result-header p { color: rgba(255,255,255,0.7); font-size: 0.95rem; }
+
+.result-macros-preview { margin-bottom: 2rem; }
+.macro-bar-label { font-size: 0.8rem; font-weight: 700; color: rgba(255,255,255,0.5); margin-bottom: 8px; text-transform: uppercase; }
+.macro-bar-visual {
+  display: flex;
+  height: 24px;
+  border-radius: 12px;
+  overflow: hidden;
+}
+.macro-bar-visual div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: #000;
+}
+
+.result-rules h4 { margin: 0 0 10px; font-size: 1.1rem; }
+.result-rules ul { padding-left: 20px; color: rgba(255,255,255,0.8); font-size: 0.9rem; line-height: 1.6; }
+.result-rules li { margin-bottom: 8px; }
+
+.result-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 2rem;
+}
+
+.btn-enhance-ai {
+  background: linear-gradient(90deg, #8b5cf6, #d946ef);
+  color: #fff;
+  border: none;
+  padding: 16px;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.2s;
+}
+
+.btn-enhance-ai:hover { opacity: 0.9; transform: scale(1.02); }
+.btn-enhance-ai:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+.btn-save-plan {
+  background: #00f5a0;
+  color: #000;
+  border: none;
+  padding: 16px;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+.btn-save-plan:hover { background: #00e090; }
+
+.spinner-small {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}

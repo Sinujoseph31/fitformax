@@ -9,6 +9,7 @@ import ExerciseLibrary from './modules/Workout/ExerciseLibrary';
 import Profile from './modules/User/Profile';
 import Coach from './modules/Coach/Coach';
 import Diet from './modules/Diet/Diet';
+import DietLibrary from './modules/DietLibrary/DietLibrary';
 import BodyMetricsSetup from './modules/User/BodyMetricsSetup';
 import BodyComposition from './modules/User/BodyComposition';
 import AdminPanel from './modules/Admin/AdminPanel';
@@ -54,6 +55,7 @@ function App() {
         <Route path="/composition" element={<BodyComposition />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/meal" element={<Diet />} />
+        <Route path="/diets" element={<DietLibrary />} />
         <Route path="/coach" element={<Coach />} />
         {userProfile?.role === 'admin' && <Route path="/admin" element={<AdminPanel />} />}
         <Route path="/settings" element={<div>Settings Component (TBD)</div>} />

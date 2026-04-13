@@ -180,7 +180,7 @@ const AIFormCoach = ({ exercise, onClose }) => {
         </div>
 
         <div className="video-viewport">
-          <video ref={videoRef} className="hidden-video" playsInline muted />
+          <video ref={videoRef} className="hidden-video" autoPlay playsInline muted />
           <canvas ref={canvasRef} className="render-canvas" width="640" height="480" />
           
           {isModelLoading && (
