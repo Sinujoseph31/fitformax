@@ -23,7 +23,9 @@ export const apiCall = async (endpoint, method = 'GET', body = null, isFormData 
     }
 
     try {
-        const response = await fetch(`${API_URL}${endpoint}`, config);
+        const fullUrl = `${API_URL}${endpoint}`;
+        console.log(`[API] Fetching: ${method} ${fullUrl}`);
+        const response = await fetch(fullUrl, config);
         
         let data = {};
         const contentType = response.headers.get("content-type");
