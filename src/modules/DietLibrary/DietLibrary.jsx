@@ -17,6 +17,16 @@ export default function DietLibrary() {
   const [isBuilderOpen, setIsBuilderOpen] = useState(false);
   const [isAIOpen, setIsAIOpen] = useState(false);
 
+  // Lock body scroll to keep popup perfectly targeted in view
+  useEffect(() => {
+    if (selectedDiet || isBuilderOpen || isAIOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => { document.body.style.overflow = 'unset'; };
+  }, [selectedDiet, isBuilderOpen, isAIOpen]);
+
   // Load custom diets from local storage on mount
   useEffect(() => {
     const saved = localStorage.getItem('fx_custom_diets');
@@ -29,7 +39,7 @@ export default function DietLibrary() {
     }
   }, []);
 
-  const allDiets = [...PREDEFINED_DIETS, ...customDiets];
+  const allDiets = [...customDiets, ...PREDEFINED_DIETS];
 
   const filteredDiets = allDiets.filter(diet => {
     const term = searchTerm.toLowerCase().trim();
