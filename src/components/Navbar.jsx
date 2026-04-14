@@ -12,14 +12,21 @@ import {
   Utensils,
   Shield,
   Settings,
-  X
+  X,
+  LogOut
 } from 'lucide-react';
 import './Navbar.css';
 
 const Navbar = () => {
-  const { userProfile } = useApp();
+  const { userProfile, logout } = useApp();
   const location = useLocation();
   const [showMore, setShowMore] = React.useState(false);
+
+  const handleLogout = () => {
+    if (window.confirm('Are you sure you want to log out?')) {
+      logout();
+    }
+  };
 
   const allItems = [
     { path: '/', icon: <LayoutDashboard size={24} />, label: 'Dashboard' },
@@ -96,6 +103,14 @@ const Navbar = () => {
                       <span>{item.label}</span>
                     </NavLink>
                   ))}
+                  
+                  {/* Logout button in the grid for mobile */}
+                  <button className="more-menu-item logout-btn" onClick={handleLogout}>
+                    <div className="item-icon-circle logout-icon">
+                      <LogOut size={24} />
+                    </div>
+                    <span>Log Out</span>
+                  </button>
                 </div>
               </motion.div>
             </>
@@ -127,6 +142,10 @@ const Navbar = () => {
             <Settings size={24} />
             <span>Settings</span>
           </NavLink>
+          <button className="sidebar-item logout-link" onClick={handleLogout} style={{ width: '100%', background: 'none', border: 'none', cursor: 'pointer' }}>
+            <LogOut size={24} />
+            <span>Log Out</span>
+          </button>
         </div>
       </aside>
     </>

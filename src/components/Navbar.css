@@ -50,8 +50,8 @@ button.nav-item {
 .more-menu-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(4px);
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(10px);
   z-index: 1000;
 }
 
@@ -60,7 +60,7 @@ button.nav-item {
   bottom: 0;
   left: 0;
   right: 0;
-  background: var(--bg-card);
+  background: var(--bg-color);
   border-top: 1px solid var(--border);
   border-radius: var(--radius-xl) var(--radius-xl) 0 0;
   padding: 2rem;
@@ -104,6 +104,10 @@ button.nav-item {
   gap: 0.75rem;
   text-decoration: none;
   color: var(--text-muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
 }
 
 .item-icon-circle {
@@ -127,6 +131,21 @@ button.nav-item {
 .more-menu-item span {
   font-size: 0.75rem;
   font-weight: 600;
+}
+
+/* Logout specific styles */
+.logout-icon {
+  color: #ff6b6b !important;
+}
+
+.logout-btn:hover .logout-icon {
+  background: rgba(255, 107, 107, 0.1) !important;
+  border-color: #ff6b6b !important;
+}
+
+.logout-link:hover {
+  color: #ff6b6b !important;
+  background: rgba(255, 107, 107, 0.05) !important;
 }
 
 /* Desktop Sidebar */

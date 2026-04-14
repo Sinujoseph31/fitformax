@@ -13,6 +13,7 @@ const BodyMetricsSetup = () => {
     const [weight, setWeight] = useState(userProfile?.weight || '');
     const [bmi, setBmi] = useState(null);
     const [bmiCategory, setBmiCategory] = useState('');
+    const [goal, setGoal] = useState(userProfile?.goal || '');
 
     const calculateBMI = () => {
         if (!height || !weight || !age) return;
@@ -38,7 +39,8 @@ const BodyMetricsSetup = () => {
                 height: Number(height),
                 weight: Number(weight),
                 bmi: Number(bmi),
-                bmiCategory
+                bmiCategory,
+                goal
             });
             // App.jsx will automatically re-evaluate the redirect once the profile updates
         } catch (err) {
@@ -73,6 +75,12 @@ const BodyMetricsSetup = () => {
                         </div>
                         <span className="progress-label">Result</span>
                     </div>
+                    <div className={`progress-step-item ${step >= 4 ? 'active' : ''}`}>
+                        <div className="progress-dot-wrapper">
+                            <div className="progress-dot" />
+                        </div>
+                        <span className="progress-label">Goal</span>
+                    </div>
                 </div>
 
                 <AnimatePresence mode="wait">
@@ -90,14 +98,18 @@ const BodyMetricsSetup = () => {
                                     className={`gender-card ${gender === 'male' ? 'selected' : ''}`}
                                     onClick={() => setGender('male')}
                                 >
-                                    <div className="gender-icon male">♂</div>
+                                    <div className="gender-icon male">
+                                        <img src="/male_avatar.png" alt="Male" className="avatar-img" />
+                                    </div>
                                     <span>Male</span>
                                 </div>
                                 <div 
                                     className={`gender-card ${gender === 'female' ? 'selected' : ''}`}
                                     onClick={() => setGender('female')}
                                 >
-                                    <div className="gender-icon female">♀</div>
+                                    <div className="gender-icon female">
+                                        <img src="/female_avatar.png" alt="Female" className="avatar-img" />
+                                    </div>
                                     <span>Female</span>
                                 </div>
                             </div>
@@ -194,9 +206,56 @@ const BodyMetricsSetup = () => {
                                  <p>Your ideal BMI range is 18.5 - 25.0. This score helps us tailor your workout intensity and meal plans.</p>
                              </div>
 
-                            <button className="btn-premium primary pulse" onClick={handleSave}>
-                                Go to Dashboard
-                            </button>
+                             <div className="step-actions">
+                                <button className="btn-premium secondary" onClick={() => setStep(2)}>Back</button>
+                                <button className="btn-premium primary" onClick={() => setStep(4)}>
+                                    Define Goal <ArrowRight size={18} />
+                                </button>
+                             </div>
+                        </motion.div>
+                    )}
+
+                    {step === 4 && (
+                        <motion.div 
+                            key="step4"
+                            initial={{ x: 50, opacity: 0 }}
+                            animate={{ x: 0, opacity: 1 }}
+                            exit={{ x: -50, opacity: 0 }}
+                            className="setup-step"
+                        >
+                            <h3>What is your goal?</h3>
+                            <p className="step-subtitle">This helps us personalize your workouts.</p>
+                            
+                            <div className="goal-grid-onboarding">
+                                {[
+                                    { id: 'Fat Loss', icon: '🔥', desc: 'Burn fat, stay lean' },
+                                    { id: 'Muscle Gain', icon: '💪', desc: 'Build size & strength' },
+                                    { id: 'Performance', icon: '⚡', desc: 'Agility & speed' }
+                                ].map(g => (
+                                    <div 
+                                        key={g.id} 
+                                        className={`goal-card-setup ${goal === g.id ? 'active' : ''}`}
+                                        onClick={() => setGoal(g.id)}
+                                    >
+                                        <span className="goal-icon-setup">{g.icon}</span>
+                                        <div className="goal-txt-setup">
+                                            <h4>{g.id}</h4>
+                                            <p>{g.desc}</p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                            
+                            <div className="step-actions">
+                                <button className="btn-premium secondary" onClick={() => setStep(3)}>Back</button>
+                                <button 
+                                    className="btn-premium primary pulse"
+                                    disabled={!goal}
+                                    onClick={handleSave}
+                                >
+                                    Finish Setup <div className="fx-spinner-small" />
+                                </button>
+                            </div>
                         </motion.div>
                     )}
                 </AnimatePresence>

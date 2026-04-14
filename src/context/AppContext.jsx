@@ -67,13 +67,6 @@ export function AppProvider({ children }) {
         password: userData.password
       });
       localStorage.setItem('fx_token', data.token);
-      // Immediately update profile with onboarding details
-      await apiCall('/user/profile', 'PUT', {
-        age: userData.age,
-        height: userData.height,
-        weight: userData.weight,
-        goal: userData.goal
-      });
       setIsAuthenticated(true);
     } catch (err) {
       setError(err.message);
