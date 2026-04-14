@@ -13,7 +13,11 @@ import {
   Dumbbell as WorkoutIcon,
   ChevronRight,
   Info,
-  Play
+  Play,
+  Droplets,
+  Flame,
+  Clock,
+  Layers
 } from 'lucide-react';
 import Card from '../../components/Card';
 import StatCard from '../../components/StatCard';
@@ -29,8 +33,18 @@ export default function Dashboard() {
   const [insights, setInsights] = useState({ recommendation: null, diet: null, workout: null });
   const [loadingInsights, setLoadingInsights] = useState(true);
   const [isWorkoutActive, setIsWorkoutActive] = useState(false);
+  const [waterIntake, setWaterIntake] = useState(0);
+
+  // Get localized greeting
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? 'Good Morning' : hour < 18 ? 'Good Afternoon' : 'Good Evening';
 
   useEffect(() => {
+    // Load water from local storage for today
+    const today = new Date().toDateString();
+    const saved = localStorage.getItem(`water_${today}`);
+    if (saved) setWaterIntake(parseInt(saved));
+
     const fetchInsights = async () => {
       try {
         const [recRes, dietRes, workRes] = await Promise.all([
@@ -48,207 +62,190 @@ export default function Dashboard() {
     if (userProfile?.goal) fetchInsights();
   }, [userProfile?.goal, weights]);
 
+  const updateWater = (amount) => {
+    const newTotal = Math.max(0, waterIntake + amount);
+    setWaterIntake(newTotal);
+    localStorage.setItem(`water_${new Date().toDateString()}`, newTotal);
+  };
+
   const latestWeight = weights.length > 0 ? weights[0].value : (userProfile?.weight || '--');
-  
-  // Calculate a simple trend for demonstration
   const weightTrend = weights.length > 1 ? (((weights[1].value - weights[0].value) / weights[1].value) * 100).toFixed(1) : null;
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: { 
-      opacity: 1,
-      transition: { staggerChildren: 0.1 }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: { y: 0, opacity: 1 }
-  };
 
   return (
     <motion.div 
       className="dashboard-container"
-      variants={containerVariants}
-      initial="hidden"
-      animate="visible"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
     >
-      <header className="dashboard-header">
-        <div className="header-text">
-          <h1 className="text-gradient">Hello, {userProfile?.name?.split(' ')[0] || 'Athlete'}</h1>
-          <p>Here's your progress overview for today.</p>
+      <header className="dashboard-header-premium">
+        <div className="header-main">
+          <span className="greeting-label">{greeting}</span>
+          <h1 className="user-name-title">{userProfile?.name?.split(' ')[0] || 'Athlete'}</h1>
         </div>
-        <div className="header-actions mobile-only">
-          <button className="icon-btn-glass" onClick={() => navigate('/profile')}>
-            <div className="avatar-placeholder" />
-          </button>
+        <div className="daily-brief-box glass">
+          <Zap size={16} className="text-primary" />
+          <p>You've completed 3 workouts this week. {userProfile?.goal === 'Muscle Gain' ? 'Keep protein high!' : 'Stay consistent!'}</p>
         </div>
       </header>
 
-      <div className="dashboard-grid">
-        {/* Quick Stats */}
-        <section className="stats-row">
-          <StatCard 
-            label="Weight" 
-            value={latestWeight} 
-            unit="kg" 
-            icon={<TrendingUp size={20} />} 
-            trend={weightTrend ? -weightTrend : null} 
-            highlight
-          />
-          <StatCard 
-            label="Goal" 
-            value={userProfile?.goal || 'Set Goal'} 
-            unit="" 
-            icon={<Target size={20} />} 
-          />
-          <StatCard 
-            label="Photos" 
-            value={photos.length} 
-            unit="Saved" 
-            icon={<ImageIcon size={20} />} 
-          />
-        </section>
+      <div className="dashboard-layout-grid">
+        {/* Main Column */}
+        <div className="dashboard-main-col">
+          {/* Daily Progress Row */}
+          <section className="progress-highlights-grid">
+            <Card className="calories-card glass">
+              <div className="card-top">
+                <Flame size={20} className="text-orange" />
+                <span>Daily Calories</span>
+              </div>
+              <div className="cal-large-val">1,840 <span>/ 2,400</span></div>
+              <div className="progress-bar-thin">
+                <div className="progress-fill" style={{ width: '76%' }}></div>
+              </div>
+              <div className="macro-mini-row">
+                <div className="m-item">P: 140g</div>
+                <div className="m-item">C: 220g</div>
+                <div className="m-item">F: 65g</div>
+              </div>
+            </Card>
 
-        {/* Body Composition Summary */}
-        <section className="stats-row" style={{ marginTop: '-1rem', marginBottom: '1rem' }}>
-          <StatCard 
-            label="BMI" 
-            value={compositions?.[0]?.bmi || userProfile?.bmi || '--'} 
-            unit={userProfile?.bmiCategory || ''} 
-            icon={<Activity size={20} />} 
-          />
-          <StatCard 
-            label="Body Fat" 
-            value={compositions?.[0]?.bodyFatPercent || '--'} 
-            unit="%" 
-            icon={<Activity size={20} />} 
-          />
-          <StatCard 
-            label="Muscle" 
-            value={compositions?.[0]?.skeletalMuscle || '--'} 
-            unit="kg" 
-            icon={<Activity size={20} />} 
-          />
-        </section>
+            <Card className="water-card glass">
+              <div className="card-top">
+                <Droplets size={20} className="text-blue" />
+                <span>Hydration</span>
+              </div>
+              <div className="water-progress-circle">
+                <span className="water-val">{(waterIntake / 1000).toFixed(1)}L</span>
+                <span className="water-target">/ 4L</span>
+              </div>
+              <div className="water-controls">
+                <button onClick={() => updateWater(250)}>+250ml</button>
+                <button onClick={() => updateWater(500)}>+500ml</button>
+              </div>
+            </Card>
+          </section>
 
-        {/* Action Bar */}
-        <section className="action-bar">
-          <Button highlight onClick={() => setIsWorkoutActive(true)} className="action-btn start-btn">
-            <Play size={20} fill="currentColor" />
-            <span>Start Workout</span>
-          </Button>
-          <Button onClick={() => navigate('/composition')} className="action-btn">
-            <Plus size={20} />
-            <span>Log Weight</span>
-          </Button>
-          <Button variant="secondary" onClick={() => navigate('/composition')} className="action-btn">
-            <Camera size={20} />
-            <span>Add Photo</span>
-          </Button>
-        </section>
-
-        {/* Recent Workouts */}
-        {workouts.length > 0 && (
-          <motion.section variants={itemVariants} className="recent-workouts-section">
+          {/* Activity Section */}
+          <section className="dashboard-activity">
             <div className="section-header">
-              <h3>Recent Sessions</h3>
-              <button className="text-btn" onClick={() => navigate('/workout')}>View All</button>
+              <h3>Training Schedule</h3>
+              <button className="text-btn" onClick={() => navigate('/workout')}>Full Plan</button>
             </div>
-            <div className="workout-list-horizontal">
-              {workouts.slice(0, 3).map((w, i) => (
-                <Card key={w._id} className="mini-workout-card glass">
-                  <div className="mini-w-header">
-                    <span className="w-icon">⚡</span>
-                    <div className="w-info">
-                      <span className="w-name">{w.name}</span>
-                      <span className="w-date">{new Date(w.createdAt).toLocaleDateString([], { month: 'short', day: 'numeric' })}</span>
+            
+            <div className="schedule-preview">
+              {!loadingInsights && insights.workout ? (
+                Array.isArray(insights.workout.schedule) ? (
+                  insights.workout.schedule.slice(0, 3).map((day, i) => (
+                    <div key={i} className={`schedule-item ${i === 0 ? 'active' : ''}`}>
+                      <div className="sched-icon"><Clock size={16} /></div>
+                      <div className="sched-info">
+                        <span className="sched-day">{day.split(':')[0]}</span>
+                        <span className="sched-name">{day.split(':')[1] || 'Workout Session'}</span>
+                      </div>
+                      {i === 0 && <button className="start-btn-mini" onClick={() => setIsWorkoutActive(true)}>Start</button>}
                     </div>
+                  ))
+                ) : (
+                  <div className="schedule-item active">
+                    <div className="sched-icon"><Clock size={16} /></div>
+                    <div className="sched-info">
+                      <span className="sched-day">Today</span>
+                      <span className="sched-name">{insights.workout.focus}</span>
+                    </div>
+                    <button className="start-btn-mini" onClick={() => setIsWorkoutActive(true)}>Start</button>
                   </div>
-                  <div className="w-metrics">
-                    <span>{w.exercises.length} Exercises</span>
-                  </div>
-                </Card>
-              ))}
+                )
+              ) : (
+                <div className="skeleton-line" />
+              )}
             </div>
-          </motion.section>
-        )}
+          </section>
 
-        {/* AI Insight Highlight */}
-        <AnimatePresence>
-          {!loadingInsights && insights.recommendation && (
-            <motion.section 
-              variants={itemVariants}
-              className="insight-section"
-            >
-              <Card highlight className="insight-card">
-                <div className="insight-badge">
-                  <Zap size={14} fill="currentColor" />
-                  <span>AI INSIGHT</span>
-                </div>
-                
-                <div className="insight-header">
-                  <h3>{insights.recommendation.status}</h3>
-                  <div className="insight-trend">
-                    {insights.recommendation.trend === 'increasing' ? '↑' : insights.recommendation.trend === 'decreasing' ? '↓' : '→'}
-                    {Math.abs(insights.recommendation.diff).toFixed(1)} kg
-                  </div>
-                </div>
-
-                <p className="insight-message">{insights.recommendation.message}</p>
-
-                <div className="insight-action-box">
-                  <span className="action-label">Recommendation:</span>
-                  <p className="action-text">{insights.recommendation.action}</p>
-                </div>
-
-                <button className="insight-cta" onClick={() => navigate('/coach')}>
-                  Chat with Coach <ChevronRight size={16} />
-                </button>
-              </Card>
-            </motion.section>
-          )}
-        </AnimatePresence>
-
-        {/* Plan Overviews */}
-        <div className="plans-grid">
-          {!loadingInsights && insights.diet && (
-            <motion.section variants={itemVariants}>
-              <Card className="plan-card">
-                <div className="plan-header">
-                  <Utensils size={20} className="plan-icon" />
-                  <h3>Daily Nutrition</h3>
-                </div>
-                <div className="meal-list">
-                  <div className="meal-item"><span>Breakfast</span> <p>{insights.diet.breakfast}</p></div>
-                  <div className="meal-item"><span>Lunch</span> <p>{insights.diet.lunch}</p></div>
-                  <div className="meal-item"><span>Dinner</span> <p>{insights.diet.dinner}</p></div>
+          {/* AI Insights (Big Card) */}
+          <AnimatePresence>
+            {!loadingInsights && insights.recommendation && (
+              <Card highlight className="ai-brief-card">
+                <div className="ai-label">AI ASSISTANT</div>
+                <h4>Your Weight is {insights.recommendation.status}</h4>
+                <p>{insights.recommendation.message}</p>
+                <div className="ai-action-footer">
+                  <button onClick={() => navigate('/coach')}>Ask for Diet Plan <ChevronRight size={16} /></button>
                 </div>
               </Card>
-            </motion.section>
-          )}
+            )}
+          </AnimatePresence>
+        </div>
 
-          {!loadingInsights && insights.workout && (
-            <motion.section variants={itemVariants}>
-              <Card className="plan-card">
-                <div className="plan-header">
-                  <WorkoutIcon size={20} className="plan-icon" />
-                  <h3>Workout Plan</h3>
+        {/* Sidebar Column (Desktop) / Bottom Flow (Mobile) */}
+        <div className="dashboard-side-col">
+          <section className="stats-compact-grid">
+            <StatCard 
+              label="Weight" 
+              value={latestWeight} 
+              unit="kg" 
+              icon={<TrendingUp size={20} />} 
+              trend={weightTrend ? -weightTrend : null} 
+            />
+            <StatCard 
+              label="BMI" 
+              value={userProfile?.bmi || '--'} 
+              unit={userProfile?.bmiCategory || ''} 
+              icon={<Activity size={20} />} 
+            />
+          </section>
+
+          <section className="quick-action-list">
+            <h3>Quick Actions</h3>
+            <button className="qa-item" onClick={() => navigate('/composition')}>
+              <Camera size={18} /> Take Update Photo
+            </button>
+            <button className="qa-item" onClick={() => navigate('/meal')}>
+              <Utensils size={18} /> Log Meal
+            </button>
+            <button className="qa-item" onClick={() => setIsWorkoutActive(true)}>
+              <WorkoutIcon size={18} /> Next Workout
+            </button>
+          </section>
+
+          {workouts.length > 0 && (
+             <section className="recent-workouts-dashboard">
+                <div className="section-header">
+                  <h3>Recent</h3>
+                  <button className="text-btn" onClick={() => navigate('/workout')}>History</button>
                 </div>
-                <div className="workout-focus">
-                  <span className="focus-label">Focus:</span>
-                  <p className="focus-text text-gradient">{insights.workout.focus}</p>
-                </div>
-                <div className="workout-preview">
-                  {insights.workout.schedule.slice(0, 3).map((day, i) => (
-                    <div key={i} className="workout-day">{day}</div>
+                <div className="workout-stack">
+                  {workouts.slice(0, 2).map((w, i) => (
+                    <div key={i} className="mini-workout-item glass">
+                      <Layers size={14} className="text-accent" />
+                      <div className="mini-w-details">
+                        <span className="mini-w-name">{w.name}</span>
+                        <span className="mini-w-meta">{new Date(w.createdAt).toLocaleDateString()}</span>
+                      </div>
+                    </div>
                   ))}
-                  <button className="view-more-btn" onClick={() => navigate('/workout')}>
-                    View full schedule
-                  </button>
                 </div>
-              </Card>
-            </motion.section>
+             </section>
+          )}
+
+          {/* Recent Photos Mini Gallery */}
+          {photos.length > 0 && (
+            <section className="mini-gallery-section">
+              <div className="section-header">
+                <h3>Insights</h3>
+                <button className="text-btn" onClick={() => navigate('/composition')}>Track</button>
+              </div>
+              <div className="photo-strip">
+                {photos.slice(0, 4).map((p, i) => (
+                  <div key={i} className="mini-photo-sq glass" style={{
+                    backgroundImage: `url(${p.url})`, 
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center'
+                  }}>
+                    {!p.url && <ImageIcon size={16} className="text-dim" />}
+                  </div>
+                ))}
+              </div>
+            </section>
           )}
         </div>
       </div>
