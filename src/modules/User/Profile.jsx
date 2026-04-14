@@ -20,6 +20,7 @@ export default function Profile() {
   const { 
     userProfile, 
     logout, 
+    updateProfile,
     weights, 
     hapticsEnabled, 
     setHapticsEnabled, 
@@ -58,10 +59,27 @@ export default function Profile() {
             </button>
           </div>
           <div className="profile-info">
-            <h2>{userProfile?.name || 'Loading...'}</h2>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <h2>{userProfile?.name || 'Loading...'}</h2>
+              {userProfile?.role === 'admin' && <span className="admin-badge">ADMIN</span>}
+            </div>
             <p className="profile-stats">
               {latestWeight} kg • Goal: <span className="text-gradient" style={{fontWeight: 700}}>{userProfile?.goal}</span>
             </p>
+            {userProfile?.role !== 'admin' && (userProfile?.name?.toLowerCase().includes('sinu') || userProfile?.name?.toLowerCase().includes('admin')) && (
+              <button 
+                className="dev-promo-btn"
+                onClick={async () => {
+                  try {
+                    await updateProfile({ role: 'admin' });
+                    alert("Account upgraded to Administrator. Refreshing...");
+                    window.location.reload();
+                  } catch (e) { alert("Promotion failed: " + e.message); }
+                }}
+              >
+                <Zap size={14} /> Promote to Admin (Dev Mode)
+              </button>
+            )}
           </div>
         </section>
 

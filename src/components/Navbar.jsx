@@ -30,16 +30,16 @@ const Navbar = () => {
 
   const allItems = [
     { path: '/', icon: <LayoutDashboard size={24} />, label: 'Dashboard' },
+    ...(userProfile?.role === 'admin' ? [{ path: '/admin', icon: <Shield size={24} />, label: 'Governance' }] : []),
     { path: '/workout', icon: <Dumbbell size={24} />, label: 'Workout' },
     { path: '/meal', icon: <Utensils size={24} />, label: 'Diet' },
     { path: '/exercises', icon: <BookOpen size={24} />, label: 'Library' },
-    { path: '/coach', icon: <MessageSquare size={24} />, label: 'Coach' },
+    // { path: '/coach', icon: <MessageSquare size={24} />, label: 'Coach' },
     { path: '/diets', icon: <BookOpen size={24} />, label: 'Diets' },
     { path: '/workouts', icon: <Dumbbell size={24} />, label: 'Workouts' },
     { path: '/track', icon: <TrendingUp size={24} />, label: 'Progress' },
     { path: '/composition', icon: <User size={24} />, label: 'Metrics' },
     { path: '/profile', icon: <User size={24} />, label: 'Profile' },
-    ...(userProfile?.role === 'admin' ? [{ path: '/admin', icon: <Shield size={24} />, label: 'Admin' }] : []),
   ];
 
   // Mobile prioritized items

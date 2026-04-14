@@ -68,7 +68,7 @@ export default function DietAIGeneratorModal({ onClose, onSave }) {
             id: `local_ai_diet_${Date.now()}`,
             name: `${category} ${goal} Protocol`,
             desc: `Synthesized ${calories}kcal architecture focused on ${goal.toLowerCase()}. Bio-available source matching enabled.`,
-            category: 'AI Generated',
+            category: 'User Created',
             tags: ["Neural Optimized", category, goal],
             macros: {
               protein: isWeightLoss ? 40 : 30,

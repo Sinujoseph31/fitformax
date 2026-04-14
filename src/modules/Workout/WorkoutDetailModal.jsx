@@ -75,7 +75,7 @@ export default function WorkoutDetailModal({ plan, onClose, onDeploy, onDelete }
 
         <div className="dossier-footer">
            {onDelete && (
-             <button className="btn-delete-custom" onClick={() => onDelete(plan.id)}>
+             <button className="btn-delete-custom" onClick={() => onDelete(plan._id || plan.id)}>
                 <Trash2 size={20} />
              </button>
            )}

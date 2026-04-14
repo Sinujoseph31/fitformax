@@ -122,14 +122,14 @@ export default function DietDetailModal({ diet, onClose, onSetPlan, onDelete }) 
               </ul>
 
               <div className="dossier-actions-sticky">
-                <button className="btn-deploy-protocol" onClick={() => onSetPlan(diet)}>
-                  <Target size={20} /> Deploy Protocol
-                </button>
-                {diet.type === 'custom' && onDelete && (
-                  <button className="btn-delete-protocol-minimal" onClick={() => onDelete(diet.id)}>
+                {onDelete && (
+                  <button className="btn-delete-protocol-minimal" onClick={() => onDelete(diet._id || diet.id)}>
                     <Trash2 size={20} />
                   </button>
                 )}
+                <button className="btn-deploy-protocol" onClick={() => onSetPlan(diet)}>
+                  <Target size={20} /> Deploy Protocol
+                </button>
               </div>
             </div>
           </div>

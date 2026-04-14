@@ -77,6 +77,7 @@ export default function WorkoutAIGeneratorModal({ onSave, onClose }) {
       const generatedPlan = {
         id: `local_ai_${Date.now()}`,
         name: `${goal} Protocol: ${level}`,
+        category: 'User Created',
         desc: `High-precision ${level.toLowerCase()} routine optimized for ${goal.toLowerCase()}. ${customPrompt ? 'Directives analyzed & applied.' : ''}`,
         difficulty: level,
         duration: '12 Weeks',

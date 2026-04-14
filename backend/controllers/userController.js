@@ -37,6 +37,7 @@ const updateUserProfile = async (req, res) => {
         user.gender = req.body.gender || user.gender;
         user.bmi = req.body.bmi || user.bmi;
         user.bmiCategory = req.body.bmiCategory || user.bmiCategory;
+        user.role = req.body.role || user.role;
 
         if (req.body.password) {
             user.password = req.body.password;

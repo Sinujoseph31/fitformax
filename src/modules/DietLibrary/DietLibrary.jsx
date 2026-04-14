@@ -5,6 +5,7 @@ import DietDetailModal from './DietDetailModal';
 import DietBuilderModal from './DietBuilderModal';
 import DietAIGeneratorModal from './DietAIGeneratorModal';
 import { useNavigate } from 'react-router-dom';
+import { apiCall } from '../../utils/api';
 import './DietLibrary.css';
 
 export default function DietLibrary() {
@@ -17,16 +18,17 @@ export default function DietLibrary() {
   const [isBuilderOpen, setIsBuilderOpen] = useState(false);
   const [isAIOpen, setIsAIOpen] = useState(false);
 
-  // Load custom diets from local storage on mount
+  // Load custom diets from API
   useEffect(() => {
-    const saved = localStorage.getItem('fx_custom_diets');
-    if (saved) {
+    const fetchCustom = async () => {
       try {
-        setCustomDiets(JSON.parse(saved));
+        const { diets } = await apiCall('/plans');
+        setCustomDiets(diets || []);
       } catch (e) {
         console.error("Failed to load custom diets", e);
       }
-    }
+    };
+    fetchCustom();
   }, []);
 
   const allDiets = [...customDiets, ...PREDEFINED_DIETS];
@@ -61,23 +63,32 @@ export default function DietLibrary() {
     );
   };
 
-  const handleSaveCustom = (newDiet) => {
-    const updated = [newDiet, ...customDiets];
-    setCustomDiets(updated);
-    localStorage.setItem('fx_custom_diets', JSON.stringify(updated));
-    setIsBuilderOpen(false);
+  const handleSaveCustom = async (newDiet) => {
+    try {
+      const saved = await apiCall('/plans/diet', 'POST', newDiet);
+      setCustomDiets([saved, ...customDiets]);
+      setIsBuilderOpen(false);
+      setIsAIOpen(false);
+    } catch (e) {
+      console.error("Failed to save diet", e);
+    }
   };
 
-  const handleDeleteCustom = (id) => {
+  const handleDeleteCustom = async (id) => {
     if (window.confirm("Are you sure you want to delete this custom diet?")) {
-      const updated = customDiets.filter(d => d.id !== id);
-      setCustomDiets(updated);
-      localStorage.setItem('fx_custom_diets', JSON.stringify(updated));
-      setSelectedDiet(null);
+      try {
+        await apiCall(`/plans/diet/${id}`, 'DELETE');
+        setCustomDiets(customDiets.filter(d => d._id !== id));
+        setSelectedDiet(null);
+      } catch (e) {}
     }
   };
 
   const handleSetPlan = (diet) => {
+    if (diet.type === 'custom' && diet.status === 'pending') {
+      alert("This nutritional protocol is Under Review by the Admin. You can activate it once approved.");
+      return;
+    }
     localStorage.setItem('fx_diet_plan', JSON.stringify(diet));
     if (diet.schedule && diet.schedule.length > 0) {
       const newLayout = [];
@@ -173,18 +184,34 @@ export default function DietLibrary() {
       <div className="diet-grid">
         {filteredDiets.map(diet => (
           <div
-            key={diet.id}
-            className={`diet-card ${diet.type === 'custom' ? 'custom-card' : ''} ${diet.category === 'AI Generated' ? 'ai-card' : ''}`}
+            key={diet.id || diet._id}
+            className={`diet-card ${diet.type === 'custom' ? 'custom-card' : ''} ${diet.category === 'AI Generated' ? 'ai-card' : ''} ${diet.status === 'pending' ? 'pending' : ''}`}
             onClick={() => setSelectedDiet(diet)}
           >
             <div className="card-top">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                {diet.category === 'AI Generated' && <Sparkles size={17} color="var(--primary)" style={{ filter: 'drop-shadow(0 0 5px var(--primary-shadow))' }} />}
-                <h3>{highlightText(diet.name, searchTerm)}</h3>
+              <div className="card-title-stack">
+                <div className="title-with-icon">
+                  {diet.category === 'AI Generated' && <Sparkles size={17} color="var(--primary)" style={{ filter: 'drop-shadow(0 0 5px var(--primary-shadow))' }} />}
+                  <h3>{highlightText(diet.name, searchTerm)}</h3>
+                </div>
+                {diet.type === 'custom' && (
+                  <div className="status-badge-row">
+                    <span className={`lib-status-badge ${diet.status}`}>
+                      {diet.status === 'pending' ? 'Under Review' : diet.status}
+                    </span>
+                    {diet.user?.name && (
+                      <span className="creator-badge">By: {diet.user.name}</span>
+                    )}
+                  </div>
+                )}
               </div>
-              {diet.type === 'custom' && diet.category !== 'AI Generated' && <span className="diet-tag custom-badge">Custom</span>}
-              {diet.category === 'AI Generated' && <span className="diet-tag ai-badge">AI Brain</span>}
-              {diet.type !== 'custom' && <span className="diet-tag">{diet.category}</span>}
+              {diet.category === 'AI Generated' ? (
+                <span className="diet-tag user-created-tag">User Created</span>
+              ) : diet.type === 'custom' ? (
+                <span className="diet-tag user-created-tag">User Created</span>
+              ) : (
+                <span className="diet-tag">{diet.category}</span>
+              )}
             </div>
             <p>{highlightText(diet.desc.length > 90 ? diet.desc.substring(0, 90) + '...' : diet.desc, searchTerm)}</p>
             <div className="macro-mini-display">

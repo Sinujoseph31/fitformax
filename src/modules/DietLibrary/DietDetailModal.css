@@ -305,10 +305,16 @@
   line-height: 1.4;
 }
 
-.dossier-actions {
+.dossier-actions-sticky {
   margin-top: 3rem;
   display: flex;
   gap: 12px;
+  position: sticky;
+  bottom: 0;
+  background: #0a0b0d;
+  padding: 1rem 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  z-index: 10;
 }
 
 .btn-deploy-protocol {
@@ -337,13 +343,15 @@
   background: rgba(255, 60, 60, 0.1);
   color: #ff3c3c;
   border: 1px solid rgba(255, 60, 60, 0.2);
-  width: 60px;
+  width: 56px;
+  height: 56px;
   border-radius: 16px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.2s;
+  flex-shrink: 0;
 }
 
 .btn-delete-protocol-minimal:hover {

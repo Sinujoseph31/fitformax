@@ -6,6 +6,8 @@ import WorkoutDetailModal from './WorkoutDetailModal';
 import WorkoutBuilderModal from './WorkoutBuilderModal';
 import WorkoutAIGeneratorModal from './WorkoutAIGeneratorModal';
 import { useNavigate } from 'react-router-dom';
+import { useApp } from '../../context/AppContext';
+import { apiCall } from '../../utils/api';
 import './WorkoutLibrary.css';
 
 export default function WorkoutLibrary() {
@@ -16,37 +18,48 @@ export default function WorkoutLibrary() {
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [isBuilderOpen, setIsBuilderOpen] = useState(false);
   const [isAIOpen, setIsAIOpen] = useState(false);
+  const { userProfile } = useApp();
 
-  // Load custom plans from local storage
+  // Load custom plans from API
   useEffect(() => {
-    const saved = localStorage.getItem('fx_custom_workouts');
-    if (saved) {
+    const fetchCustom = async () => {
       try {
-        setCustomPlans(JSON.parse(saved));
+        const { workouts } = await apiCall('/plans');
+        setCustomPlans(workouts || []);
       } catch (e) {
         console.error("Failed to load custom workouts", e);
       }
-    }
+    };
+    fetchCustom();
   }, []);
 
   const handleDeploy = (plan) => {
+    if (plan.type === 'custom' && plan.status === 'pending') {
+      alert("This protocol is Under Review by the Admin. You can deploy it once approved.");
+      return;
+    }
     localStorage.setItem('fx_workout_plan', JSON.stringify(plan));
     navigate('/session');
   };
 
-  const handleSaveCustom = (newPlan) => {
-    const updated = [newPlan, ...customPlans];
-    setCustomPlans(updated);
-    localStorage.setItem('fx_custom_workouts', JSON.stringify(updated));
-    setIsBuilderOpen(false);
+  const handleSaveCustom = async (newPlan) => {
+    try {
+      const saved = await apiCall('/plans/workout', 'POST', newPlan);
+      setCustomPlans([saved, ...customPlans]);
+      setIsBuilderOpen(false);
+      setIsAIOpen(false);
+    } catch (e) {
+      console.error("Failed to save plan", e);
+    }
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     if (window.confirm("Delete this custom training protocol?")) {
-      const updated = customPlans.filter(p => p.id !== id);
-      setCustomPlans(updated);
-      localStorage.setItem('fx_custom_workouts', JSON.stringify(updated));
-      setSelectedPlan(null);
+      try {
+        await apiCall(`/plans/workout/${id}`, 'DELETE');
+        setCustomPlans(customPlans.filter(p => p._id !== id));
+        setSelectedPlan(null);
+      } catch (e) {}
     }
   };
 
@@ -119,10 +132,24 @@ export default function WorkoutLibrary() {
 
       <div className="workout-grid">
         {filteredPlans.map(plan => (
-          <div key={plan.id} className="workout-card glass-card" onClick={() => setSelectedPlan(plan)}>
+          <div key={plan.id || plan._id} className={`workout-card glass-card ${plan.status === 'pending' ? 'pending' : ''}`} onClick={() => setSelectedPlan(plan)}>
             <div className="card-top-row">
-              <h3>{highlightText(plan.name, searchTerm)}</h3>
-              <div className="card-badge">{plan.difficulty}</div>
+              <div className="card-title-group">
+                <h3>{highlightText(plan.name, searchTerm)}</h3>
+                {plan.type === 'custom' && (
+                  <div className="status-badge-row">
+                    <span className={`lib-status-badge ${plan.status}`}>
+                      {plan.status === 'pending' ? 'Under Review' : plan.status}
+                    </span>
+                    {plan.user?.name && (
+                      <span className="creator-badge">By: {plan.user.name}</span>
+                    )}
+                  </div>
+                )}
+              </div>
+              <div className={`card-badge ${plan.type === 'custom' ? 'user-created-tag' : plan.difficulty.toLowerCase()}`}>
+                 {plan.type === 'custom' ? 'User Created' : plan.difficulty}
+              </div>
             </div>
             <div className="card-main">
               <p>{highlightText(plan.desc.length > 80 ? plan.desc.substring(0, 80) + '...' : plan.desc, searchTerm)}</p>

@@ -1,5 +1,7 @@
 const User = require('../models/User');
 const Composition = require('../models/Composition');
+const WorkoutPlan = require('../models/WorkoutPlan');
+const DietPlan = require('../models/DietPlan');
 
 // @desc    Get all users
 // @route   GET /api/admin/users
@@ -55,4 +57,48 @@ const deleteUser = async (req, res) => {
     }
 };
 
-module.exports = { getAllUsers, getUserDetail, updateUserRole, deleteUser };
+// @desc    Get all plans (optionally filtered by status)
+// @route   GET /api/admin/plans
+const getAllPlans = async (req, res) => {
+    try {
+        const workouts = await WorkoutPlan.find({}).populate('user', 'name email').sort({ createdAt: -1 });
+        const diets = await DietPlan.find({}).populate('user', 'name email').sort({ createdAt: -1 });
+        res.json({ workouts, diets });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// @desc    Approve or Reject a plan
+// @route   PUT /api/admin/plans/:type/:id/status
+const updatePlanStatus = async (req, res) => {
+    try {
+        const { type, id } = req.params;
+        const { status } = req.body;
+        
+        let plan;
+        if (type === 'workout') {
+            plan = await WorkoutPlan.findById(id);
+        } else {
+            plan = await DietPlan.findById(id);
+        }
+
+        if (!plan) return res.status(404).json({ message: 'Plan not found' });
+        
+        plan.status = status;
+        await plan.save();
+        
+        res.json({ message: `Plan status updated to ${status}`, plan });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+module.exports = { 
+    getAllUsers, 
+    getUserDetail, 
+    updateUserRole, 
+    deleteUser,
+    getAllPlans,
+    updatePlanStatus
+};
