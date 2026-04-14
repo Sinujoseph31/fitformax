@@ -58,4 +58,68 @@ const chatWithCoach = async (req, res) => {
     }
 };
 
-module.exports = { chatWithCoach };
+// @desc    Generate Workout with AI Engine
+// @route   POST /api/ai/generate-workout
+// @access  Public
+const generateWorkout = async (req, res) => {
+    try {
+        const { getGeneratedWorkoutPlan } = require('../services/aiService');
+        const { level, days, goal, equipment, focusAreas, customPrompt } = req.body;
+        
+        console.log(`[AI Generator] Building ${days}-day ${level} ${goal} protocol.`);
+        
+        const generatedPlanJSONStr = await getGeneratedWorkoutPlan({
+            level, days, goal, equipment, focusAreas, customPrompt
+        });
+        
+        // Parse the generated text as JSON
+        let plan;
+        try {
+           const cleanedJSON = generatedPlanJSONStr.replace(/```json/gi, '').replace(/```/g, '').trim();
+           plan = JSON.parse(cleanedJSON);
+        } catch (parseError) {
+           console.error('[AI Generator] JSON Parse Error. Raw string:', generatedPlanJSONStr);
+           return res.status(500).json({ message: 'AI returned invalid workout formatting.' });
+        }
+
+        res.json(plan);
+
+    } catch (error) {
+        console.error('AI Generator Error:', error.stack);
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// @desc    Generate Diet with AI Engine
+// @route   POST /api/ai/generate-diet
+// @access  Public
+const generateDiet = async (req, res) => {
+    try {
+        const { getGeneratedDietPlan } = require('../services/aiService');
+        const { calories, goal, category, intensity, workoutTime, supplements, customPrompt } = req.body;
+        
+        console.log(`[AI Generator] Building ${calories}kcal ${category} ${goal} diet plan.`);
+        
+        const generatedPlanJSONStr = await getGeneratedDietPlan({
+            calories, goal, category, intensity, workoutTime, supplements, customPrompt
+        });
+        
+        // Parse the generated text as JSON
+        let plan;
+        try {
+           const cleanedJSON = generatedPlanJSONStr.replace(/```json/gi, '').replace(/```/g, '').trim();
+           plan = JSON.parse(cleanedJSON);
+        } catch (parseError) {
+           console.error('[AI Generator] JSON Parse Error. Raw string:', generatedPlanJSONStr);
+           return res.status(500).json({ message: 'AI returned invalid diet formatting.' });
+        }
+
+        res.json(plan);
+
+    } catch (error) {
+        console.error('AI Diet Generator Error:', error.stack);
+        res.status(500).json({ message: error.message });
+    }
+};
+
+module.exports = { chatWithCoach, generateWorkout, generateDiet };

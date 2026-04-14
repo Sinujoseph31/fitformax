@@ -17,7 +17,9 @@ import {
   Droplets,
   Flame,
   Clock,
-  Layers
+  Layers,
+  Moon,
+  CheckCircle2
 } from 'lucide-react';
 import Card from '../../components/Card';
 import StatCard from '../../components/StatCard';
@@ -52,8 +54,23 @@ export default function Dashboard() {
           apiCall('/insights/diet'),
           apiCall('/insights/workout')
         ]);
-        setInsights({ recommendation: recRes, diet: dietRes, workout: workRes });
+        
+        // Merge with local Deployed plans for immediate feedback
+        const localWorkout = JSON.parse(localStorage.getItem('fx_workout_plan'));
+        const localDiet = JSON.parse(localStorage.getItem('fx_diet_plan'));
+
+        setInsights({ 
+          recommendation: recRes, 
+          diet: localDiet || dietRes, 
+          workout: localWorkout || workRes 
+        });
       } catch (error) {
+        // Fallback to local only if API fails
+        const localWorkout = JSON.parse(localStorage.getItem('fx_workout_plan'));
+        const localDiet = JSON.parse(localStorage.getItem('fx_diet_plan'));
+        if (localWorkout || localDiet) {
+           setInsights(prev => ({ ...prev, diet: localDiet, workout: localWorkout }));
+        }
         console.error("Failed to load insights", error);
       } finally {
         setLoadingInsights(false);
@@ -135,22 +152,80 @@ export default function Dashboard() {
             <div className="schedule-preview">
               {!loadingInsights && insights.workout ? (
                 Array.isArray(insights.workout.schedule) ? (
-                  insights.workout.schedule.slice(0, 3).map((day, i) => (
-                    <div key={i} className={`schedule-item ${i === 0 ? 'active' : ''}`}>
-                      <div className="sched-icon"><Clock size={16} /></div>
-                      <div className="sched-info">
-                        <span className="sched-day">{day.split(':')[0]}</span>
-                        <span className="sched-name">{day.split(':')[1] || 'Workout Session'}</span>
-                      </div>
-                      {i === 0 && <button className="start-btn-mini" onClick={() => setIsWorkoutActive(true)}>Start</button>}
-                    </div>
-                  ))
+                  (() => {
+                    const completedDays = JSON.parse(localStorage.getItem('fx_completed_days') || '[]');
+                    const planId = insights.workout.id || insights.workout.name?.replace(/\s+/g, '_').toLowerCase() || 'default_plan';
+                    
+                    // The first activeIndex is the current "Mission"
+                    const activeIndex = insights.workout.schedule.findIndex((dObj, sIdx) => {
+                       const isDone = completedDays.includes(`${planId}_${sIdx}`);
+                       const isWorkDay = typeof dObj === 'object' && dObj.exercises?.length > 0;
+                       return !isDone && isWorkDay;
+                    });
+                    
+                    return insights.workout.schedule.map((dayData, i) => {
+                      const dayName = typeof dayData === 'string' ? dayData.split(':')[0] : dayData.day;
+                      const dayFocus = typeof dayData === 'string' ? (dayData.split(':')[1] || 'Training') : dayData.focus;
+                      const isRest = typeof dayData === 'object' && dayData.exercises?.length === 0;
+                      
+                      const dayKey = `${planId}_${i}`;
+                      const isDone = completedDays.includes(dayKey); 
+                      const isActive = i === activeIndex;
+                      const isFuture = i > activeIndex && activeIndex !== -1;
+
+                      const handleSkipToggle = (e) => {
+                        e.stopPropagation();
+                        let nextDone;
+                        
+                        if (isDone) {
+                          // Undo: remove this day and ALL subsequent days for this specific plan
+                          nextDone = completedDays.filter(d => {
+                             const parts = d.split('_');
+                             const dIdx = parseInt(parts.pop());
+                             const dId = parts.join('_');
+                             return dId !== planId || dIdx < i;
+                          });
+                        } else {
+                          // Skip: add this day
+                          nextDone = [...completedDays, dayKey];
+                        }
+                        
+                        localStorage.setItem('fx_completed_days', JSON.stringify(nextDone));
+                        window.location.reload();
+                      };
+
+                      return (
+                        <div key={i} className={`schedule-item ${isActive && !isRest ? 'active' : ''} ${isRest ? 'rest-day' : ''} ${isDone ? 'done' : ''} ${isFuture ? 'future' : ''}`}>
+                          <div className="sched-icon">
+                             {isDone ? <CheckCircle2 size={16} color="#00f5a0" /> : (isRest ? <Moon size={16} /> : <Clock size={16} />)}
+                          </div>
+                          <div className="sched-info">
+                            <span className="sched-day">{dayName}</span>
+                            <span className="sched-name">
+                              {isDone ? 'Session Skipped' : dayFocus}
+                            </span>
+                          </div>
+                          <div className="sched-actions">
+                            {isActive && !isRest && (
+                              <button className="start-btn-mini" onClick={() => setIsWorkoutActive(true)}>Start</button>
+                            )}
+                            
+                            {(isActive || isDone) && !isRest && (
+                              <button className="skip-btn-mini" onClick={handleSkipToggle}>
+                                {isDone ? 'Undo' : 'Skip'}
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    });
+                  })()
                 ) : (
                   <div className="schedule-item active">
                     <div className="sched-icon"><Clock size={16} /></div>
                     <div className="sched-info">
                       <span className="sched-day">Today</span>
-                      <span className="sched-name">{insights.workout.focus}</span>
+                      <span className="sched-name">{insights.workout.focus || 'Training Session'}</span>
                     </div>
                     <button className="start-btn-mini" onClick={() => setIsWorkoutActive(true)}>Start</button>
                   </div>

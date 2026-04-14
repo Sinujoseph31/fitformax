@@ -205,5 +205,59 @@ export const PREDEFINED_DIETS = [
       { time: '06:30 PM', mealName: 'Dinner (Light)', items: ['Khichdi (Rice and Lentils cooked very soft)', 'Steamed Carrots'] },
       { time: '09:30 PM', mealName: 'Bedtime', items: ['Triphala Powder with warm water', 'Sleep'] }
     ]
+  },
+  {
+    id: 'vertical_diet',
+    name: 'The Vertical Diet (Performance)',
+    category: 'Athletic Performance',
+    type: 'template',
+    desc: 'Developed by Stan Efferding for athletes. Optimizes digestion and hormone health through red meat, white rice, and high-micronutrient "vertical" foods.',
+    macros: { protein: 30, carbs: 45, fat: 25 },
+    rules: [
+      'Focus on high-quality red meat for iron and zinc.',
+      'Use white rice as the primary carb for easy digestion.',
+      'Include daily carrots and orange juice for liver health.'
+    ],
+    schedule: [
+      { time: '07:00 AM', mealName: 'Monster Mash Breakfast', items: ['Ground Beef (6oz)', 'White Rice (1 cup)', '2 Scrambled Eggs', 'Chicken Broth'] },
+      { time: '01:00 PM', mealName: 'Lunch', items: ['Steak (6oz)', 'White Rice', 'Spinach', 'Daily Carrot'] },
+      { time: '07:00 PM', mealName: 'Post-Workout Dinner', items: ['Ground Beef', 'White Rice', 'Orange Juice', 'Potato'] }
+    ]
+  },
+  {
+    id: 'med_longevity',
+    name: 'Mediterranean Longevity Plan',
+    category: 'Maintenance',
+    type: 'template',
+    desc: 'The benchmark for heart health and longevity. Rich in healthy fats, seafood, and fresh produce.',
+    macros: { protein: 20, carbs: 40, fat: 40 },
+    rules: [
+      'Olive oil is your primary fat source.',
+      'Seafood at least 3-4 times per week.',
+      'Moderate cheese and wine consumption.'
+    ],
+    schedule: [
+      { time: '08:00 AM', mealName: 'Breakfast', items: ['Greek Yogurt', 'Walnuts', 'Honey', 'Fresh Berries'] },
+      { time: '01:30 PM', mealName: 'Lunch', items: ['Greek Salad with Feta', 'Extra Virgin Olive Oil', 'Whole Grain Pita'] },
+      { time: '08:00 PM', mealName: 'Dinner', items: ['Grilled Sea Bass', 'Roasted Asparagus', 'Glass of Red Wine (Optional)'] }
+    ]
+  },
+  {
+    id: 'paleo_ancestral',
+    name: 'Paleo / Ancestral Protocol',
+    category: 'Specialty / Lifestyle',
+    type: 'template',
+    desc: 'Eat like your ancestors. Eliminates all grains, legumes, and dairy. Focuses on whole, unprocessed foods that the human body evolved to digest.',
+    macros: { protein: 35, carbs: 20, fat: 45 },
+    rules: [
+      'No grains (bread/rice/pasta).',
+      'No legumes or dairy.',
+      'Eat grass-fed meats and seasonal wild fruits.'
+    ],
+    schedule: [
+      { time: '07:30 AM', mealName: 'Paleo Hash', items: ['Sweet Potato Hash', 'Ground Pork', '3 Poached Eggs'] },
+      { time: '01:00 PM', mealName: 'Lunch', items: ['Turkey Breast', 'Avocado', 'Berries', 'Cucumber'] },
+      { time: '07:00 PM', mealName: 'Primal Dinner', items: ['Venison or Beef Roast', 'Mixed Root Vegetables', 'Olive Oil Drizzle'] }
+    ]
   }
 ];

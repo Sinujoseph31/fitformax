@@ -227,6 +227,11 @@
   border: 1px solid hsla(210, 100%, 60%, 0.1);
 }
 
+.schedule-item.rest-day {
+  opacity: 0.6;
+  border: 1px dashed rgba(255,255,255,0.1);
+}
+
 .sched-icon {
   width: 40px;
   height: 40px;
@@ -265,6 +270,41 @@
   font-weight: 800;
   font-size: 0.85rem;
   cursor: pointer;
+  white-space: nowrap;
+}
+
+.sched-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.skip-btn-mini {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: var(--text-dim);
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.skip-btn-mini:hover {
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+}
+
+.schedule-item.done {
+  opacity: 0.5;
+  background: rgba(0, 245, 160, 0.02);
+  border: 1px solid rgba(0, 245, 160, 0.1);
+}
+
+.schedule-item.done .sched-name {
+  color: #00f5a0;
+  font-style: italic;
 }
 
 /* Side Column Styles */

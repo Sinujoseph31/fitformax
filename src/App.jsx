@@ -10,6 +10,9 @@ import Profile from './modules/User/Profile';
 import Coach from './modules/Coach/Coach';
 import Diet from './modules/Diet/Diet';
 import DietLibrary from './modules/DietLibrary/DietLibrary';
+import WorkoutLibrary from './modules/Workout/WorkoutLibrary';
+import WorkoutSession from './modules/Workout/WorkoutSession';
+
 import BodyMetricsSetup from './modules/User/BodyMetricsSetup';
 import BodyComposition from './modules/User/BodyComposition';
 import AdminPanel from './modules/Admin/AdminPanel';
@@ -50,12 +53,14 @@ function App() {
       <Routes>
         <Route path="/" element={<Dashboard />} />
         <Route path="/workout" element={<WorkoutHistory />} />
+        <Route path="/session" element={<WorkoutSession onFinish={() => window.location.href = '/workout'} />} />
         <Route path="/exercises" element={<ExerciseLibrary />} />
         <Route path="/track" element={<Progress />} />
         <Route path="/composition" element={<BodyComposition />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/meal" element={<Diet />} />
         <Route path="/diets" element={<DietLibrary />} />
+        <Route path="/workouts" element={<WorkoutLibrary />} />
         <Route path="/coach" element={<Coach />} />
         {userProfile?.role === 'admin' && <Route path="/admin" element={<AdminPanel />} />}
         <Route path="/settings" element={<div>Settings Component (TBD)</div>} />

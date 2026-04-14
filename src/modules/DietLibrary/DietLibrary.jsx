@@ -17,16 +17,6 @@ export default function DietLibrary() {
   const [isBuilderOpen, setIsBuilderOpen] = useState(false);
   const [isAIOpen, setIsAIOpen] = useState(false);
 
-  // Lock body scroll to keep popup perfectly targeted in view
-  useEffect(() => {
-    if (selectedDiet || isBuilderOpen || isAIOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-    return () => { document.body.style.overflow = 'unset'; };
-  }, [selectedDiet, isBuilderOpen, isAIOpen]);
-
   // Load custom diets from local storage on mount
   useEffect(() => {
     const saved = localStorage.getItem('fx_custom_diets');
@@ -49,9 +39,9 @@ export default function DietLibrary() {
       diet.desc.toLowerCase().includes(term);
 
     // Upgrade: Smart Token Matching
-    if (term === 'keto') matchesSearch = matchesSearch || diet.macros.carbs <= 15;
-    if (term === 'high protein' || term === 'protein') matchesSearch = matchesSearch || diet.macros.protein >= 30;
-    if (term === 'low carb' || term === 'carb') matchesSearch = matchesSearch || diet.macros.carbs <= 30;
+    if (term === 'keto') matchesSearch = matchesSearch || (diet.macros?.carbs <= 15);
+    if (term === 'high protein' || term === 'protein') matchesSearch = matchesSearch || (diet.macros?.protein >= 30);
+    if (term === 'low carb' || term === 'carb') matchesSearch = matchesSearch || (diet.macros?.carbs <= 30);
     if (term === 'veg' || term === 'vegetarian') matchesSearch = matchesSearch || diet.name.toLowerCase().includes('veg') || diet.desc.toLowerCase().includes('vegetarian');
     if (term === 'non-veg') matchesSearch = matchesSearch || diet.name.toLowerCase().includes('non-veg') || diet.desc.toLowerCase().includes('chicken') || diet.desc.toLowerCase().includes('fish');
     if (term === 'custom') matchesSearch = matchesSearch || diet.type === 'custom';
@@ -198,13 +188,13 @@ export default function DietLibrary() {
             </div>
             <p>{highlightText(diet.desc.length > 90 ? diet.desc.substring(0, 90) + '...' : diet.desc, searchTerm)}</p>
             <div className="macro-mini-display">
-              <div className="m-p" style={{ width: `${diet.macros.protein}%` }}></div>
-              <div className="m-c" style={{ width: `${diet.macros.carbs}%` }}></div>
-              <div className="m-f" style={{ width: `${diet.macros.fat}%` }}></div>
+              <div className="m-p" style={{ width: `${diet.macros?.protein || 0}%` }}></div>
+              <div className="m-c" style={{ width: `${diet.macros?.carbs || 0}%` }}></div>
+              <div className="m-f" style={{ width: `${diet.macros?.fat || 0}%` }}></div>
               <div className="macro-labels-mini">
-                <span>P {diet.macros.protein}%</span>
-                <span>C {diet.macros.carbs}%</span>
-                <span>F {diet.macros.fat}%</span>
+                <span>P {diet.macros?.protein || 0}%</span>
+                <span>C {diet.macros?.carbs || 0}%</span>
+                <span>F {diet.macros?.fat || 0}%</span>
               </div>
             </div>
           </div>

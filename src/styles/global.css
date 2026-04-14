@@ -58,6 +58,14 @@ body {
   overflow-x: hidden;
 }
 
+/* Form Controls Defaults */
+select option {
+  background-color: var(--bg-card) !important;
+  color: var(--text-main) !important;
+  font-family: var(--font-sans);
+  padding: 10px;
+}
+
 /* Scrollbar styling */
 ::-webkit-scrollbar {
   width: 6px;

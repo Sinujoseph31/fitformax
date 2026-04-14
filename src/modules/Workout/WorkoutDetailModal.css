@@ -1,0 +1,307 @@
+.workout-dossier-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.9);
+  backdrop-filter: blur(10px);
+  z-index: 10000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+}
+
+@media (max-width: 768px) {
+  .workout-dossier-overlay {
+    padding: 0 !important;
+  }
+}
+
+.workout-dossier-modal {
+  width: 100%;
+  max-width: 900px;
+  max-height: 90vh;
+  background: #0a0b0d;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto; /* Reverted to single scroller */
+  box-shadow: 0 40px 100px rgba(0,0,0,0.8);
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (min-width: 1200px) {
+  .workout-dossier-modal {
+    max-width: 1100px;
+    width: 80%;
+  }
+}
+
+
+@media (max-width: 768px) {
+  .workout-dossier-modal {
+    width: 100% !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
+    border-radius: 0 !important;
+    border: none !important;
+  }
+}
+
+.dossier-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  padding: 2rem 2.5rem;
+  background: #0a0b0d;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+@media (max-width: 768px) {
+  .dossier-header {
+    padding: 1.5rem;
+    padding-top: calc(env(safe-area-inset-top, 20px) + 10px);
+  }
+}
+
+.header-meta {
+  margin-bottom: 1.25rem;
+}
+
+.difficulty-tag {
+  font-size: 0.65rem;
+  font-weight: 900;
+  letter-spacing: 2px;
+  padding: 3px 10px;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  display: inline-block;
+  text-transform: uppercase;
+}
+
+.difficulty-tag.beginner { background: rgba(46, 204, 113, 0.1); color: #2ecc71; }
+.difficulty-tag.intermediate { background: rgba(241, 196, 15, 0.1); color: #f1c40f; }
+.difficulty-tag.advanced { background: rgba(231, 76, 60, 0.1); color: #e74c3c; }
+
+.title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1.5rem;
+}
+
+.title-row h2 {
+  font-size: 1.8rem;
+  font-weight: 900;
+  margin: 0;
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+}
+
+@media (max-width: 768px) {
+  .title-row h2 {
+    font-size: 1.5rem;
+  }
+}
+
+.btn-close-dossier {
+  background: rgba(255,255,255,0.05);
+  border: none;
+  color: var(--text-dim);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.btn-close-dossier:hover {
+  color: #fff;
+  background: rgba(255,255,255,0.1);
+  transform: rotate(90deg);
+}
+
+.dossier-desc-brief {
+  color: var(--text-dim);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin-top: 8px;
+  max-width: 90%;
+}
+
+.dossier-stats-shelf {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.stat-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 100px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.dossier-scroll-body {
+  padding: 2.5rem;
+  background: rgba(0,0,0,0.1);
+}
+
+@media (max-width: 768px) {
+  .dossier-scroll-body {
+    padding: 1.5rem;
+    padding-bottom: 6rem;
+  }
+}
+
+.weekly-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.day-card {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 16px;
+  padding: 1.5rem;
+}
+
+.day-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+
+.day-name {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+.day-focus {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.day-exercises {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.exercise-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  background: rgba(255,255,255,0.01);
+  border-radius: 12px;
+}
+
+.ex-icon {
+  font-size: 1.25rem;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ex-name {
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.ex-params {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  font-weight: 600;
+}
+
+.rest-day {
+  background: rgba(255,255,255,0.01);
+  opacity: 0.8;
+}
+
+.rest-indicator {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-dim);
+  padding: 10px;
+  font-style: italic;
+  font-size: 0.9rem;
+}
+
+.dossier-footer {
+  padding: 1.25rem 2.5rem;
+  background: #0a0b0d;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .dossier-footer {
+    padding: 1rem 1.5rem;
+    padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 10px);
+  }
+}
+
+.btn-delete-custom {
+  background: rgba(231, 76, 60, 0.1);
+  color: #e74c3c;
+  border: 1px solid rgba(231, 76, 60, 0.2);
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.btn-deploy-workout {
+  flex: 1;
+  max-width: 260px;
+  background: var(--primary);
+  color: #000;
+  border: none;
+  padding: 0 1.5rem;
+  height: 48px;
+  border-radius: 12px;
+  font-weight: 900;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-deploy-workout:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px var(--primary-shadow);
+}

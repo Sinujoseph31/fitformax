@@ -35,6 +35,7 @@ const Navbar = () => {
     { path: '/exercises', icon: <BookOpen size={24} />, label: 'Library' },
     { path: '/coach', icon: <MessageSquare size={24} />, label: 'Coach' },
     { path: '/diets', icon: <BookOpen size={24} />, label: 'Diets' },
+    { path: '/workouts', icon: <Dumbbell size={24} />, label: 'Workouts' },
     { path: '/track', icon: <TrendingUp size={24} />, label: 'Progress' },
     { path: '/composition', icon: <User size={24} />, label: 'Metrics' },
     { path: '/profile', icon: <User size={24} />, label: 'Profile' },

@@ -21,7 +21,27 @@ const MASTER_MEALS = [
 ];
 
 const DEFAULT_LAYOUT = ['breakfast', 'lunch', 'dinner', 'snacks'];
-const MACRO_GOALS = { calories: 2000, protein: 150, carbs: 250, fat: 65 };
+
+// Dynamic Macro Goals Loader
+const getMacroGoals = () => {
+    const savedPlan = localStorage.getItem('fx_diet_plan');
+    if (savedPlan) {
+        try {
+            const plan = JSON.parse(savedPlan);
+            // Derive calories from desc or direct property if we added it
+            const cals = parseInt(plan.desc?.match(/(\d+)kcal/)?.[1]) || 2000;
+            return {
+                calories: cals,
+                protein: plan.macros?.protein ? Math.round((cals * (plan.macros.protein / 100)) / 4) : 150,
+                carbs: plan.macros?.carbs ? Math.round((cals * (plan.macros.carbs / 100)) / 4) : 250,
+                fat: plan.macros?.fat ? Math.round((cals * (plan.macros.fat / 100)) / 9) : 65
+            };
+        } catch (e) {}
+    }
+    return { calories: 2000, protein: 150, carbs: 250, fat: 65 };
+};
+
+const MACRO_GOALS = getMacroGoals();
 
 export default function DietTracker() {
   const [selectedDate, setSelectedDate] = useState(new Date());

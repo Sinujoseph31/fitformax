@@ -53,15 +53,15 @@ export default function DietDetailModal({ diet, onClose, onSetPlan, onDelete }) 
 
           <div className="macro-profile-shelf-mini">
             <div className="m-pill protein">
-              <span className="m-p-val">{diet.macros.protein}%</span>
+              <span className="m-p-val">{diet.macros?.protein || 0}%</span>
               <span className="m-p-label">Protein</span>
             </div>
             <div className="m-pill carbs">
-              <span className="m-p-val">{diet.macros.carbs}%</span>
+              <span className="m-p-val">{diet.macros?.carbs || 0}%</span>
               <span className="m-p-label">Carbs</span>
             </div>
             <div className="m-pill fat">
-              <span className="m-p-val">{diet.macros.fat}%</span>
+              <span className="m-p-val">{diet.macros?.fat || 0}%</span>
               <span className="m-p-label">Fat</span>
             </div>
           </div>

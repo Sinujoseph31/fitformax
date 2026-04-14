@@ -32,12 +32,54 @@ export default function WorkoutSession({ onFinish }) {
   const [startTime] = useState(new Date());
   const [activeCoachExercise, setActiveCoachExercise] = useState(null);
   
+  const [activeDayIdx, setActiveDayIdx] = useState(null);
+  
   // Timer State
   const [isTimerRunning, setIsTimerRunning] = useState(false);
   const [timerSeconds, setTimerSeconds] = useState(60);
   const timerRef = useRef(null);
 
   useEffect(() => {
+    // Load Deployed Plan if exists
+    const deployedPlanStr = localStorage.getItem('fx_workout_plan');
+    if (deployedPlanStr) {
+      try {
+        const plan = JSON.parse(deployedPlanStr);
+        setWorkoutName(plan.name);
+        
+        // Find the specific day we should be training (first non-completed day)
+        const completedDays = JSON.parse(localStorage.getItem('fx_completed_days') || '[]');
+        const planId = plan.id || plan.name?.replace(/\s+/g, '_').toLowerCase() || 'default_plan';
+        
+        const dayIdx = plan.schedule.findIndex((d, idx) => {
+           const isDone = completedDays.includes(`${planId}_${idx}`);
+           const isWorkDay = d.exercises?.length > 0;
+           return !isDone && isWorkDay;
+        });
+
+        if (dayIdx !== -1) {
+          const dayWithWork = plan.schedule[dayIdx];
+          setActiveDayIdx(dayIdx);
+          const exercisesToLoad = dayWithWork.exercises.map(exRef => {
+            const exData = EXERCISES.find(e => e.id === exRef.id);
+            return {
+              ...(exData || {}),
+              id: exRef.id,
+              instanceId: Math.random() + Date.now(),
+              sets: Array(parseInt(exRef.sets) || 3).fill(null).map(() => ({
+                weight: '',
+                reps: exRef.reps || '10',
+                isCompleted: false
+              }))
+            };
+          });
+          setActiveExercises(exercisesToLoad);
+        }
+      } catch (err) {
+        console.error("Failed to load deployed plan", err);
+      }
+    }
+
     if (isTimerRunning && timerSeconds > 0) {
       timerRef.current = setInterval(() => {
         setTimerSeconds(s => s - 1);
@@ -113,6 +155,21 @@ export default function WorkoutSession({ onFinish }) {
   const handleFinishWorkout = async () => {
     if (activeExercises.length === 0) return;
     
+    // Auto-mark day as completed in dashboard schedule if it's from a plan
+    if (activeDayIdx !== null) {
+       const deployedPlanStr = localStorage.getItem('fx_workout_plan');
+       if (deployedPlanStr) {
+          const plan = JSON.parse(deployedPlanStr);
+          const planId = plan.id || plan.name?.replace(/\s+/g, '_').toLowerCase() || 'default_plan';
+          const completedDays = JSON.parse(localStorage.getItem('fx_completed_days') || '[]');
+          const dayKey = `${planId}_${activeDayIdx}`;
+          if (!completedDays.includes(dayKey)) {
+             completedDays.push(dayKey);
+             localStorage.setItem('fx_completed_days', JSON.stringify(completedDays));
+          }
+       }
+    }
+
     const workoutData = {
       name: workoutName,
       startTime,
