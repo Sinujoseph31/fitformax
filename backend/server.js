@@ -35,6 +35,10 @@ if (process.env.NODE_ENV === 'development') {
 
 // Routes
 app.use((req, res, next) => {
+    // Strip /server-api if it exists to normalize for the routes below
+    if (req.url.startsWith('/server-api')) {
+        req.url = req.url.replace('/server-api', '/api');
+    }
     console.log(`${req.method} ${req.url}`);
     next();
 });
