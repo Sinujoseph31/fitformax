@@ -24,7 +24,18 @@ export const apiCall = async (endpoint, method = 'GET', body = null, isFormData 
 
     try {
         const response = await fetch(`${API_URL}${endpoint}`, config);
-        const data = await response.json();
+        
+        let data = {};
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.indexOf("application/json") !== -1) {
+            data = await response.json();
+        } else {
+            // Handle non-JSON response (like a 404 or 500 HTML)
+            const text = await response.text();
+            if (!response.ok) {
+                throw new Error(text || `Error ${response.status}: ${response.statusText}`);
+            }
+        }
         
         if (!response.ok) {
             throw new Error(data.message || 'Something went wrong');

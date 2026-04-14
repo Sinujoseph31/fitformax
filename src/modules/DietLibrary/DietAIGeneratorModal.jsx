@@ -82,7 +82,54 @@ export default function DietAIGeneratorModal({ onClose, onSave }) {
         }
       };
 
-      const foods = foodDB[category] || foodDB['Standard'];
+      const foods = JSON.parse(JSON.stringify(foodDB[category] || foodDB['Standard']));
+      
+      // AI CONSTRAINT PARSER (Keyword Logic)
+      if (customPrompt) {
+        const prompt = customPrompt.toLowerCase();
+        const keywords = {
+          fish: ['fish', 'tilapia', 'salmon', 'shrimp', 'cod', 'seafood'],
+          chicken: ['chicken', 'tikka'],
+          beef: ['beef', 'steak', 'mutton', 'ribeye', 'kheema'],
+          egg: ['egg'],
+          dairy: ['paneer', 'cheese', 'curd', 'yogurt', 'milk', 'ghee'],
+          veg: ['paneer', 'tofu', 'dal', 'chana', 'rajma', 'veg', 'lentil', 'tempeh', 'edamame', 'seitan'],
+          rice: ['rice', 'basmati', 'jeera', 'dosa', 'idli'],
+          bread: ['bread', 'bun', 'wrap', 'paratha', 'roti', 'naan', 'pita', 'grain'],
+          potato: ['potato'],
+          oats: ['oatmeal', 'oats'],
+          nuts: ['nuts', 'almonds', 'walnuts', 'macadamia', 'peanuts', 'peanut butter', 'seeds', 'tahini', 'chia'],
+          avocado: ['avocado'],
+          oil: ['oil', 'olive oil', 'butter', 'ghee', 'mct']
+        };
+
+        Object.keys(keywords).forEach(key => {
+          const isNegative = prompt.includes(`no ${key}`) || prompt.includes(`dont add ${key}`) || prompt.includes(`avoid ${key}`) || prompt.includes(`without ${key}`) || prompt.includes(`less ${key}`);
+          const isPositive = prompt.includes(`mostly ${key}`) || prompt.includes(`only ${key}`) || prompt.includes(`prefer ${key}`) || prompt.includes(`include ${key}`);
+
+          if (isNegative) {
+            foods.proteins = foods.proteins.filter(p => !keywords[key].some(k => p.toLowerCase().includes(k)));
+            foods.carbs = foods.carbs.filter(p => !keywords[key].some(k => p.toLowerCase().includes(k)));
+            foods.fats = foods.fats.filter(p => !keywords[key].some(k => p.toLowerCase().includes(k)));
+          }
+          if (isPositive) {
+            const filteredP = foods.proteins.filter(p => keywords[key].some(k => p.toLowerCase().includes(k)));
+            if (filteredP.length > 0) foods.proteins = filteredP;
+
+            const filteredC = foods.carbs.filter(p => keywords[key].some(k => p.toLowerCase().includes(k)));
+            if (filteredC.length > 0) foods.carbs = filteredC;
+
+            const filteredF = foods.fats.filter(p => keywords[key].some(k => p.toLowerCase().includes(k)));
+            if (filteredF.length > 0) foods.fats = filteredF;
+          }
+        });
+
+        // Fallback if we accidentally filtered EVERYTHING
+        if (foods.proteins.length === 0) foods.proteins = foodDB['Standard'].proteins;
+        if (foods.carbs.length === 0) foods.carbs = foodDB['Standard'].carbs;
+        if (foods.fats.length === 0) foods.fats = foodDB['Standard'].fats;
+      }
+
       const isHighCal = cals >= 2800;
 
       const generateMealItems = (index, isPre, isPost) => {
