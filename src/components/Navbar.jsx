@@ -1,48 +1,106 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useApp } from '../context/AppContext';
-import { 
-  LayoutDashboard, 
-  User, 
-  Dumbbell, 
-  TrendingUp, 
-  MessageSquare, 
+import {
+  LayoutDashboard,
+  User,
+  Dumbbell,
+  TrendingUp,
+  MessageSquare,
   BookOpen,
   Utensils,
   Shield,
-  Settings 
+  Settings,
+  X
 } from 'lucide-react';
 import './Navbar.css';
 
 const Navbar = () => {
   const { userProfile } = useApp();
-  const navItems = [
+  const location = useLocation();
+  const [showMore, setShowMore] = React.useState(false);
+
+  const allItems = [
     { path: '/', icon: <LayoutDashboard size={24} />, label: 'Dashboard' },
     { path: '/workout', icon: <Dumbbell size={24} />, label: 'Workout' },
-    { path: '/exercises', icon: <BookOpen size={24} />, label: 'Workout Library' },
-    { path: '/meal', icon: <Utensils size={24} />, label: 'Meals Tracker' },
-    { path: '/diets', icon: <BookOpen size={24} />, label: 'Diet Library' },
+    { path: '/meal', icon: <Utensils size={24} />, label: 'Diet' },
+    { path: '/exercises', icon: <BookOpen size={24} />, label: 'Library' },
+    { path: '/coach', icon: <MessageSquare size={24} />, label: 'Coach' },
+    { path: '/diets', icon: <BookOpen size={24} />, label: 'Diets' },
     { path: '/track', icon: <TrendingUp size={24} />, label: 'Progress' },
     { path: '/composition', icon: <User size={24} />, label: 'Metrics' },
-    { path: '/coach', icon: <MessageSquare size={24} />, label: 'AI Coach' },
     { path: '/profile', icon: <User size={24} />, label: 'Profile' },
     ...(userProfile?.role === 'admin' ? [{ path: '/admin', icon: <Shield size={24} />, label: 'Admin' }] : []),
   ];
+
+  // Mobile prioritized items
+  const mainMobileItems = allItems.slice(0, 4);
+  const moreMobileItems = allItems.slice(4);
+
+  const isMoreActive = moreMobileItems.some(item => location.pathname === item.path);
 
   return (
     <>
       {/* Mobile Bottom Navigation */}
       <nav className="mobile-nav mobile-only glass">
-        {navItems.map((item) => (
-          <NavLink 
-            key={item.path} 
-            to={item.path} 
+        {mainMobileItems.map((item) => (
+          <NavLink
+            key={item.path}
+            to={item.path}
             className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
           >
             {item.icon}
             <span>{item.label}</span>
           </NavLink>
         ))}
+        <button
+          className={`nav-item ${showMore || isMoreActive ? 'active' : ''}`}
+          onClick={() => setShowMore(!showMore)}
+        >
+          <Settings size={24} />
+          <span>More</span>
+        </button>
+
+        {/* Mobile More Drawer */}
+        <AnimatePresence>
+          {showMore && (
+            <>
+              <motion.div
+                className="more-menu-overlay"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setShowMore(false)}
+              />
+              <motion.div
+                className="more-menu-drawer glass"
+                initial={{ y: '100%' }}
+                animate={{ y: 0 }}
+                exit={{ y: '100%' }}
+                transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              >
+                <div className="more-menu-header">
+                  <h3>More Options</h3>
+                  <button onClick={() => setShowMore(false)}><X size={20} /></button>
+                </div>
+                <div className="more-menu-grid">
+                  {moreMobileItems.map((item) => (
+                    <NavLink
+                      key={item.path}
+                      to={item.path}
+                      className="more-menu-item"
+                      onClick={() => setShowMore(false)}
+                    >
+                      <div className="item-icon-circle">{item.icon}</div>
+                      <span>{item.label}</span>
+                    </NavLink>
+                  ))}
+                </div>
+              </motion.div>
+            </>
+          )}
+        </AnimatePresence>
       </nav>
 
       {/* Desktop Sidebar Navigation */}
@@ -50,12 +108,12 @@ const Navbar = () => {
         <div className="sidebar-header">
           <h1 className="text-gradient">FitformaX</h1>
         </div>
-        
+
         <nav className="sidebar-nav">
-          {navItems.map((item) => (
-            <NavLink 
-              key={item.path} 
-              to={item.path} 
+          {allItems.map((item) => (
+            <NavLink
+              key={item.path}
+              to={item.path}
               className={({ isActive }) => `sidebar-item ${isActive ? 'active' : ''}`}
             >
               {item.icon}

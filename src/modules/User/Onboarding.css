@@ -1,10 +1,10 @@
 .fx-onboarding {
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   background-color: var(--bg-dark);
   padding: var(--space-3);
-  overflow: hidden;
+  overflow-y: auto;
 }
 
 .onboarding-view {

@@ -115,10 +115,12 @@ h1, h2, h3, h4, h5 {
 
 .main-content {
   flex: 1;
-  padding-bottom: calc(var(--nav-height) + 20px); /* Space for mobile nav */
+  padding-bottom: calc(var(--nav-height) + 30px); /* Space for mobile nav */
   width: 100%;
   max-width: var(--max-width);
   margin: 0 auto;
+  padding-inline: 1rem;
+  padding-top: 1.5rem;
 }
 
 @media (min-width: 769px) {
@@ -138,7 +140,7 @@ h1, h2, h3, h4, h5 {
 }
 
 .mobile-only {
-  display: block;
+  display: inherit;
 }
 .desktop-only {
   display: none;
@@ -146,10 +148,10 @@ h1, h2, h3, h4, h5 {
 
 @media (min-width: 769px) {
   .mobile-only {
-    display: none;
+    display: none !important;
   }
   .desktop-only {
-    display: block;
+    display: inherit !important;
   }
 }
 
