@@ -7,7 +7,8 @@ export const DIET_CATEGORIES = [
   'Medical / Health', 
   'Intermittent Fasting',
   'Athletic Performance',
-  'Regional / Indian'
+  'Regional / Indian',
+  'AI Generated'
 ];
 
 export const PREDEFINED_DIETS = [
