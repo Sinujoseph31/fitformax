@@ -98,11 +98,20 @@ export default function ExerciseDetail({ exercise, onClose }) {
           <div className="ed-info">
             <div className="ed-icon-badge">{exercise.icon}</div>
             <div>
-              <h2 className="ed-title">{exercise.name}</h2>
+              <h2 className="ed-title" style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
+                {exercise.name}
+                {exercise.type === 'ai' && <span className="ai-badge" style={{ fontSize: '0.75rem' }}>AI</span>}
+              </h2>
               <div className="ed-meta">
                 <span className="ed-cat">{exercise.category}</span>
                 <span className="ed-sep">·</span>
-                <span className="ed-equip">{exercise.equipment}</span>
+                <span className="ed-equip">{exercise.equipment || 'Bodyweight'}</span>
+                {exercise.status === 'Pending Approval' && (
+                  <>
+                    <span className="ed-sep">·</span>
+                    <span className="approval-badge" style={{ marginTop: 0 }}>Pending Approval</span>
+                  </>
+                )}
               </div>
             </div>
           </div>
