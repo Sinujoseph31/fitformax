@@ -3,20 +3,20 @@ const User = require('../models/User');
 // @desc    Get user profile
 // @route   GET /api/user/profile
 const getUserProfile = async (req, res) => {
-    const user = await User.findById(req.user._id);
-    if (user) {
+    // req.user is already populated by protect middleware
+    if (req.user) {
         res.json({
-            _id: user._id,
-            name: user.name,
-            email: user.email,
-            age: user.age,
-            height: user.height,
-            weight: user.weight,
-            goal: user.goal,
-            gender: user.gender,
-            bmi: user.bmi,
-            bmiCategory: user.bmiCategory,
-            role: user.role
+            _id: req.user._id,
+            name: req.user.name,
+            email: req.user.email,
+            age: req.user.age,
+            height: req.user.height,
+            weight: req.user.weight,
+            goal: req.user.goal,
+            gender: req.user.gender,
+            bmi: req.user.bmi,
+            bmiCategory: req.user.bmiCategory,
+            role: req.user.role
         });
     } else {
         res.status(404).json({ message: 'User not found' });

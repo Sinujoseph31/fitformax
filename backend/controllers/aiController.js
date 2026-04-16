@@ -122,4 +122,44 @@ const generateDiet = async (req, res) => {
     }
 };
 
-module.exports = { chatWithCoach, generateWorkout, generateDiet };
+const lookupFood = async (req, res) => {
+    try {
+        const { getFoodNutrition } = require('../services/aiService');
+        const { query } = req.body;
+        
+        console.log(`[AI Food Lookup] Request for: "${query}" from User: ${req.user?._id || 'Unknown'}`);
+
+        if (!query) return res.status(400).json({ message: 'No search term provided' });
+
+        const jsonStr = await getFoodNutrition(query);
+        
+        let data;
+        try {
+            const cleaned = jsonStr.replace(/```json/gi, '').replace(/```/g, '').trim();
+            data = JSON.parse(cleaned);
+        } catch (e) {
+            console.error('[Food Lookup] JSON parse error:', e.message, '| Raw:', jsonStr?.slice(0, 200));
+            return res.status(500).json({ message: 'Internal AI parsing error' });
+        }
+
+        // Normalize: handle both single object and array
+        const normalize = (item) => ({
+            name: item.name || query,
+            // Handle all common AI field name variations
+            calories: Number(item.calories ?? item.energy ?? item.kcal ?? item.cal ?? item.energy_kcal ?? 0),
+            protein:  Number(item.protein ?? item.proteins ?? item.protein_g ?? 0),
+            carbs:    Number(item.carbs ?? item.carbohydrates ?? item.carbohydrate ?? item.cho ?? item.carb ?? 0),
+            fat:      Number(item.fat ?? item.fats ?? item.lipids ?? item.total_fat ?? item.fat_g ?? 0),
+        });
+
+        const result = Array.isArray(data) ? data.map(normalize) : normalize(data);
+
+        console.log(`[AI Food Lookup] Result:`, JSON.stringify(result).slice(0, 150));
+        res.json(result);
+    } catch (error) {
+        console.error('[Food Lookup] Error:', error.message);
+        res.status(500).json({ message: error.message });
+    }
+};
+
+module.exports = { chatWithCoach, generateWorkout, generateDiet, lookupFood };

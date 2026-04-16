@@ -1,6 +1,7 @@
 const express = require('express');
 const dotenv = require('dotenv');
 dotenv.config();
+// Heartbeat: Neural Engine Sync
 
 const cors = require('cors');
 const helmet = require('helmet');
@@ -75,3 +76,5 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 module.exports = app;
+
+// Restart Trigger: 2026-04-16 19:47:00
