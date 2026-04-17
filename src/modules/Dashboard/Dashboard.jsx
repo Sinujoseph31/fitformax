@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Camera, Activity, Zap, Utensils,
+  Camera, Activity, Zap, Utensils, Dumbbell,
   Play, Droplets, Flame, ShieldCheck, Mountain, ChevronRight
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
@@ -280,8 +280,8 @@ export default function Dashboard() {
               <button className="db-qa-btn" onClick={() => navigate('/meal')}>
                 <Utensils size={16} /> Log Meal
               </button>
-              <button className="db-qa-btn" onClick={() => navigate('/coach')}>
-                <Zap size={16} /> AI Coach
+              <button className="db-qa-btn" onClick={() => navigate('/workouts')}>
+                <Dumbbell size={16} /> Explore Workouts
               </button>
             </div>
           </div>

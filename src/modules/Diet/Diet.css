@@ -609,15 +609,69 @@
   outline: none;
 }
 
-.slot-save-btn {
-  background: var(--primary);
-  color: white;
-  border: none;
-  border-radius: 50px;
-  padding: 4px 12px;
-  font-size: 0.75rem;
-  font-weight: 900;
-  cursor: pointer;
+/* ── Plan Viewer Tab ────────────────────────── */
+.diet-plan-viewer {
+  padding: 1.5rem 1.25rem 6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.ap-header-card {
+  background: #ffffff;
+  padding: 1.5rem;
+  border-radius: var(--radius-lg);
+  border: 1.5px solid var(--border);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.03);
+}
+
+.ap-title { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; flex-wrap: wrap; }
+.ap-title h2 { font-size: 1.5rem; font-weight: 950; color: var(--text-main); margin: 0; letter-spacing: -0.5px; }
+.icon-ai { color: var(--primary); }
+.badge-ai { background: rgba(255,51,102,0.1); color: var(--primary); padding: 3px 8px; border-radius: 4px; font-size: 0.65rem; font-weight: 900; text-transform: uppercase; }
+
+.ap-desc { font-size: 0.85rem; color: var(--text-dim); line-height: 1.5; margin-bottom: 1.25rem; }
+
+.btn-retake {
+  background: var(--bg-color); border: 1.2px solid var(--border); border-radius: 50px;
+  padding: 6px 14px; font-size: 0.75rem; font-weight: 850; color: var(--text-dim); cursor: pointer;
+  display: flex; align-items: center; gap: 6px; transition: all 0.2s;
+}
+.btn-retake:hover { border-color: var(--primary); color: var(--primary); }
+
+.plan-section-title {
+  font-size: 0.75rem; font-weight: 900; color: var(--text-dim); text-transform: uppercase;
+  letter-spacing: 0.8px; display: flex; align-items: center; gap: 8px; margin-bottom: 1rem;
+}
+
+.plan-macros-card {
+  background: #ffffff; padding: 1.5rem; border-radius: var(--radius-lg); border: 1.5px solid var(--border);
+}
+
+.plan-rings {
+  display: flex; justify-content: space-around; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem;
+}
+
+.target-note { font-size: 0.72rem; color: var(--text-dim); text-align: center; font-style: italic; }
+
+.plan-bottom-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+
+.plan-score-card, .plan-habits-card {
+  background: #ffffff; padding: 1.25rem; border-radius: var(--radius-lg); border: 1.5px solid var(--border);
+}
+
+.score-display { margin-bottom: 0.75rem; }
+.score-val { font-size: 2rem; font-weight: 950; color: var(--primary); display: block; line-height: 1; }
+.score-lvl { font-size: 0.75rem; font-weight: 800; color: var(--text-main); }
+.score-desc { font-size: 0.68rem; color: var(--text-dim); line-height: 1.4; }
+
+.habit-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
+.habit-item { display: flex; align-items: flex-start; gap: 8px; font-size: 0.75rem; color: var(--text-main); font-weight: 700; line-height: 1.4; }
+.habit-icon { color: var(--primary); margin-top: 2px; flex-shrink: 0; }
+
+@media (max-width: 630px) {
+  .plan-bottom-grid { grid-template-columns: 1fr; }
+  .plan-rings { gap: 1.5rem; justify-content: center; }
 }
 
 .fsm-item {
