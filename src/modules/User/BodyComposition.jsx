@@ -196,7 +196,7 @@ const BodyComposition = () => {
                                 <UploadCloud className="upload-icon" />
                                 <h3>Upload BCA Receipt</h3>
                                 <p className="text-secondary">Capture your Body Composition Analyzer printout and upload it for your records.</p>
-                                <button className="btn-premium secondary" disabled={loading}>
+                                <button className="btn-select-image" disabled={loading}>
                                     {loading ? 'Uploading...' : 'Select Image'}
                                 </button>
                             </div>
@@ -215,7 +215,7 @@ const BodyComposition = () => {
                                 <UploadCloud className="upload-icon" />
                                 <h3>Upload Physique Image</h3>
                                 <p className="text-secondary">A picture is worth a thousand numbers. Track your visual progress over time.</p>
-                                <button className="btn-premium secondary" disabled={loading}>
+                                <button className="btn-select-image" disabled={loading}>
                                     {loading ? 'Uploading...' : 'Select Image'}
                                 </button>
                             </div>

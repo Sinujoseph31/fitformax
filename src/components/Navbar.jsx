@@ -104,13 +104,12 @@ const Navbar = () => {
                       <span>{item.label}</span>
                     </NavLink>
                   ))}
-                  
-                  {/* Logout button in the grid for mobile */}
-                  <button className="more-menu-item logout-btn" onClick={handleLogout}>
-                    <div className="item-icon-circle logout-icon">
-                      <LogOut size={24} />
-                    </div>
-                    <span>Log Out</span>
+                </div>
+
+                <div className="more-menu-footer">
+                  <button className="btn-logout-drawer" onClick={handleLogout}>
+                    <LogOut size={20} />
+                    <span>Log Out of Session</span>
                   </button>
                 </div>
               </motion.div>

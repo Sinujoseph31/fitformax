@@ -229,7 +229,7 @@ export default function DietLibrary() {
       </div>
 
       {filteredDiets.length === 0 && (
-        <div style={{ textAlign: 'center', marginTop: '4rem', color: 'rgba(255,255,255,0.4)' }}>
+        <div style={{ textAlign: 'center', marginTop: '4rem', color: 'var(--text-dim)' }}>
           <p>No diets found matching your search.</p>
         </div>
       )}

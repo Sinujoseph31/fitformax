@@ -3,10 +3,9 @@
    ======================== */
 
 .diet-library-container {
-  padding: 2rem 1.5rem;
-  max-width: 1200px;
+  padding: 1.5rem 1rem 6rem;
+  max-width: 1000px;
   margin: 0 auto;
-  color: #fff;
 }
 
 .library-header {
@@ -25,19 +24,18 @@
 }
 
 .library-header h1 {
-  font-family: var(--font-display);
-  font-size: 2.5rem;
-  background: linear-gradient(135deg, #fff, #a1a1aa);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  margin: 0 0 10px;
-  line-height: 1.1;
+  font-size: 2.4rem;
+  font-weight: 950;
+  color: var(--text-main);
+  letter-spacing: -1.2px;
+  line-height: 1;
+  margin-bottom: 0.5rem;
 }
 
 .library-header p {
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 1.05rem;
-  margin: 0;
+  color: var(--text-dim);
+  font-size: 0.95rem;
+  font-weight: 600;
 }
 
 .header-actions-diet {
@@ -45,58 +43,66 @@
   gap: 12px;
 }
 
-.btn-add-custom {
-  background: linear-gradient(135deg, #00f5a0, #00d9ff);
-  color: #000;
-  border: none;
-  padding: 12px 20px;
-  border-radius: 12px;
-  font-weight: 800;
-  font-size: 0.95rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: all 0.2s;
-}
-
-.btn-add-custom:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(0, 245, 160, 0.3);
-}
-
 .btn-trigger-ai {
-  background: rgba(139, 92, 246, 0.15);
-  color: #c4b5fd;
-  border: 1px solid rgba(139, 92, 246, 0.4);
-  padding: 12px 20px;
-  border-radius: 12px;
-  font-weight: 800;
-  font-size: 0.95rem;
+  background: #0f172a; /* Slate 900 */
+  color: #ffffff;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 100px;
+  font-weight: 950;
+  font-size: 0.82rem;
   cursor: pointer;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
-  transition: all 0.2s;
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  white-space: nowrap;
+  min-width: 145px;
 }
 
 .btn-trigger-ai:hover {
-  background: rgba(139, 92, 246, 0.3);
-  color: #fff;
+  transform: translateY(-2px);
+  background: var(--primary);
+  box-shadow: 0 8px 25px var(--primary-glow);
+}
+
+.btn-add-custom {
+  background: #ffffff;
+  border: 1.5px solid var(--border);
+  color: var(--text-main);
+  padding: 10px 24px;
+  border-radius: 100px;
+  font-weight: 950;
+  font-size: 0.82rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s;
+  white-space: nowrap;
+  min-width: 145px;
+}
+
+.btn-add-custom:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
 }
 
 /* ========================
    Upgraded Search & Filters
    ======================== */
 .library-controls {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  padding: 1.5rem;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
+  background: #ffffff !important;
+  border: 1.5px solid var(--border);
   border-radius: 20px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 1.25rem !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.02);
 }
 
 .search-box-wrapper {
@@ -110,11 +116,10 @@
   position: relative;
   display: flex;
   align-items: center;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: var(--radius-lg);
+  background: var(--bg-page);
+  border: 1.2px solid var(--border);
+  border-radius: 16px;
   padding: 0 1.25rem;
-  transition: all 0.3s ease;
 }
 
 .search-input-group:focus-within {
@@ -130,10 +135,11 @@
 .search-input-group input {
   background: none;
   border: none;
-  color: #fff;
-  padding: 1.1rem 0;
+  color: var(--text-main);
+  padding: 0.85rem 0;
   padding-left: 1.75rem;
-  font-size: 1rem;
+  font-size: 0.95rem;
+  font-weight: 600;
   width: 100%;
   outline: none;
 }
@@ -162,7 +168,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  overflow-x: auto;
+  flex-wrap: wrap;
   padding-bottom: 4px;
 }
 
@@ -176,21 +182,21 @@
 }
 
 .search-suggestions button {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: var(--text-secondary);
-  padding: 5px 14px;
+  background: #fff;
+  border: 1.2px solid var(--border);
+  color: var(--text-main);
+  padding: 6px 14px;
   border-radius: 100px;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   cursor: pointer;
   white-space: nowrap;
   transition: all 0.2s;
-  font-weight: 600;
+  font-weight: 850;
 }
 
 .search-suggestions button:hover {
   background: var(--primary-glow);
-  color: #fff;
+  color: var(--primary);
   border-color: var(--primary);
 }
 
@@ -210,11 +216,10 @@
 
 .category-scroll {
   display: flex;
-  flex-wrap: wrap;
-  /* Changed to wrap instead of forcing horizontal rail */
   gap: 10px;
-  padding: 8px 0;
-  overflow: visible;
+  overflow-x: auto;
+  padding: 4px 0 12px;
+  scrollbar-width: none;
 }
 
 .category-scroll::-webkit-scrollbar {
@@ -224,18 +229,18 @@
 .cat-pill {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   white-space: nowrap;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.6);
+  background: #ffffff;
+  border: 1.2px solid var(--border);
+  color: var(--text-main);
   padding: 8px 18px;
   border-radius: 100px;
-  font-size: 0.85rem;
-  font-weight: 700;
+  font-size: 0.8rem;
+  font-weight: 950;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
 }
 
 .cat-count {
@@ -256,9 +261,9 @@
 
 .cat-pill.active {
   background: var(--primary);
-  color: #000;
+  color: #fff;
   border-color: var(--primary);
-  box-shadow: 0 10px 20px var(--primary-shadow);
+  box-shadow: 0 8px 16px var(--primary-glow);
 }
 
 .cat-pill.active .cat-count {
@@ -281,23 +286,20 @@
 }
 
 .diet-card {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 16px;
+  background: #ffffff;
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
   padding: 1.5rem;
   display: flex;
   flex-direction: column;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-  overflow: hidden;
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .diet-card:hover {
-  transform: translateY(-6px);
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(0, 245, 160, 0.4);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  transform: translateY(-4px);
+  border-color: var(--primary);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.05);
 }
 
 .diet-card.custom-card {
@@ -390,10 +392,11 @@
 }
 
 .diet-card p {
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 0.95rem;
-  line-height: 1.6;
-  margin: 0 0 1.5rem;
+  color: var(--text-dim);
+  font-size: 0.9rem;
+  font-weight: 650;
+  line-height: 1.5;
+  margin: 0 0 1.25rem;
   flex: 1;
 }
 
