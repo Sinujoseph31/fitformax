@@ -20,8 +20,16 @@
   z-index: 0;
 }
 
-.auth-bg-blob-1 { top: -100px; right: -100px; }
-.auth-bg-blob-2 { bottom: -100px; left: -100px; background: var(--accent-glow); }
+.auth-bg-blob-1 {
+  top: -100px;
+  right: -100px;
+}
+
+.auth-bg-blob-2 {
+  bottom: -100px;
+  left: -100px;
+  background: var(--accent-glow);
+}
 
 .auth-card {
   width: 100%;

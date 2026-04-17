@@ -1,262 +1,237 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Activity, ArrowRight, Cake, Ruler, Weight, Info } from 'lucide-react';
+import { Activity, ArrowRight, ArrowLeft, ShieldCheck, Zap, CheckCircle2 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
+import HoldToCommit from '../../components/HoldToCommit';
+import { TitanWheel, TitanRuler } from '../../components/TitanPickers';
 import './BodyMetricsSetup.css';
+
+// Focus area hotspots on our generated body map
+const FOCUS_AREAS = [
+    { id: 'chest', label: 'Chest', top: '25%', left: '50%' },
+    { id: 'abs', label: 'Abdominals', top: '45%', left: '50%' },
+    { id: 'arms', label: 'Arms', top: '35%', left: '30%' },
+    { id: 'legs', label: 'Legs', top: '70%', left: '50%' },
+    { id: 'back', label: 'Back', top: '35%', left: '70%' },
+];
 
 const BodyMetricsSetup = () => {
     const { userProfile, updateProfile } = useApp();
     const [step, setStep] = useState(1);
+    
+    // Detailed Bio-Data State (Revamped)
     const [gender, setGender] = useState(userProfile?.gender || '');
-    const [age, setAge] = useState(userProfile?.age || '');
-    const [height, setHeight] = useState(userProfile?.height || '');
-    const [weight, setWeight] = useState(userProfile?.weight || '');
-    const [bmi, setBmi] = useState(null);
-    const [bmiCategory, setBmiCategory] = useState('');
     const [goal, setGoal] = useState(userProfile?.goal || '');
+    const [focusAreas, setFocusAreas] = useState([]);
+    const [age, setAge] = useState(25);
+    const [height, setHeight] = useState(170);
+    const [weight, setWeight] = useState(70);
+    const [targetWeight, setTargetWeight] = useState(65);
+    
+    const [isAnalyzing, setIsAnalyzing] = useState(false);
 
-    const calculateBMI = () => {
-        if (!height || !weight || !age) return;
-        const hInMeters = height / 100;
-        const calculatedBmi = (weight / (hInMeters * hInMeters)).toFixed(1);
-        setBmi(calculatedBmi);
-
-        let category = '';
-        if (calculatedBmi < 18.5) category = 'Thin';
-        else if (calculatedBmi >= 18.5 && calculatedBmi <= 25) category = 'Normal';
-        else if (calculatedBmi > 25 && calculatedBmi <= 30) category = 'Overweight';
-        else category = 'Obese';
-
-        setBmiCategory(category);
-        setStep(3);
+    const toggleFocus = (id) => {
+        setFocusAreas(prev => 
+            prev.includes(id) ? prev.filter(a => a !== id) : [...prev, id]
+        );
     };
 
-    const handleSave = async () => {
-        try {
-            await updateProfile({
-                gender,
-                age: Number(age),
-                height: Number(height),
-                weight: Number(weight),
-                bmi: Number(bmi),
-                bmiCategory,
-                goal
-            });
-            // App.jsx will automatically re-evaluate the redirect once the profile updates
-        } catch (err) {
-            console.error('Failed to save onboarding data', err);
-        }
+    const handleFinalize = async () => {
+        setIsAnalyzing(true);
+        // Phase 1.3: Simulated AI Analysis Animation
+        setTimeout(async () => {
+            try {
+                await updateProfile({
+                    gender,
+                    goal,
+                    focusAreas,
+                    age: Number(age),
+                    height: Number(height),
+                    weight: Number(weight),
+                    targetWeight: Number(targetWeight),
+                    bmi: (weight / ((height/100) * (height/100))).toFixed(1),
+                    onboarded: true
+                });
+            } catch (err) {
+                console.error('Finalization Error', err);
+            } finally {
+                setIsAnalyzing(false);
+            }
+        }, 3000);
     };
+
+    const nextStep = () => setStep(s => s + 1);
+    const prevStep = () => setStep(s => s - 1);
+
+    // Monochrome effect logic
+    const grayscaleValue = Math.max(0, 100 - (step * 12));
 
     return (
-        <div className="body-setup-wrapper fade-in">
-            <div className="body-setup-container glass-card">
+        <div className="body-setup-wrapper" style={{ filter: `grayscale(${grayscaleValue}%)`, transition: 'filter 1.2s ease' }}>
+            <div className="body-setup-container titan-card">
+                
+                {/* Global Progress Header */}
                 <div className="setup-header">
-                    <h2>Body Metrics Setup</h2>
-                    <p>Let's calibrate FitformaX for you.</p>
-                </div>
-
-                <div className="setup-progress">
-                    <div className={`progress-step-item ${step >= 1 ? 'active' : ''}`}>
-                        <div className="progress-dot-wrapper">
-                            <div className="progress-dot" />
-                        </div>
-                        <span className="progress-label">Gender</span>
-                    </div>
-                    <div className={`progress-step-item ${step >= 2 ? 'active' : ''}`}>
-                        <div className="progress-dot-wrapper">
-                            <div className="progress-dot" />
-                        </div>
-                        <span className="progress-label">Details</span>
-                    </div>
-                    <div className={`progress-step-item ${step >= 3 ? 'active' : ''}`}>
-                        <div className="progress-dot-wrapper">
-                            <div className="progress-dot" />
-                        </div>
-                        <span className="progress-label">Result</span>
-                    </div>
-                    <div className={`progress-step-item ${step >= 4 ? 'active' : ''}`}>
-                        <div className="progress-dot-wrapper">
-                            <div className="progress-dot" />
-                        </div>
-                        <span className="progress-label">Goal</span>
+                    <div className="titan-step-indicator">STEP {step} OF 7</div>
+                    <div className="titan-progress-bar">
+                        <motion.div 
+                            className="titan-progress-fill" 
+                            animate={{ width: `${(step / 7) * 100}%` }} 
+                        />
                     </div>
                 </div>
 
                 <AnimatePresence mode="wait">
-                    {step === 1 && (
-                        <motion.div 
-                            key="step1"
-                            initial={{ x: 50, opacity: 0 }}
-                            animate={{ x: 0, opacity: 1 }}
-                            exit={{ x: -50, opacity: 0 }}
-                            className="setup-step"
-                        >
-                            <h3>What is your gender?</h3>
-                            <div className="gender-cards">
-                                <div 
-                                    className={`gender-card ${gender === 'male' ? 'selected' : ''}`}
-                                    onClick={() => setGender('male')}
-                                >
-                                    <div className="gender-icon male">
-                                        <img src="/male_avatar.png" alt="Male" className="avatar-img" />
+                    {isAnalyzing ? (
+                       <motion.div key="analyzing" className="setup-step analysis-mode">
+                          <div className="analysis-scanner">
+                              <Activity size={80} className="scan-icon" />
+                              <div className="scan-line" />
+                          </div>
+                          <h2>Synthesizing Bio-Plan</h2>
+                          <p>Mapping training vectors to your anatomical signature...</p>
+                       </motion.div>
+                    ) : (
+                        <>
+                            {/* Step 1: Gender */}
+                            {step === 1 && (
+                                <motion.div key="s1" className="setup-step" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+                                    <h2>Biological Orientation</h2>
+                                    <p className="step-subtitle">Identify your starting physiological baseline.</p>
+                                    <div className="gender-grid-v2">
+                                        {['male', 'female', 'other'].map(g => (
+                                            <div key={g} className={`gender-option-titan ${gender === g ? 'active' : ''}`} onClick={() => setGender(g)}>
+                                                <div className="titan-radio-dot" />
+                                                <span className="gender-label">{g.toUpperCase()}</span>
+                                            </div>
+                                        ))}
                                     </div>
-                                    <span>Male</span>
-                                </div>
-                                <div 
-                                    className={`gender-card ${gender === 'female' ? 'selected' : ''}`}
-                                    onClick={() => setGender('female')}
-                                >
-                                    <div className="gender-icon female">
-                                        <img src="/female_avatar.png" alt="Female" className="avatar-img" />
+                                    <button className="btn-titan primary full-width" disabled={!gender} onClick={nextStep}>Initiate Selection</button>
+                                </motion.div>
+                            )}
+
+                            {/* Step 2: Goal */}
+                            {step === 2 && (
+                                <motion.div key="s2" className="setup-step" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+                                    <button className="btn-back" onClick={prevStep}><ArrowLeft size={16} /></button>
+                                    <h2>Primary Directive</h2>
+                                    <p className="step-subtitle">What is your ultimate physical output?</p>
+                                    <div className="goal-selection-v2">
+                                        {[
+                                            { id: 'gain', label: 'MUSCLE BUILD', desc: 'Hypertrophy & Power focus' },
+                                            { id: 'loss', label: 'WEIGHT LOSS', desc: 'Shredding & Metabolic optimization' },
+                                            { id: 'performance', label: 'ATHLETIC PEAK', desc: 'Agility, Speed & Endurance' }
+                                        ].map(g => (
+                                            <div key={g.id} className={`goal-card-titan-v2 ${goal === g.id ? 'active' : ''}`} onClick={() => setGoal(g.id)}>
+                                                <div className="titan-radio-dot" />
+                                                <div className="goal-text-wrapper">
+                                                    <h4>{g.label}</h4>
+                                                    <p>{g.desc}</p>
+                                                </div>
+                                            </div>
+                                        ))}
                                     </div>
-                                    <span>Female</span>
-                                </div>
-                            </div>
-                            <button 
-                                className="btn-premium primary full-width"
-                                disabled={!gender}
-                                onClick={() => setStep(2)}
-                            >
-                                Continue <ArrowRight size={18} />
-                            </button>
-                        </motion.div>
-                    )}
+                                    <button className="btn-titan primary full-width" disabled={!goal} onClick={nextStep}>Secure Choice</button>
+                                </motion.div>
+                            )}
 
-                    {step === 2 && (
-                        <motion.div 
-                            key="step2"
-                            initial={{ x: 50, opacity: 0 }}
-                            animate={{ x: 0, opacity: 1 }}
-                            exit={{ x: -50, opacity: 0 }}
-                            className="setup-step"
-                        >
-                            <h3>Physical Details</h3>
-                            <p className="step-subtitle" style={{color: 'var(--text-secondary)'}}>Required to accurately calculate your BMI.</p>
-                            
-                            <div className="metrics-grid">
-                                <div className="input-group">
-                                    <label><Cake size={14} /> Age (years)</label>
-                                    <input 
-                                        type="number" 
-                                        value={age} 
-                                        onChange={(e) => setAge(e.target.value)} 
-                                        placeholder="0"
-                                        className="fx-input-premium"
-                                    />
-                                </div>
-                                <div className="input-group">
-                                    <label><Ruler size={14} /> Height (cm)</label>
-                                    <input 
-                                        type="number" 
-                                        value={height} 
-                                        onChange={(e) => setHeight(e.target.value)} 
-                                        placeholder="0"
-                                        className="fx-input-premium"
-                                    />
-                                </div>
-                                <div className="input-group full">
-                                    <label><Weight size={14} /> Weight (kg)</label>
-                                    <input 
-                                        type="number" 
-                                        value={weight} 
-                                        onChange={(e) => setWeight(e.target.value)} 
-                                        placeholder="0"
-                                        className="fx-input-premium"
-                                    />
-                                </div>
-                            </div>
-                            
-                            <div className="step-actions">
-                                <button className="btn-premium secondary" onClick={() => setStep(1)}>Back</button>
-                                <button 
-                                    className="btn-premium primary"
-                                    disabled={!age || !height || !weight}
-                                    onClick={calculateBMI}
-                                >
-                                    Calculate BMI <Activity size={18} />
-                                </button>
-                            </div>
-                        </motion.div>
-                    )}
+                            {/* Step 3: Area of Focus */}
+                            {step === 3 && (
+                                <motion.div key="s3" className="setup-step" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+                                    <button className="btn-back" onClick={prevStep}><ArrowLeft size={16} /></button>
+                                    <h2>Target Matrices</h2>
+                                    <p className="step-subtitle">Select anatomical zones for precision focus.</p>
+                                    <div className="anatomical-map-container">
+                                        <img 
+                                            src={gender === 'female' ? "/titan_body_map_female.png" : "/titan_body_map_male.png"} 
+                                            className="body-map-img" 
+                                            alt="Body Map" 
+                                        />
+                                        {FOCUS_AREAS.map(area => (
+                                            <div 
+                                                key={area.id} 
+                                                className={`map-hotspot ${focusAreas.includes(area.id) ? 'active' : ''}`}
+                                                style={{ top: area.top, left: area.left }}
+                                                onClick={() => toggleFocus(area.id)}
+                                            >
+                                                <div className="hotspot-ring" />
+                                                <div className="hotspot-center" />
+                                                <span className="hotspot-label">{area.label}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                    <button className="btn-titan primary full-width" disabled={focusAreas.length === 0} onClick={nextStep}>Confirm Targets</button>
+                                </motion.div>
+                            )}
 
-                    {step === 3 && (
-                        <motion.div 
-                            key="step3"
-                            initial={{ scale: 0.9, opacity: 0 }}
-                            animate={{ scale: 1, opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            className="setup-step"
-                        >
-                             <h3>Analysis Complete</h3>
-                             <p className="step-subtitle">Based on your physical profile.</p>
+                            {/* Step 4: Age */}
+                            {step === 4 && (
+                                <motion.div key="s4" className="setup-step" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+                                    <button className="btn-back" onClick={prevStep}><ArrowLeft size={16} /></button>
+                                    <h2>Metabolic Chronology</h2>
+                                    <p className="step-subtitle">Set your current biological age.</p>
+                                    <TitanWheel min={12} max={100} value={age} onChange={setAge} label="Years" />
+                                    <button className="btn-titan primary full-width" onClick={nextStep}>Set Age</button>
+                                </motion.div>
+                            )}
 
-                             <div className="bmi-result-card">
-                                 <div className="bmi-visual">
-                                     <div className="bmi-number-gradient">{bmi}</div>
-                                     <div className="bmi-label-small">BMI SCORE</div>
-                                 </div>
-                                 <div className={`bmi-category-badge ${bmiCategory.toLowerCase()}`}>
-                                     {bmiCategory}
-                                 </div>
-                             </div>
-                             
-                             <div className="bmi-info-box">
-                                 <Info size={16} />
-                                 <p>Your ideal BMI range is 18.5 - 25.0. This score helps us tailor your workout intensity and meal plans.</p>
-                             </div>
+                            {/* Step 5: Height */}
+                            {step === 5 && (
+                                <motion.div key="s5" className="setup-step" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+                                    <button className="btn-back" onClick={prevStep}><ArrowLeft size={16} /></button>
+                                    <h2>Vertical Bio-Signature</h2>
+                                    <div className="height-value-v2">{height} <span className="u">CM</span></div>
+                                    <TitanRuler min={100} max={250} value={height} onChange={setHeight} />
+                                    <button className="btn-titan primary full-width" onClick={nextStep}>Set Height</button>
+                                </motion.div>
+                            )}
 
-                             <div className="step-actions">
-                                <button className="btn-premium secondary" onClick={() => setStep(2)}>Back</button>
-                                <button className="btn-premium primary" onClick={() => setStep(4)}>
-                                    Define Goal <ArrowRight size={18} />
-                                </button>
-                             </div>
-                        </motion.div>
-                    )}
+                            {/* Step 6: Weight */}
+                            {step === 6 && (
+                                <motion.div key="s6" className="setup-step" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+                                    <button className="btn-back" onClick={prevStep}><ArrowLeft size={16} /></button>
+                                    <h2>Current Mass</h2>
+                                    <p className="step-subtitle">Calibrating starting weight vectors.</p>
+                                    <TitanWheel min={30} max={250} value={weight} onChange={setWeight} label="KG" />
+                                    <button className="btn-titan primary full-width" onClick={nextStep}>Set Mass</button>
+                                </motion.div>
+                            )}
 
-                    {step === 4 && (
-                        <motion.div 
-                            key="step4"
-                            initial={{ x: 50, opacity: 0 }}
-                            animate={{ x: 0, opacity: 1 }}
-                            exit={{ x: -50, opacity: 0 }}
-                            className="setup-step"
-                        >
-                            <h3>What is your goal?</h3>
-                            <p className="step-subtitle">This helps us personalize your workouts.</p>
-                            
-                            <div className="goal-grid-onboarding">
-                                {[
-                                    { id: 'Fat Loss', icon: '🔥', desc: 'Burn fat, stay lean' },
-                                    { id: 'Muscle Gain', icon: '💪', desc: 'Build size & strength' },
-                                    { id: 'Performance', icon: '⚡', desc: 'Agility & speed' }
-                                ].map(g => (
-                                    <div 
-                                        key={g.id} 
-                                        className={`goal-card-setup ${goal === g.id ? 'active' : ''}`}
-                                        onClick={() => setGoal(g.id)}
-                                    >
-                                        <span className="goal-icon-setup">{g.icon}</span>
-                                        <div className="goal-txt-setup">
-                                            <h4>{g.id}</h4>
-                                            <p>{g.desc}</p>
+                            {/* Step 7: Target Weight & BMI Analysis */}
+                            {step === 7 && (
+                                <motion.div key="s7" className="setup-step" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+                                    <button className="btn-back" onClick={prevStep}><ArrowLeft size={16} /></button>
+                                    <h2>Baseline Analysis</h2>
+                                    <p className="step-subtitle">Review your bio-metrics before finalizing.</p>
+                                    
+                                    <div className="bmi-display-card">
+                                        <div className="bmi-value-circle">
+                                            <span>BMI</span>
+                                            <strong>{(weight / Math.pow(height / 100, 2)).toFixed(1)}</strong>
+                                        </div>
+                                        <div className="bmi-status-text">
+                                            {(() => {
+                                                const bmi = (weight / Math.pow(height / 100, 2));
+                                                if (bmi < 18.5) return <span style={{ color: "var(--secondary)" }}>Underweight Baseline</span>;
+                                                if (bmi < 25) return <span style={{ color: "var(--primary)" }}>Optimal Standard</span>;
+                                                if (bmi < 30) return <span style={{ color: "var(--secondary)" }}>Elevated Baseline</span>;
+                                                return <span style={{ color: "var(--text-main)" }}>Titan Rebuild Target</span>;
+                                            })()}
                                         </div>
                                     </div>
-                                ))}
-                            </div>
-                            
-                            <div className="step-actions">
-                                <button className="btn-premium secondary" onClick={() => setStep(3)}>Back</button>
-                                <button 
-                                    className="btn-premium primary pulse"
-                                    disabled={!goal}
-                                    onClick={handleSave}
-                                >
-                                    Finish Setup <div className="fx-spinner-small" />
-                                </button>
-                            </div>
-                        </motion.div>
+
+                                    <div className="weight-comparisonv2">
+                                        <div className="weight-pill curr">START: {weight} KG</div>
+                                        <div className="weight-pill target">GOAL: {targetWeight} KG</div>
+                                    </div>
+                                    <TitanWheel min={30} max={250} value={targetWeight} onChange={setTargetWeight} label="KG" />
+                                    
+                                    <div className="finalize-container" style={{ marginTop: '1rem'}}>
+                                        <HoldToCommit onComplete={handleFinalize} text="INITIATE EVOLUTION" />
+                                    </div>
+                                </motion.div>
+                            )}
+                        </>
                     )}
                 </AnimatePresence>
             </div>

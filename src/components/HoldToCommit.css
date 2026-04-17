@@ -1,0 +1,87 @@
+.hold-commit-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.hold-commit-button {
+  position: relative;
+  width: 100%;
+  max-width: 300px;
+  height: 65px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 50px;
+  cursor: pointer;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  user-select: none;
+}
+
+.hold-commit-button.holding {
+  border-color: var(--primary);
+  box-shadow: 0 0 30px var(--primary-glow);
+}
+
+.hold-commit-bg {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  background: var(--titan-gradient);
+  opacity: 0.2;
+  transition: width 0.1s linear;
+}
+
+.hold-commit-text {
+  position: relative;
+  z-index: 2;
+  font-family: var(--font-display);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #fff;
+}
+
+.hold-commit-svg {
+  position: absolute;
+  right: 15px;
+  width: 32px;
+  height: 32px;
+  transform: rotate(-90deg);
+  z-index: 2;
+}
+
+.hold-commit-circle-bg {
+  fill: none;
+  stroke: var(--border);
+  stroke-width: 8;
+}
+
+.hold-commit-circle-progress {
+  fill: none;
+  stroke: var(--primary);
+  stroke-width: 8;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.1s linear;
+}
+
+.hold-commit-hint {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}

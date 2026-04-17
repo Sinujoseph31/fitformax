@@ -157,8 +157,9 @@ button.nav-item {
   width: var(--sidebar-width);
   display: flex;
   flex-direction: column;
-  border-right: 1px solid var(--border);
+  border-right: 2px solid var(--border);
   z-index: 100;
+  background: var(--bg-card); /* Pure White */
 }
 
 .sidebar-header {
@@ -167,7 +168,11 @@ button.nav-item {
 
 .sidebar-header h1 {
   font-size: 1.8rem;
-  font-weight: 800;
+  font-weight: 900;
+  color: var(--text-main);
+  background: var(--gradient-main);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .sidebar-nav {
@@ -184,24 +189,25 @@ button.nav-item {
   gap: 1rem;
   padding: 1rem 1.25rem;
   text-decoration: none;
-  color: var(--text-muted);
-  font-weight: 600;
+  color: var(--text-dim);
+  font-weight: 700;
   border-radius: var(--radius-md);
   transition: all 0.3s ease;
+  border: 1px solid transparent;
 }
 
 .sidebar-item:hover {
-  background: hsla(var(--h), var(--s), 20%, 0.3);
-  color: var(--text-main);
+  background: var(--bg-card-hover);
+  color: var(--primary);
 }
 
 .sidebar-item.active {
-  background: var(--primary-glow);
+  background: rgba(255, 51, 102, 0.05); /* Sunset light background */
   color: var(--primary);
-  border: 1px solid hsla(210, 100%, 60%, 0.2);
+  border: 1px solid rgba(255, 51, 102, 0.15);
 }
 
 .sidebar-footer {
   padding: 1rem;
-  border-top: 1px solid var(--border);
+  border-top: 2px solid var(--border);
 }

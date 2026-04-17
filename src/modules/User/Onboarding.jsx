@@ -32,29 +32,29 @@ export default function Onboarding({ onSwitchToLogin }) {
         </div>
 
         <form className="auth-form" onSubmit={handleSignup}>
-          <Input 
-            label="Full Name" 
-            placeholder="Alex Doe" 
-            value={form.name} 
-            onChange={e => setForm({...form, name: e.target.value})} 
+          <Input
+            label="Full Name"
+            placeholder="Alex Doe"
+            value={form.name}
+            onChange={e => setForm({ ...form, name: e.target.value })}
           />
-          <Input 
-            label="Email" 
+          <Input
+            label="Email"
             type="email"
-            placeholder="alex@example.com" 
-            value={form.email} 
-            onChange={e => setForm({...form, email: e.target.value})} 
+            placeholder="alex@example.com"
+            value={form.email}
+            onChange={e => setForm({ ...form, email: e.target.value })}
           />
-          <Input 
-            label="Password" 
+          <Input
+            label="Password"
             type="password"
-            placeholder="••••••••" 
-            value={form.password} 
-            onChange={e => setForm({...form, password: e.target.value})} 
+            placeholder="••••••••"
+            value={form.password}
+            onChange={e => setForm({ ...form, password: e.target.value })}
           />
-          
-          <Button 
-            fluid 
+
+          <Button
+            fluid
             type="submit"
             disabled={!form.name || !form.email || !form.password}
           >

@@ -1,415 +1,336 @@
+/* Pristine Light Mode Setup UI */
 .body-setup-wrapper {
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: radial-gradient(circle at center, #1a1a2e 0%, #0a0a0c 100%);
+    min-height: 100vh;
+    width: 100%;
+    background-color: var(--bg-color);
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 9999;
-}
-
-.body-setup-container {
-    width: 90%;
-    max-width: 550px;
-    padding: 3rem;
-    border-radius: var(--radius-xl);
-    background: rgba(255, 255, 255, 0.03);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-    display: flex;
-    flex-direction: column;
-    gap: 2.5rem;
-    text-align: center;
-}
-
-.setup-header h2 {
-    font-size: 2.4rem;
-    font-family: var(--font-outfit);
-    font-weight: 800;
-    background: linear-gradient(135deg, #fff 0%, #a5a5a5 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    margin-bottom: 0.5rem;
-}
-
-.setup-progress {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    margin-bottom: 1rem;
-    padding: 0 1rem;
-}
-
-/* Base line behind dots */
-.setup-progress::before {
-    content: '';
-    position: absolute;
-    top: 14px; /* Align with center of 28px dot wrapper */
-    left: 15%;
-    right: 15%;
-    height: 2px;
-    background: rgba(255, 255, 255, 0.05);
-    z-index: 0;
-}
-
-.progress-step-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.75rem;
-    flex: 1;
-    position: relative;
     z-index: 1;
+    padding: 2rem 1.5rem;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
-.progress-dot-wrapper {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    background: #0a0a0c;
-    border: 2px solid var(--surface-light);
+.body-setup-container.titan-card {
+    width: 100%;
+    max-width: 480px;
+    margin: auto;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    flex-direction: column;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    padding: 0;
 }
 
-.progress-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: var(--text-dim);
-    transition: all 0.4s ease;
-}
+/* Friendly Top Info */
+.setup-header { margin-bottom: 2rem; }
 
-.progress-step-item.active .progress-dot-wrapper {
-    border-color: var(--primary);
-    box-shadow: 0 0 15px var(--primary-glow);
-    transform: scale(1.1);
-}
-
-.progress-step-item.active .progress-dot {
-    background: var(--primary);
-    transform: scale(1.2);
-}
-
-.progress-label {
-    font-size: 0.8rem;
-    color: var(--text-dim);
-    font-weight: 600;
+.titan-step-indicator {
+    font-size: 0.95rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+    background: var(--gradient-main);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 1rem;
     text-transform: uppercase;
-    letter-spacing: 1px;
-    transition: all 0.3s ease;
+    font-family: var(--font-sans);
+    display: inline-block;
 }
 
-.progress-step-item.active .progress-label {
-    color: #fff;
-    text-shadow: 0 0 10px rgba(255,255,255,0.3);
+.titan-progress-bar {
+    width: 100%;
+    height: 10px;
+    background: rgba(0,0,0,0.05);
+    border-radius: 20px;
+    margin-bottom: 3rem;
+    overflow: hidden;
 }
 
-.setup-step h3 {
-    font-size: 1.6rem;
-    font-weight: 700;
+.titan-progress-fill {
+    height: 100%;
+    background: var(--gradient-main);
+    border-radius: 20px;
+    transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.setup-step h2 {
+    font-size: 2.8rem;
+    font-weight: 900;
     margin-bottom: 0.5rem;
-    color: #fff;
+    font-family: var(--font-sans);
+    color: var(--text-main);
+    line-height: 1.1;
+    letter-spacing: -1px;
 }
 
 .step-subtitle {
-    font-size: 0.95rem;
-    color: var(--text-secondary);
-    margin-bottom: 2rem;
+    color: var(--text-dim);
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin-bottom: 3rem;
 }
 
-/* Metrics Grid - More spacing and premium inputs */
-.metrics-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
-    text-align: left;
-    margin-bottom: 1.5rem;
+/* Big Bright White Cards */
+.gender-grid-v2, .goal-selection-v2 {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    margin-bottom: 3.5rem;
 }
 
-.input-group label {
+.gender-option-titan, .goal-card-titan-v2 {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: var(--text-secondary);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 0.75rem;
-    padding-left: 0.25rem;
+    padding: 1.5rem 2rem;
+    background: var(--bg-card); /* Pure white */
+    border: 2px solid transparent;
+    border-radius: var(--radius-lg);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+    cursor: pointer;
+    transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.fx-input-premium {
-    width: 100%;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: #fff;
-    padding: 1.1rem 1.25rem;
-    border-radius: var(--radius-md);
-    font-size: 1.1rem;
-    font-family: inherit;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+.gender-option-titan:hover, .goal-card-titan-v2:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
 }
 
-.fx-input-premium:focus {
-    outline: none;
-    background: rgba(255, 255, 255, 0.08);
+.gender-option-titan.active, .goal-card-titan-v2.active {
+    background: #ffffff;
     border-color: var(--primary);
-    box-shadow: 0 0 20px rgba(45, 114, 217, 0.2);
+    box-shadow: 0 15px 40px rgba(255, 51, 102, 0.15);
+    transform: scale(1.02);
 }
 
-/* BMI Result Card Improvements */
-.bmi-result-card {
-    background: linear-gradient(145deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%);
-    padding: 3.5rem 2rem;
-    border-radius: var(--radius-xl);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    margin: 1rem 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 2rem;
-}
-
-.bmi-visual {
+/* Super Friendly Bright Radios */
+.titan-radio-dot {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px solid var(--border-bright);
+    margin-right: 1.5rem;
     position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    background: var(--bg-color); /* Matches the background */
 }
 
-.bmi-number-gradient {
+.gender-option-titan.active .titan-radio-dot {
+    border-color: var(--primary);
+    background: var(--primary);
+}
+
+.gender-option-titan.active .titan-radio-dot::after {
+    content: '';
+    position: absolute;
+    inset: 8px;
+    background: #ffffff;
+    border-radius: 50%;
+}
+
+.goal-card-titan-v2::after { display: none; }
+
+/* Friendly Clean Typography */
+.gender-label, .goal-card-titan-v2 h4 {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--text-main);
+    font-family: var(--font-sans);
+}
+
+.goal-text-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.goal-card-titan-v2 h4 {
+    margin-bottom: 0.25rem;
+}
+
+.goal-card-titan-v2 p {
+    color: var(--text-dim);
+    font-size: 1.05rem;
+    font-weight: 500;
+}
+
+/* Beautiful 3D Avatar Map Container */
+.anatomical-map-container {
+    height: 500px;
+    margin-bottom: 3rem;
+    display: flex;
+    justify-content: center;
+    position: relative;
+    background: transparent;
+}
+
+.body-map-img {
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 20px 40px rgba(0,0,0,0.15)); /* High quality shadow on the 3D asset */
+}
+
+.map-hotspot {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    z-index: 10;
+    transform: translate(-50%, -50%);
+}
+
+.hotspot-center {
+    width: 12px;
+    height: 12px;
+    background: #ffffff;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    border: 2px solid var(--border-bright);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.map-hotspot.active .hotspot-center {
+    width: 20px;
+    height: 20px;
+    background: var(--gradient-main);
+    border-color: transparent;
+    box-shadow: 0 5px 15px rgba(255, 51, 102, 0.4);
+}
+
+.hotspot-label {
+    position: absolute;
+    left: 30px; top: 50%;
+    transform: translateY(-50%);
+    white-space: nowrap;
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: var(--text-dim);
+    background: #ffffff;
+    padding: 6px 14px;
+    border-radius: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+    opacity: 0.8;
+    transition: all 0.3s;
+}
+
+.map-hotspot.active .hotspot-label {
+    opacity: 1;
+    color: #ffffff;
+    background: var(--gradient-main);
+    transform: translateY(-50%) scale(1.05);
+}
+
+/* Huge Numbers */
+.height-value-v2 {
     font-size: 6rem;
     font-weight: 900;
-    line-height: 1;
-    letter-spacing: -3px;
-    background: linear-gradient(135deg, #fff 0%, var(--primary) 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: var(--text-main);
+    text-align: center;
+    margin-bottom: 2rem;
+    letter-spacing: -2px;
 }
 
-.bmi-label-small {
-    font-size: 0.7rem;
-    font-weight: 800;
-    color: var(--text-dim);
-    letter-spacing: 3px;
-    margin-top: 0.5rem;
+.height-value-v2 .u {
+    font-size: 1.8rem;
+    color: var(--primary);
+    letter-spacing: 0;
 }
 
-.bmi-category-badge {
-    display: inline-block;
-    padding: 0.75rem 2.5rem;
+/* Pill Selectors */
+.weight-comparisonv2 {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+.weight-pill {
+    padding: 1.25rem 2rem;
+    background: #ffffff;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.04);
     border-radius: 50px;
-    font-size: 0.95rem;
     font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-}
-
-.bmi-category-badge.thin { background: linear-gradient(135deg, #F39C12, #E67E22); color: #fff; }
-.bmi-category-badge.normal { background: linear-gradient(135deg, #27AE60, #2ECC71); color: #fff; }
-.bmi-category-badge.overweight { background: linear-gradient(135deg, #F1C40F, #D4AC0D); color: #000; }
-.bmi-category-badge.obese { background: linear-gradient(135deg, #E74C3C, #C0392B); color: #fff; }
-
-.bmi-info-box {
-    background: rgba(45, 114, 217, 0.05);
-    border: 1px solid rgba(45, 114, 217, 0.1);
-    border-radius: var(--radius-md);
-    padding: 1.25rem;
-    display: flex;
-    gap: 1rem;
-    text-align: left;
-    margin-top: 1rem;
-}
-
-.bmi-info-box p {
-    font-size: 0.9rem;
-    color: var(--text-secondary);
-    line-height: 1.5;
-}
-
-.step-actions {
-    display: flex;
-    gap: 1.25rem;
-    margin-top: 1rem;
-}
-
-.btn-premium {
-    flex: 1;
-    padding: 1.1rem;
-    border-radius: var(--radius-md);
-    font-weight: 700;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.75rem;
-}
-
-.btn-premium.primary {
-    background: var(--primary);
-    color: #fff;
-    border: none;
-    box-shadow: 0 10px 20px -5px var(--primary-shadow);
-}
-
-.btn-premium.primary:hover:not(:disabled) {
-    transform: translateY(-3px);
-    box-shadow: 0 15px 30px -5px var(--primary-shadow);
-}
-
-.btn-premium.secondary {
-    background: rgba(255, 255, 255, 0.05);
-    color: #fff;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.btn-premium.secondary:hover {
-    background: rgba(255, 255, 255, 0.08);
-}
-
-.btn-premium:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    transform: none !important;
-}
-/* Gender Selection Cards */
-.gender-cards {
-    display: flex;
-    gap: 1.5rem;
-    margin-bottom: 2rem;
-}
-
-.gender-card {
-    flex: 1;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: var(--radius-lg);
-    padding: 2rem 1rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-}
-
-.gender-card:hover {
-    background: rgba(255, 255, 255, 0.08);
-    transform: translateY(-5px);
-}
-
-.gender-card.selected {
-    border-color: var(--primary);
-    background: rgba(45, 114, 217, 0.1);
-    box-shadow: 0 0 20px rgba(45, 114, 217, 0.2);
-}
-
-.gender-icon {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.05);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    transition: all 0.3s ease;
-}
-
-.gender-card.selected .gender-icon {
-    background: var(--primary-glow);
-    transform: scale(1.1);
-}
-
-.avatar-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.gender-card span {
-    font-weight: 700;
     font-size: 1.1rem;
-    color: var(--text-secondary);
-}
-
-.gender-card.selected span {
-    color: #fff;
-}
-
-/* Goal Selection in Setup */
-.goal-grid-onboarding {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    margin-bottom: 2rem;
-}
-
-.goal-card-setup {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: var(--radius-lg);
-    padding: 1.25rem 1.5rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-align: left;
-}
-
-.goal-card-setup:hover {
-    background: rgba(255, 255, 255, 0.08);
-}
-
-.goal-card-setup.active {
-    border-color: var(--primary);
-    background: rgba(45, 114, 217, 0.1);
-    box-shadow: 0 0 15px rgba(45, 114, 217, 0.2);
-}
-
-.goal-icon-setup {
-    font-size: 2rem;
-    background: rgba(255,255,255,0.05);
-    width: 60px;
-    height: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: var(--radius-md);
-    transition: all 0.3s ease;
-}
-
-.goal-card-setup.active .goal-icon-setup {
-    background: var(--primary);
-    transform: scale(1.1);
-}
-
-.goal-txt-setup h4 {
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: #fff;
-    margin-bottom: 2px;
-}
-
-.goal-txt-setup p {
-    font-size: 0.85rem;
     color: var(--text-dim);
+    min-width: 120px;
+    text-align: center;
+    border: 2px solid transparent;
 }
 
-@media (max-width: 500px) {
-    .gender-cards {
-        flex-direction: column;
-    }
+.weight-pill.target {
+    border-color: var(--primary);
+    color: var(--primary);
+    box-shadow: 0 10px 25px rgba(255, 51, 102, 0.15);
+}
+
+/* Elite BMI Display */
+.bmi-display-card {
+    display: flex;
+    align-items: center;
+    background: var(--bg-card);
+    padding: 1.5rem;
+    border-radius: var(--radius-lg);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+    margin-bottom: 2rem;
+    gap: 1.5rem;
+}
+
+.bmi-value-circle {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 80px;
+    background: var(--bg-color);
+    border-radius: 50%;
+    border: 2px solid var(--border-bright);
+}
+
+.bmi-value-circle span {
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: var(--text-dim);
+    line-height: 1;
+}
+
+.bmi-value-circle strong {
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: var(--text-main);
+}
+
+.bmi-status-text {
+    font-size: 1.25rem;
+    font-weight: 800;
+    font-family: var(--font-sans);
+}
+
+/* Back Button */
+.btn-back {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    background: #ffffff;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    border: none;
+    color: var(--text-main);
+    cursor: pointer;
+    padding: 1rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.btn-back:hover {
+    transform: scale(1.1);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
 }
