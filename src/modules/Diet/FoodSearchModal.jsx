@@ -107,16 +107,13 @@ const SOURCE_BADGES = {
 };
 
 function SourceBadge({ item }) {
-  const src = item.isAI ? SOURCE_BADGES.ai : item.isLocal ? SOURCE_BADGES.local : SOURCE_BADGES.branded;
-  const { label, color, bg, border, Icon } = src;
+  const src = item.isAI ? 'ai' : item.isLocal ? 'local' : 'branded';
+  const label = item.isAI ? 'Neural' : item.isLocal ? 'Verified' : 'Branded';
+  const { Icon } = item.isAI ? SOURCE_BADGES.ai : item.isLocal ? SOURCE_BADGES.local : SOURCE_BADGES.branded;
+  
   return (
-    <span style={{
-      display: 'inline-flex', alignItems: 'center', gap: 3,
-      fontSize: '0.58rem', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.5px',
-      background: bg, color, border: `1px solid ${border}`,
-      padding: '2px 6px', borderRadius: 4,
-    }}>
-      <Icon size={8} /> {label}
+    <span className={`src-badge src-badge-${src}`}>
+      <Icon size={10} /> {label}
     </span>
   );
 }
@@ -332,25 +329,22 @@ export default function FoodSearchModal({ mealType, onAdd, onClose }) {
 
         {/* Search Bar with Voice */}
         <div className="fsm-search">
-          <Search size={18} className="fsm-search-icon" />
-          <input
-            ref={inputRef}
-            autoFocus
-            placeholder={isListening ? 'Listening… say your food name' : 'Search any food (e.g. Puttu, Chicken Curry)'}
-            value={isListening ? voiceTranscript || '' : query}
-            onChange={handleInput}
-          />
-          <button
-            className={`fsm-voice-btn ${isListening ? 'fsm-voice-active' : ''}`}
-            onClick={toggleVoice}
-            title={isListening ? 'Stop listening' : 'Voice search'}
-          >
-            {isListening ? (
-              <><VoiceWave active /><MicOff size={16} /></>
-            ) : (
-              <Mic size={16} />
-            )}
-          </button>
+          <div className="fsm-search-field">
+            <Search size={18} className="fsm-s-icon" />
+            <input
+              ref={inputRef}
+              autoFocus
+              placeholder={isListening ? 'Listening…' : 'Search food...'}
+              value={isListening ? voiceTranscript || '' : query}
+              onChange={handleInput}
+            />
+            <button
+              className={`fsm-v-btn ${isListening ? 'active' : ''}`}
+              onClick={toggleVoice}
+            >
+              {isListening ? <VoiceWave active /> : <Mic size={18} />}
+            </button>
+          </div>
           {loading && !isListening && <Loader size={16} className="fsm-loader spin" />}
         </div>
 

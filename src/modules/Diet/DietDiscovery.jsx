@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronRight, ChevronLeft, Sparkles, AlertCircle, Utensils, Target, Clock, CheckCircle } from 'lucide-react';
+import { ChevronRight, ChevronLeft, Sparkles, AlertCircle, Utensils, Target, Clock, CheckCircle, Loader } from 'lucide-react';
 
 const QUESTIONS = [
   {
@@ -103,7 +103,7 @@ export default function DietDiscovery({ onSave }) {
   };
 
   if (step === QUESTIONS.length) {
-    if (!result) return <div className="discovery-result fade-in" style={{padding: '4rem'}}><span className="spinner-small" style={{borderColor: '#00f5a0'}} /></div>;
+    if (!result) return <div className="discovery-result fade-in" style={{padding: '4rem', display: 'flex', justifyContent: 'center'}}><span className="spinner-small" style={{borderColor: 'var(--primary)'}} /></div>;
     return (
       <div className="discovery-result fade-in">
         <div className={`plan-result-card ${result.type === 'ai-custom' ? 'ai-glow' : ''}`}>
@@ -116,9 +116,9 @@ export default function DietDiscovery({ onSave }) {
           <div className="result-macros-preview">
             <div className="macro-bar-label">Recommended Macro Split</div>
             <div className="macro-bar-visual">
-              <div style={{ width: `${result.macros.protein}%`, background: '#60a5fa' }} title={`Protein ${result.macros.protein}%`}>P {result.macros.protein}%</div>
-              <div style={{ width: `${result.macros.carbs}%`, background: '#f59e0b' }} title={`Carbs ${result.macros.carbs}%`}>C {result.macros.carbs}%</div>
-              <div style={{ width: `${result.macros.fat}%`, background: '#f472b6' }} title={`Fat ${result.macros.fat}%`}>F {result.macros.fat}%</div>
+              <div className="macro-segment p" style={{ width: `${result.macros.protein}%` }}>P {result.macros.protein}%</div>
+              <div className="macro-segment c" style={{ width: `${result.macros.carbs}%` }}>C {result.macros.carbs}%</div>
+              <div className="macro-segment f" style={{ width: `${result.macros.fat}%` }}>F {result.macros.fat}%</div>
             </div>
           </div>
 
@@ -132,8 +132,8 @@ export default function DietDiscovery({ onSave }) {
           <div className="result-actions">
             {result.type === 'template' && (
               <button className="btn-enhance-ai" onClick={handleEnhanceWithAI} disabled={isGenerating}>
-                {isGenerating ? <span className="spinner-small" /> : <Sparkles size={18} />}
-                {isGenerating ? 'AI is formulating...' : '✨ Enhance with AI ✨'}
+                {isGenerating ? <Loader className="spin" size={18} /> : <Sparkles size={18} />}
+                {isGenerating ? 'AI is formulating...' : 'Enhance with AI'}
               </button>
             )}
             <button className="btn-save-plan" style={{marginTop: result.type==='ai-custom' ? '20px' : 0}} onClick={() => onSave(result)}>

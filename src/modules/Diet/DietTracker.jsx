@@ -17,7 +17,7 @@ const MASTER_MEALS = [
   { key: 'postworkout', label: 'Post-Workout',  icon: <Plus size={18} />,       color: '#8b5cf6', time: 'After Gym' },
   { key: 'dinner',      label: 'Dinner',        icon: <Moon size={18} />,       color: '#60a5fa', time: '7–9 PM' },
   { key: 'eveningsnack',label: 'Evening Snack', icon: <Apple size={18} />,      color: '#f472b6', time: '4–6 PM' },
-  { key: 'snacks',      label: 'General Snacks',icon: <Utensils size={18} />,    color: '#94a3b8', time: 'Anytime' },
+  { key: 'snacks',      label: 'General Snacks',icon: <Utensils size={18} />,    color: '#38bdf8', time: 'Anytime' },
 ];
 
 const DEFAULT_LAYOUT = ['breakfast', 'lunch', 'dinner', 'snacks'];
@@ -148,51 +148,45 @@ export default function DietTracker() {
 
   return (
     <div className="diet-tracker fade-in">
+      {/* ── Header ─── */}
       <div className="diet-header">
         <div className="diet-title-group">
           <h1>Meal Tracker</h1>
           <div className="date-navigator">
-            <button className="date-nav-btn" onClick={() => changeDate(-1)}><ChevronLeft size={20} /></button>
+            <button className="date-nav-btn" onClick={() => changeDate(-1)}><ChevronLeft size={18} /></button>
             <div className="date-display" onClick={setToday}>
-              <Calendar size={14} style={{ marginRight: 8, opacity: 0.6 }} />
+              <Calendar size={13} style={{ color: 'var(--primary)', opacity: 0.7 }} />
               <span>{formattedDate}</span>
             </div>
-            <button className="date-nav-btn" onClick={() => changeDate(1)}><ChevronRight size={20} /></button>
+            <button className="date-nav-btn" onClick={() => changeDate(1)}><ChevronRight size={18} /></button>
           </div>
         </div>
         <div className="diet-remaining">
           <span className="remaining-val">{remaining.toLocaleString()}</span>
-          <span className="remaining-label">kcal left</span>
+          <span className="remaining-label">kcal remaining</span>
         </div>
       </div>
 
-      <div className="macro-rings-card glass-card">
+      {/* ── Macro Summary Card ─── */}
+      <div className="macro-rings-card">
         <div className="macro-center-ring">
-          <MacroRing value={totals.calories} max={MACRO_GOALS.calories} color="#00f5a0" label="Calories" unit="kcal" size={120} />
+          <MacroRing value={totals.calories} max={MACRO_GOALS.calories} color="#FF3366" label="Calories" unit="kcal" size={120} />
         </div>
         <div className="macro-side-rings">
-          <MacroRing value={totals.protein} max={MACRO_GOALS.protein} color="#60a5fa" label="Protein"  unit="g" size={80} />
-          <MacroRing value={totals.carbs}   max={MACRO_GOALS.carbs}   color="#f59e0b" label="Carbs"    unit="g" size={80} />
-          <MacroRing value={totals.fat}     max={MACRO_GOALS.fat}     color="#f472b6" label="Fat"      unit="g" size={80} />
+          <MacroRing value={totals.protein} max={MACRO_GOALS.protein} color="#3b82f6" label="Protein" unit="g" size={80} />
+          <MacroRing value={totals.carbs}   max={MACRO_GOALS.carbs}   color="#FF9933" label="Carbs"   unit="g" size={80} />
+          <MacroRing value={totals.fat}     max={MACRO_GOALS.fat}     color="#8b5cf6" label="Fat"     unit="g" size={80} />
         </div>
       </div>
 
+      {/* ── Meal Cards ─── */}
       <div className="meal-cards">
         {activeKeys.map(key => {
           let master = MASTER_MEALS.find(m => m.key === key);
-          
           if (!master && key.startsWith('protocol_slot_')) {
-             master = {
-                 key: key,
-                 label: 'Protocol Node',
-                 icon: <Sparkles size={18} />,
-                 color: '#8b5cf6',
-                 time: 'Scheduled'
-             };
-          } else if (!master) {
-             return null;
-          }
-          
+            master = { key, label: 'Protocol Node', icon: <Sparkles size={18} />, color: '#8b5cf6', time: 'Scheduled' };
+          } else if (!master) return null;
+
           const meta = slotMeta[key] || {};
           const label = meta.label || master.label;
           const time = meta.time || master.time;
@@ -202,17 +196,17 @@ export default function DietTracker() {
           const isEditing = editingSlot?.key === key;
 
           return (
-            <motion.div key={key} className="meal-card glass-card" layout>
+            <motion.div key={key} className="meal-card" layout>
               <div className="meal-card-header" onClick={() => !isEditing && setExpanded(p => ({ ...p, [key]: !p[key] }))}>
-                <div className="meal-icon-wrap" style={{ background: master.color + '22', border: `1px solid ${master.color}44` }}>
+                <div className="meal-icon-wrap" style={{ background: master.color + '18', border: `1px solid ${master.color}33` }}>
                   <span style={{ color: master.color }}>{master.icon}</span>
                 </div>
-                
+
                 <div className="meal-card-title">
                   {isEditing ? (
                     <div className="slot-edit-fields" onClick={e => e.stopPropagation()}>
-                      <input className="slot-edit-input" value={editingSlot.label} onChange={e => setEditingSlot({...editingSlot, label: e.target.value})} autoFocus/>
-                      <input className="slot-edit-time" value={editingSlot.time} onChange={e => setEditingSlot({...editingSlot, time: e.target.value})}/>
+                      <input className="slot-edit-input" value={editingSlot.label} onChange={e => setEditingSlot({...editingSlot, label: e.target.value})} autoFocus />
+                      <input className="slot-edit-time" value={editingSlot.time} onChange={e => setEditingSlot({...editingSlot, time: e.target.value})} />
                     </div>
                   ) : (
                     <>
@@ -225,19 +219,19 @@ export default function DietTracker() {
                 <div className="meal-card-right">
                   {mealCals > 0 && <span className="meal-cal-badge" style={{ color: master.color }}>{mealCals} kcal</span>}
                   {isEditing ? (
-                    <button className="slot-save-btn" onClick={(e) => { e.stopPropagation(); saveSlotEdit(); }}>Save</button>
+                    <button className="slot-save-btn" onClick={e => { e.stopPropagation(); saveSlotEdit(); }}>Save</button>
                   ) : (
-                    isOpen && <button className="slot-edit-trigger" onClick={(e) => { e.stopPropagation(); setEditingSlot({ key, label, time }); }}><Settings size={12} /></button>
+                    isOpen && <button className="slot-edit-trigger" onClick={e => { e.stopPropagation(); setEditingSlot({ key, label, time }); }}><Settings size={12} /></button>
                   )}
-                  {!isEditing && <button className="meal-slot-remove" onClick={(e) => removeMealSlot(key, e)}><Trash2 size={14} /></button>}
-                  {isOpen ? <ChevronUp size={18} opacity={0.4} /> : <ChevronDown size={18} opacity={0.4} />}
+                  {!isEditing && <button className="meal-slot-remove" onClick={e => removeMealSlot(key, e)}><Trash2 size={14} /></button>}
+                  {isOpen ? <ChevronUp size={18} opacity={0.35} /> : <ChevronDown size={18} opacity={0.35} />}
                 </div>
               </div>
 
               <AnimatePresence>
                 {isOpen && (
                   <motion.div className="meal-card-body" initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }}>
-                    {foods.length === 0 && <p className="meal-empty">No foods logged yet.</p>}
+                    {foods.length === 0 && <p className="meal-empty">No foods logged yet — tap below to add.</p>}
                     {foods.map(food => (
                       <div key={food.id} className="food-row">
                         <div className="food-row-info">
@@ -258,7 +252,7 @@ export default function DietTracker() {
         })}
 
         <button className="add-slot-trigger" onClick={() => setAddSlotOpen(true)}>
-          <Plus size={20} /> Add New Meal Slot
+          <Plus size={20} /> Add Meal Slot
         </button>
       </div>
 

@@ -9,12 +9,9 @@ export default function Diet() {
   const [activePlan, setActivePlan] = useState(null);
 
   useEffect(() => {
-    // Check if the user already has a saved plan
     const savedPlan = localStorage.getItem('fx_diet_plan');
     if (savedPlan) {
-      try {
-        setActivePlan(JSON.parse(savedPlan));
-      } catch (err) {}
+      try { setActivePlan(JSON.parse(savedPlan)); } catch (err) {}
     }
   }, []);
 
@@ -30,14 +27,15 @@ export default function Diet() {
 
   return (
     <div className="diet-page fade-in">
+      {/* ── Premium Tab Bar ── */}
       <div className="diet-tabs-nav">
-        <button 
+        <button
           className={`diet-tab ${activeTab === 'tracker' ? 'active' : ''}`}
           onClick={() => setActiveTab('tracker')}
         >
           Daily Tracker
         </button>
-        <button 
+        <button
           className={`diet-tab ${activeTab === 'plan' ? 'active' : ''}`}
           onClick={() => setActiveTab('plan')}
         >
@@ -47,10 +45,9 @@ export default function Diet() {
 
       <div className="diet-tab-content">
         {activeTab === 'tracker' && <DietTracker />}
-        
         {activeTab === 'plan' && (
-          activePlan 
-            ? <DietPlanViewer activePlan={activePlan} onRetake={handleRetake} /> 
+          activePlan
+            ? <DietPlanViewer activePlan={activePlan} onRetake={handleRetake} />
             : <DietDiscovery onSave={handlePlanSave} />
         )}
       </div>
