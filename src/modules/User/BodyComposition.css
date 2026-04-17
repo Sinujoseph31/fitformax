@@ -1,461 +1,150 @@
-/* ═══════════════════════════════════════════════
-   Body Composition Tracker — "Dawn" Light Mode
-   ═══════════════════════════════════════════════ */
+:root {
+  --text-main: #0f172a;
+  --text-dim: #64748b;
+  --text-muted: #94a3b8;
+  --bg-page: #f8fafc;
+  --bg-card: #ffffff;
+  --border: #e2e8f0;
+  --border-bright: #f1f5f9;
+  --primary: #FF3366;
+  --primary-glow: rgba(255, 51, 102, 0.1);
+}
 
 .composition-page {
-    padding: 2.5rem;
-    max-width: 900px;
+    padding: 1rem 1rem 6rem;
+    max-width: 800px;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
-    gap: 2.5rem;
-}
-
-/* ── Header ──────────────────────────────────── */
-.composition-header {
-    text-align: left;
+    gap: 1.5rem;
 }
 
 .composition-header h1 {
-    font-size: 2.6rem;
-    font-weight: 900;
-    margin-bottom: 0.75rem;
-    color: var(--text-main); /* ✅ Fixed: was white-on-white gradient */
-    letter-spacing: -1px;
-    line-height: 1.1;
+    font-size: 2.4rem;
+    font-weight: 950;
+    margin-bottom: 0.5rem;
+    color: var(--text-main) !important;
+    letter-spacing: -1.2px;
+    line-height: 1;
+    text-shadow: none !important;
+    -webkit-text-fill-color: initial !important;
+    background: none !important;
 }
 
 .composition-header p {
-    font-size: 1rem;
+    font-size: 0.9rem;
     color: var(--text-dim);
-    max-width: 600px;
-    line-height: 1.6;
+    font-weight: 600;
 }
 
-/* ── Tabs ────────────────────────────────────── */
 .composition-tabs {
     display: flex;
-    flex-direction: row;
     background: #ffffff;
-    padding: 0.4rem;
-    border-radius: 20px;
+    padding: 0.25rem;
+    border-radius: 50px;
     border: 1.5px solid var(--border);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.04);
-    width: 100%;
-    gap: 0.25rem;
-    overflow-x: auto; /* allow scroll on very small screens */
-    scrollbar-width: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
 }
-
-.composition-tabs::-webkit-scrollbar { display: none; }
 
 .comp-tab {
     flex: 1;
-    min-width: 120px; /* prevent text from cutting off */
-    padding: 0.85rem 1.25rem;
-    background: transparent;
+    padding: 0.65rem 1rem;
     border: none;
-    color: var(--text-dim);
-    font-weight: 700;
-    font-size: 0.9rem;
-    border-radius: 14px;
+    color: var(--text-main);
+    font-weight: 900;
+    font-size: 0.82rem;
+    border-radius: 50px;
     cursor: pointer;
-    transition: all 0.25s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    white-space: nowrap;
-}
-
-.comp-tab:hover {
-    background: var(--bg-color);
-    color: var(--text-main); /* ✅ Fixed: text was going white on light bg */
+    transition: all 0.2s;
 }
 
 .comp-tab.active {
-    background: var(--gradient-main);
+    background: var(--primary);
     color: #ffffff;
-    box-shadow: 0 6px 18px rgba(255,51,102,0.25);
+    box-shadow: 0 4px 12px var(--primary-glow);
 }
 
-/* ── Content Panel ───────────────────────────── */
 .comp-content {
     background: #ffffff;
     border: 1.5px solid var(--border);
-    border-radius: var(--radius-xl);
-    padding: 2.5rem;
-    min-height: 420px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+    border-radius: 24px;
+    padding: 1.5rem;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.02);
 }
 
-/* ── Manual Form ─────────────────────────────── */
 .manual-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
 }
 
 .form-group label {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    margin-bottom: 0.6rem;
-    font-size: 0.78rem;
+    font-size: 0.65rem;
     color: var(--text-dim);
     text-transform: uppercase;
-    letter-spacing: 1.5px;
-    font-weight: 700;
+    letter-spacing: 1px;
+    font-weight: 950;
+    margin-bottom: 0.5rem;
+    display: block;
 }
 
 .fx-input-premium {
     width: 100%;
-    background: var(--bg-color);
-    border: 1.5px solid var(--border);
+    background: var(--bg-page);
+    border: 1.2px solid var(--border);
     color: var(--text-main);
-    padding: 1rem 1.25rem;
-    border-radius: var(--radius-md);
-    font-size: 1rem;
-    font-family: var(--font-sans);
-    transition: all 0.2s ease;
+    padding: 0.85rem 1rem;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    font-weight: 800;
 }
 
 .fx-input-premium:focus {
+    background: #fff;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px var(--primary-glow);
     outline: none;
-    background: #ffffff;
-    border-color: var(--primary);
-    box-shadow: 0 0 0 4px rgba(255,51,102,0.1);
 }
 
-.fx-input-premium::placeholder {
-    color: var(--border-bright);
-}
-
-/* ── Upload Areas ────────────────────────────── */
 .upload-area {
-    border: 2px dashed var(--border-bright);
-    border-radius: var(--radius-xl);
-    padding: 3.5rem 2rem;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.35s ease;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1.25rem;
-    background: var(--bg-color);
-}
-
-.upload-area:hover {
-    border-color: var(--primary);
-    background: rgba(255,51,102,0.03);
-    transform: translateY(-4px);
-}
-
-.upload-icon {
-    width: 56px;
-    height: 56px;
-    color: var(--primary);
+    border: 2px dashed var(--border);
+    border-radius: 20px;
+    padding: 2.5rem 1.5rem;
+    background: var(--bg-page);
 }
 
 .upload-area h3 {
-    font-size: 1.4rem;
-    font-weight: 800;
+    font-size: 1.2rem;
+    font-weight: 950;
     color: var(--text-main);
 }
 
-.upload-area p {
-    color: var(--text-dim);
-    font-size: 0.95rem;
-    max-width: 380px;
-}
-
-/* ── Reference Images ────────────────────────── */
-.sample-images {
-    display: flex;
-    gap: 1.5rem;
-    margin-top: 2rem;
-}
-
-.sample-card {
-    flex: 1;
-    background: var(--bg-color);
-    border-radius: var(--radius-lg);
-    padding: 1.5rem;
-    text-align: center;
-    border: 1px solid var(--border);
-    transition: 0.3s ease;
-}
-
-.sample-card:hover {
-    border-color: var(--primary);
-    transform: translateY(-3px);
-}
-
-.sample-placeholder {
-    aspect-ratio: 3 / 4;
-    height: 280px;
-    background: #ffffff;
-    border-radius: var(--radius-md);
-    margin-bottom: 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    border: 1px solid var(--border);
-}
-
-.sample-ref-img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    padding: 10px;
-}
-
-.sample-card h4 {
-    color: var(--text-main);
-    font-weight: 800;
-    margin-bottom: 0.4rem;
-}
-
-.sample-card p {
-    font-size: 0.88rem;
-    color: var(--text-dim);
-}
-
-/* ── Buttons ─────────────────────────────────── */
-.btn-premium {
-    padding: 1rem 2rem;
-    border-radius: 50px;
-    font-weight: 700;
-    font-size: 0.95rem;
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.75rem;
-    font-family: var(--font-sans);
-}
-
-.btn-premium.primary {
-    background: var(--gradient-main);
-    color: #fff;
-    border: none;
-    box-shadow: 0 8px 20px rgba(255,51,102,0.25);
-}
-
-.btn-premium.secondary {
-    background: #ffffff;
-    color: var(--text-main);
-    border: 1.5px solid var(--border);
-}
-
-.btn-premium:hover:not(:disabled) {
-    transform: translateY(-3px);
-}
-
-.btn-premium.primary:hover:not(:disabled) {
-    box-shadow: 0 12px 28px rgba(255,51,102,0.4);
-}
-
-/* ── Success Banner ──────────────────────────── */
-.success-banner {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    background: rgba(22,163,74,0.08);
-    border: 1px solid rgba(22,163,74,0.2);
-    border-radius: var(--radius-md);
-    padding: 1rem 1.5rem;
-    color: #16a34a;
-    margin-top: 1.5rem;
-    font-weight: 700;
-}
-
-/* ── History Section ─────────────────────────── */
 .recent-history-section {
-    margin-top: 3rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    padding-top: 2.5rem;
-    border-top: 1.5px solid var(--border);
-}
-
-.section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.title-with-icon {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px dashed var(--border);
 }
 
 .title-with-icon h3 {
-    font-size: 1.25rem;
-    font-weight: 800;
+    font-size: 1.1rem;
+    font-weight: 950;
     color: var(--text-main);
-}
-
-.icon-blue { color: var(--primary); }
-
-.count-badge {
-    background: rgba(255,51,102,0.07);
-    padding: 0.35rem 1rem;
-    border-radius: 50px;
-    font-size: 0.78rem;
-    font-weight: 700;
-    color: var(--primary);
-    border: 1px solid rgba(255,51,102,0.15);
-}
-
-.history-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
 }
 
 .history-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1.25rem 1.5rem;
     background: #ffffff;
-    border: 1.5px solid var(--border);
-    border-radius: var(--radius-lg);
-    transition: all 0.2s ease;
-}
-
-.history-item:hover {
-    border-color: var(--primary);
-    transform: translateX(4px);
-}
-
-.history-info {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.history-main {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    flex-wrap: wrap;
-}
-
-.history-date {
-    font-weight: 800;
-    color: var(--text-main);
-    font-size: 1rem;
-}
-
-.history-method {
-    font-size: 0.65rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: var(--text-dim);
-    background: var(--bg-color);
-    padding: 0.25rem 0.75rem;
-    border-radius: 50px;
-    border: 1px solid var(--border);
-}
-
-.history-stats {
-    display: flex;
-    gap: 0.75rem;
-    flex-wrap: wrap;
-}
-
-.stat-pill {
-    display: flex;
-    align-items: center;
-    gap: 0.35rem;
-    font-size: 0.82rem;
-    color: var(--text-dim);
-    font-weight: 600;
-}
-
-.stat-pill svg { color: var(--primary); }
-
-.history-delete-btn {
-    background: rgba(239,68,68,0.06);
-    border: 1px solid rgba(239,68,68,0.15);
-    color: #ef4444;
-    width: 34px;
-    height: 34px;
-    border-radius: var(--radius-md);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
+    padding: 0.85rem 1.25rem;
+    border: 1.2px solid var(--border);
+    border-radius: 16px;
     transition: all 0.2s;
-    flex-shrink: 0;
 }
 
-.history-delete-btn:hover {
-    background: #ef4444;
-    color: white;
-}
+.history-date { font-weight: 950; color: var(--text-main); font-size: 0.9rem; }
+.history-method { font-size: 0.6rem; font-weight: 950; padding: 2px 8px; border-radius: 4px; background: var(--bg-page); color: var(--text-dim); }
 
-.empty-history {
-    padding: 3rem;
-    text-align: center;
-    color: var(--text-dim);
-    background: var(--bg-color);
-    border-radius: var(--radius-lg);
-    border: 1.5px dashed var(--border-bright);
-    font-weight: 600;
-}
+.stat-pill { font-size: 0.75rem; font-weight: 800; color: var(--text-dim); }
 
-/* ── Mobile Responsive ───────────────────────── */
-@media (max-width: 768px) {
-    .composition-page {
-        padding: 1.25rem;
-    }
-
-    .composition-header h1 {
-        font-size: 1.9rem;
-    }
-
-    .composition-tabs {
-        border-radius: 16px;
-    }
-
-    .comp-tab {
-        min-width: 100px;
-        padding: 0.75rem 1rem;
-        font-size: 0.82rem;
-    }
-
-    .comp-content {
-        padding: 1.5rem;
-    }
-
-    .manual-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .sample-images {
-        flex-direction: column;
-    }
-
-    .sample-placeholder {
-        height: 360px;
-    }
-
-    .history-item {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.75rem;
-    }
-
-    .history-delete-btn {
-        align-self: flex-end;
-    }
+@media (max-width: 600px) {
+    .comp-tab { min-width: 80px; font-size: 0.75rem; padding: 0.5rem; }
 }

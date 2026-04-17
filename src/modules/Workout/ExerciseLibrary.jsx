@@ -114,10 +114,8 @@ export default function ExerciseLibrary() {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
           <button 
+            className="btn-custom-add"
             onClick={() => setIsAddingCustom(true)}
-            style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(255,255,255,0.1)', border: 'none', padding: '8px 16px', borderRadius: '8px', color: 'white', cursor: 'pointer', fontWeight: 800, fontSize: '0.8rem', whiteSpace: 'nowrap', transition: 'background 0.2s' }}
-            onMouseOver={e => e.currentTarget.style.background = 'rgba(255,255,255,0.2)'}
-            onMouseOut={e => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
           >
             <Plus size={16} /> Custom
           </button>
@@ -135,7 +133,7 @@ export default function ExerciseLibrary() {
             className={`cat-pill ${activeCategory === 'All' ? 'active' : ''}`}
             onClick={() => setActiveCategory('All')}
           >
-            All <span className="cat-count">{allExercises.length}</span>
+            <span className="cat-label">All</span> <span className="cat-count">{allExercises.length}</span>
           </button>
           {MUSCLE_GROUPS.map(cat => {
             const count = allExercises.filter(ex => ex.category === cat).length;
@@ -145,7 +143,7 @@ export default function ExerciseLibrary() {
                 className={`cat-pill ${activeCategory === cat ? 'active' : ''}`}
                 onClick={() => setActiveCategory(cat)}
               >
-                {cat} <span className="cat-count">{count}</span>
+                <span className="cat-label">{cat}</span> <span className="cat-count">{count}</span>
               </button>
             );
           })}

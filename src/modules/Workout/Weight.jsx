@@ -86,7 +86,7 @@ export default function Weight() {
       animate={{ opacity: 1, y: 0 }}
     >
       <header className="page-header">
-        <h1 className="text-gradient">Weight Tracking</h1>
+        <h1>Body Metrics</h1>
         <p>Stay consistent with your {userProfile?.goal?.toLowerCase()} plan.</p>
       </header>
 
@@ -94,8 +94,8 @@ export default function Weight() {
         <section className="input-section">
           <Card className="glass-card log-card">
             <div className="card-icon-header">
-              <Scale size={24} className="text-gradient" />
-              <h3>Log Entry</h3>
+              <Scale size={20} color="var(--primary)" />
+              <h3>New Entry</h3>
             </div>
             <div className="input-row">
               <Input 
@@ -127,8 +127,8 @@ export default function Weight() {
 
         <section className="history-section">
           <div className="section-header">
-            <History size={20} />
-            <h3>Log History</h3>
+            <History size={16} />
+            <h3>History Logs</h3>
           </div>
           <div className="history-list">
             {weights.length === 0 && !loading && (
@@ -152,8 +152,8 @@ export default function Weight() {
                   </div>
                   <div className="h-metrics">
                     {diff !== null && (
-                      <span className={`h-diff ${diff > 0 ? 'up' : 'down'}`}>
-                        {diff > 0 ? `+${diff}` : diff} kg
+                      <span className={`h-diff ${Number(diff) > 0 ? 'up' : 'down'}`}>
+                        {Number(diff) > 0 ? `+${diff}` : diff}
                       </span>
                     )}
                     <div className="h-main">

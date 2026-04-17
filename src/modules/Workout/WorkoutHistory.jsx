@@ -15,7 +15,6 @@ import {
 import { apiCall } from '../../utils/api';
 import { useApp } from '../../context/AppContext';
 import { useNavigate } from 'react-router-dom';
-import Card from '../../components/Card';
 import Weight from './Weight';
 import ExerciseLibrary from './ExerciseLibrary';
 import './WorkoutHistory.css';
@@ -53,11 +52,11 @@ export default function WorkoutHistory() {
       animate={{ opacity: 1, y: 0 }}
     >
       <header className="page-header">
-        <h1 className="text-gradient">Training History</h1>
+        <h1>Training History</h1>
         <p>Review your sessions and track your gains.</p>
       </header>
 
-      <div className="history-tabs glass">
+      <div className="history-tabs">
         <button 
           className={activeTab === 'sessions' ? 'active' : ''} 
           onClick={() => setActiveTab('sessions')}
@@ -89,17 +88,17 @@ export default function WorkoutHistory() {
               className="sessions-list"
             >
               {workouts.length === 0 && !loading && (
-                <div className="empty-state glass fade-in">
+                <div className="empty-state fade-in">
                   <div className="empty-icon-ring overlay">
                     <Dumbbell size={40} className="floating" />
                   </div>
                   <h3>No Training Data</h3>
                   <p>You haven't recorded any sessions yet. Build your first routine or explore the exercise library!</p>
                   <div className="empty-actions">
-                    <button className="primary-glass-btn" onClick={() => navigate('/')}>
+                    <button className="his-btn-primary" onClick={() => navigate('/')}>
                       Start Workout
                     </button>
-                    <button className="secondary-glass-btn" onClick={() => setActiveTab('library')}>
+                    <button className="his-btn-secondary" onClick={() => setActiveTab('library')}>
                       Browse Library
                     </button>
                   </div>
@@ -107,9 +106,9 @@ export default function WorkoutHistory() {
               )}
 
               {workouts.map((w, idx) => (
-                <Card 
+                <div 
                   key={w._id} 
-                  className={`session-card glass ${expandedId === w._id ? 'expanded' : ''}`}
+                  className={`session-card ${expandedId === w._id ? 'expanded' : ''}`}
                   onClick={() => toggleExpand(w._id)}
                 >
                   <div className="session-summary-row">
@@ -168,7 +167,7 @@ export default function WorkoutHistory() {
                       </motion.div>
                     )}
                   </AnimatePresence>
-                </Card>
+                </div>
               ))}
             </motion.div>
           )}
