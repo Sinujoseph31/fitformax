@@ -70,4 +70,49 @@ router.delete('/diet/:id', async (req, res) => {
   }
 });
 
+// Update Workout Plan
+router.patch('/workout/:id', async (req, res) => {
+  try {
+    const updateData = { ...req.body };
+    
+    // Always reset status to pending on update unless admin
+    if (req.user.role !== 'admin') {
+      updateData.status = 'pending';
+    }
+
+    const plan = await WorkoutPlan.findOneAndUpdate(
+      { _id: req.params.id, user: req.user._id },
+      updateData,
+      { new: true }
+    );
+    
+    if (!plan) return res.status(404).json({ message: 'Plan not found' });
+    res.json(plan);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
+// Update Diet Plan
+router.patch('/diet/:id', async (req, res) => {
+  try {
+    const updateData = { ...req.body };
+    
+    if (req.user.role !== 'admin') {
+      updateData.status = 'pending';
+    }
+
+    const plan = await DietPlan.findOneAndUpdate(
+      { _id: req.params.id, user: req.user._id },
+      updateData,
+      { new: true }
+    );
+
+    if (!plan) return res.status(404).json({ message: 'Plan not found' });
+    res.json(plan);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
 module.exports = router;

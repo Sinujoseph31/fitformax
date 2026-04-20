@@ -125,3 +125,80 @@ body {
   background: var(--border-bright);
   border-radius: 10px;
 }
+/* Neural Segmented Tabs — Institutional Standard */
+.fx-segmented-tabs {
+  display: flex;
+  background: var(--bg-card);
+  padding: 0.5rem;
+  border-radius: var(--radius-lg);
+  border: 1.5px solid var(--border);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+  gap: 10px;
+  width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none; /* Hide scrollbar Firefox */
+  -ms-overflow-style: none; /* Hide scrollbar IE/Edge */
+}
+
+.fx-segmented-tabs::-webkit-scrollbar {
+  display: none; /* Hide scrollbar Chrome/Safari */
+}
+
+.fx-segmented-tab {
+  flex: 1;
+  min-width: 120px; /* Essential for scrollable lists */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 1.25rem 0.5rem;
+  border: none;
+  background: #f1f5f9; /* Subtle secondary bg */
+  color: #1e293b;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: 800;
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+.fx-segmented-tab svg {
+  width: 22px;
+  height: 22px;
+  opacity: 0.8;
+}
+
+.fx-segmented-tab.active {
+  background: var(--primary);
+  color: white;
+  box-shadow: 0 8px 20px var(--primary-glow);
+  transform: translateY(-2px);
+}
+
+.fx-segmented-tab.active svg {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.fx-segmented-tab:hover:not(.active) {
+  background: #e2e8f0;
+  transform: translateY(-1px);
+}
+
+@media (max-width: 600px) {
+  .fx-segmented-tabs {
+    padding: 0.4rem;
+    gap: 6px;
+  }
+  .fx-segmented-tab {
+    padding: 1rem 0.25rem;
+    font-size: 0.7rem;
+    border-radius: 12px;
+  }
+  .fx-segmented-tab svg {
+    width: 20px;
+    height: 20px;
+  }
+}

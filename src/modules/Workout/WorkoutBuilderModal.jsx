@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
-import { X, Plus, Trash2, Dumbbell, Save } from 'lucide-react';
+import { X, Plus, Trash2, Dumbbell, Save, Search } from 'lucide-react';
 import { EXERCISES, MUSCLE_GROUPS } from '../../data/exercises';
 import './WorkoutBuilderModal.css';
 
-export default function WorkoutBuilderModal({ onSave, onClose }) {
-  const [name, setName] = useState('');
-  const [desc, setDesc] = useState('');
-  const [difficulty, setDifficulty] = useState('Intermediate');
-  const [category, setCategory] = useState('Bodybuilding');
-  const [schedule, setSchedule] = useState([
+export default function WorkoutBuilderModal({ onSave, onClose, initialData }) {
+  const [name, setName] = useState(initialData?.name || '');
+  const [desc, setDesc] = useState(initialData?.desc || '');
+  const [difficulty, setDifficulty] = useState(initialData?.difficulty || 'Intermediate');
+  const [category, setCategory] = useState(initialData?.category || 'Bodybuilding');
+  const [schedule, setSchedule] = useState(initialData?.schedule || [
     { day: 'Monday', focus: '', exercises: [] }
   ]);
   const [isExercisePickerOpen, setIsExercisePickerOpen] = useState(false);
@@ -44,14 +44,14 @@ export default function WorkoutBuilderModal({ onSave, onClose }) {
   const handleSave = () => {
     if (!name) return alert('Name your protocol first!');
     onSave({
-      id: `custom_${Date.now()}`,
+      ...initialData,
       type: 'custom',
       name,
-      desc: desc || 'Custom training protocol.',
+      desc: desc || initialData?.desc || 'Custom training protocol.',
       difficulty,
       category,
-      duration: '60 min',
-      tags: ['Custom'],
+      duration: initialData?.duration || '60 min',
+      tags: initialData?.tags || ['Custom'],
       schedule
     });
   };
@@ -61,7 +61,7 @@ export default function WorkoutBuilderModal({ onSave, onClose }) {
       <div className="builder-modal glass">
         <div className="builder-header">
           <div className="builder-title">
-             <Dumbbell className="text-primary" />
+             <Dumbbell className="builder-icon-violet" />
              <h2>Workout Architect</h2>
           </div>
           <button className="btn-close-builder" onClick={onClose}><X /></button>
@@ -76,6 +76,15 @@ export default function WorkoutBuilderModal({ onSave, onClose }) {
                 placeholder="e.g. 10-Week Mass Builder" 
                 value={name}
                 onChange={(e) => setName(e.target.value)}
+              />
+            </div>
+            <div className="input-group">
+              <label>Description</label>
+              <textarea 
+                placeholder="Briefly describe your training goals..." 
+                value={desc}
+                onChange={(e) => setDesc(e.target.value)}
+                rows={2}
               />
             </div>
             <div className="input-row">
@@ -107,6 +116,7 @@ export default function WorkoutBuilderModal({ onSave, onClose }) {
 
             {schedule.map((day, dIdx) => (
               <div key={dIdx} className="builder-day-card">
+                <button className="btn-remove-day" onClick={() => removeDay(dIdx)}><Trash2 size={16} /></button>
                 <div className="day-card-header">
                   <input 
                     className="inp-day-name"
@@ -119,7 +129,6 @@ export default function WorkoutBuilderModal({ onSave, onClose }) {
                     value={day.focus} 
                     onChange={(e) => updateDay(dIdx, 'focus', e.target.value)}
                   />
-                  <button className="btn-remove-day" onClick={() => removeDay(dIdx)}><Trash2 size={16} /></button>
                 </div>
 
                 <div className="day-exercise-list">
@@ -130,16 +139,22 @@ export default function WorkoutBuilderModal({ onSave, onClose }) {
                         <span className="ex-icon">{exInfo?.icon || '💪'}</span>
                         <span className="ex-name">{exInfo?.name || ex.id}</span>
                         <div className="ex-inputs">
-                           <input type="text" value={ex.sets} onChange={(e) => {
-                             const updated = [...schedule];
-                             updated[dIdx].exercises[eIdx].sets = e.target.value;
-                             setSchedule(updated);
-                           }} placeholder="Sets" />
-                           <input type="text" value={ex.reps} onChange={(e) => {
-                             const updated = [...schedule];
-                             updated[dIdx].exercises[eIdx].reps = e.target.value;
-                             setSchedule(updated);
-                           }} placeholder="Reps" />
+                          <div className="ex-input-group">
+                            <label>Sets</label>
+                            <input type="text" value={ex.sets} onChange={(e) => {
+                              const updated = [...schedule];
+                              updated[dIdx].exercises[eIdx].sets = e.target.value;
+                              setSchedule(updated);
+                            }} placeholder="3" />
+                          </div>
+                          <div className="ex-input-group">
+                            <label>Reps</label>
+                            <input type="text" value={ex.reps} onChange={(e) => {
+                              const updated = [...schedule];
+                              updated[dIdx].exercises[eIdx].reps = e.target.value;
+                              setSchedule(updated);
+                            }} placeholder="10-12" />
+                          </div>
                         </div>
                         <button className="btn-remove-ex" onClick={() => removeExercise(dIdx, eIdx)}><X size={14} /></button>
                       </div>
@@ -184,23 +199,55 @@ function ExercisePicker({ onSelect, onClose }) {
     ex.name.toLowerCase().includes(search.toLowerCase())
   );
 
+  const mainGroups = MUSCLE_GROUPS.slice(0, MUSCLE_GROUPS.indexOf('Abs') + 1);
+  const moreGroups = MUSCLE_GROUPS.slice(MUSCLE_GROUPS.indexOf('Abs') + 1);
+  const [isMoreOpen, setIsMoreOpen] = useState(false);
+
   return (
     <div className="picker-overlay">
       <div className="picker-modal">
+        <div className="picker-top">
+           <h3>Add Exercise</h3>
+           <button className="btn-close-picker" onClick={onClose}><X /></button>
+        </div>
         <div className="picker-header">
-           <input 
-             autoFocus
-             placeholder="Search exercises..." 
-             value={search} 
-             onChange={(e) => setSearch(e.target.value)} 
-           />
-           <button onClick={onClose}><X /></button>
+           <div className="search-wrap">
+             <Search size={18} className="search-icon" />
+             <input 
+               autoFocus
+               placeholder="Search exercises..." 
+               value={search} 
+               onChange={(e) => setSearch(e.target.value)} 
+             />
+           </div>
         </div>
         <div className="picker-cats">
            <button className={cat === 'All' ? 'active' : ''} onClick={() => setCat('All')}>All</button>
-           {MUSCLE_GROUPS.map(m => (
+           {mainGroups.map(m => (
              <button key={m} className={cat === m ? 'active' : ''} onClick={() => setCat(m)}>{m}</button>
            ))}
+           <div className="more-cats-container">
+             <button 
+               className={`btn-more-cats ${moreGroups.includes(cat) ? 'active' : ''}`}
+               onClick={() => setIsMoreOpen(!isMoreOpen)}
+             >
+               More {isMoreOpen ? '▲' : '▼'}
+             </button>
+             {isMoreOpen && (
+               <div className="more-cats-dropdown">
+                 {moreGroups.map(m => (
+                   <button 
+                     key={m} 
+                     className={cat === m ? 'active' : ''} 
+                     onClick={() => {
+                       setCat(m);
+                       setIsMoreOpen(false);
+                     }}
+                   >{m}</button>
+                 ))}
+               </div>
+             )}
+           </div>
         </div>
         <div className="picker-list">
            {list.map(ex => (

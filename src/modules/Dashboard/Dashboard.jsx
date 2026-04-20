@@ -6,89 +6,153 @@ import {
   Play, Droplets, Flame, ShieldCheck, Mountain, ChevronRight
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
+import { apiCall } from '../../utils/api';
 import WorkoutSession from '../Workout/WorkoutSession';
 import './Dashboard.css';
 
 const DAYS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 
-/**
- * Builds a 4-week streak grid from real workout history.
- *
- * Logic:
- *  - Today is the anchor (right edge of the grid).
- *  - We look back 28 days (4 rows × 7 columns).
- *  - Each cell = 1 if the user logged at least one workout on that date, else 0.
- *  - Columns = Mon–Sun. The grid fills left-to-right, oldest → newest.
- */
 function buildStreakGrid(workouts = []) {
-  // Build a Set of "YYYY-MM-DD" strings where a workout was completed
-  const workoutDates = new Set(
-    workouts
-      .filter(w => w.completedAt || w.createdAt || w.date)
-      .map(w => {
-        const d = new Date(w.completedAt || w.createdAt || w.date);
-        return d.toISOString().slice(0, 10); // "2026-04-17"
-      })
-  );
+  const workoutDates = new Map(); // Using Map to store counts/intensity
+  
+  workouts.forEach(w => {
+    const d = new Date(w.completedAt || w.createdAt || w.date || w.startTime);
+    const year = d.getFullYear();
+    const month = (d.getMonth() + 1).toString().padStart(2, '0');
+    const day = d.getDate().toString().padStart(2, '0');
+    const key = `${year}-${month}-${day}`;
+    
+    if (!workoutDates.has(key)) {
+      workoutDates.set(key, { count: 0, protocols: [] });
+    }
+    
+    const data = workoutDates.get(key);
+    const intensity = (w.exercises?.length || 1);
+    data.count += intensity;
+    if (w.name) data.protocols.push(w.name);
+  });
 
-  // Build 28-cell grid, starting from 27 days ago up to today
-  const cells = [];
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  for (let i = 27; i >= 0; i--) {
-    const d = new Date(today);
-    d.setDate(today.getDate() - i);
-    const key = d.toISOString().slice(0, 10);
+  const dayOfWeek = today.getDay(); 
+  const monOffset = (dayOfWeek === 0 ? 6 : dayOfWeek - 1);
+
+  const gridStart = new Date(today);
+  gridStart.setDate(today.getDate() - monOffset - 21);
+
+  const cells = [];
+  for (let i = 0; i < 28; i++) {
+    const d = new Date(gridStart);
+    d.setDate(gridStart.getDate() + i);
+    
+    const year = d.getFullYear();
+    const month = (d.getMonth() + 1).toString().padStart(2, '0');
+    const day = d.getDate().toString().padStart(2, '0');
+    const key = `${year}-${month}-${day}`;
+    
+    const data = workoutDates.get(key) || { count: 0, protocols: [] };
+    const count = data.count;
+    // Map count to 0-3 level
+    const level = count === 0 ? 0 : (count < 3 ? 1 : (count < 6 ? 2 : 3));
+
     cells.push({
+      key,
       date: d,
-      active: workoutDates.has(key),
-      isToday: i === 0,
-      isFuture: false,
+      active: count > 0,
+      level: level,
+      protocols: data.protocols,
+      isToday: d.getTime() === today.getTime(),
+      isFuture: d > today,
     });
   }
 
-  // Split into 4 rows of 7
   const rows = [];
   for (let r = 0; r < 4; r++) {
-    rows.push(cells.slice(r * 7, r * 7 + 7));
+    const row = cells.slice(r * 7, r * 7 + 7);
+    const isPerfect = row.every(c => c.active);
+    rows.push({ cells: row, isPerfect });
   }
   return rows;
 }
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const { userProfile, workouts } = useApp();
+  const { userProfile, workouts, meals } = useApp();
   const [isWorkoutActive, setIsWorkoutActive] = useState(false);
   const [waterIntake, setWaterIntake] = useState(2400);
+  const [activePlan, setActivePlan] = useState(null);
+  const [hoveredCell, setHoveredCell] = useState(null);
 
   // Build real streak from workout history
   const streakRows = buildStreakGrid(workouts || []);
-  const allCells = streakRows.flat();
+  const allCells = streakRows.map(r => r.cells).flat();
   const activeDays = allCells.filter(c => c.active).length;
   const consistencyPct = Math.round((activeDays / 28) * 100);
 
   // This week (last row) active count
-  const thisWeekCells = streakRows[3] || [];
+  const thisWeekCells = streakRows[3]?.cells || [];
   const thisWeekActive = thisWeekCells.filter(c => c.active).length;
 
   const nextWorkoutName = userProfile?.goal === 'gain' ? 'Hypertrophy Alpha' : 'Metabolic Burn 01';
+  const displayPlanName = activePlan ? activePlan.name : nextWorkoutName;
   const firstName = userProfile?.name?.split(' ')[0] || 'Titan';
 
   const bmi = userProfile?.weight && userProfile?.height
     ? (userProfile.weight / Math.pow(userProfile.height / 100, 2)).toFixed(1)
     : '22.5';
 
+  // ── Smart Nutrition Logic ──
+  // 1. Calculate Target (Base on Mifflin-St Jeor or simple estimate)
+  // Base: 25 kcal/kg for sedentary, +/- 500 for gain/loss
+  const baseKcal = (userProfile?.weight || 75) * 28; 
+  const goalOffset = userProfile?.goal === 'gain' ? 500 : (userProfile?.goal === 'lose' ? -500 : 0);
+  const targetKcal = Math.round(baseKcal + goalOffset);
+
+  // 2. Aggregate Today's Meals
+  const today = new Date().toISOString().slice(0, 10);
+  const todayMeals = meals?.filter(m => {
+    const mDate = new Date(m.date || m.createdAt).toISOString().slice(0, 10);
+    return mDate === today;
+  }) || [];
+  
+  const consumedKcal = todayMeals.reduce((acc, m) => acc + (Number(m.calories) || 0), 0);
+  const nutritionPct = Math.min(Math.round((consumedKcal / targetKcal) * 100), 100);
+
   useEffect(() => {
     const today = new Date().toDateString();
-    const saved = localStorage.getItem(`water_${today}`);
-    if (saved) setWaterIntake(parseInt(saved));
+    const savedWater = localStorage.getItem(`water_${today}`);
+    // if (savedWater) setWaterIntake(parseInt(savedWater));
+
+    const loadHydration = async () => {
+      try {
+        const data = await apiCall('/hydration/today');
+        if (data) setWaterIntake(data.amount);
+      } catch (err) {
+        console.error("Hydration sync failed", err);
+      }
+    };
+    loadHydration();
+
+    const savedPlan = localStorage.getItem('fx_workout_plan');
+    if (savedPlan) {
+      try {
+        setActivePlan(JSON.parse(savedPlan));
+      } catch (err) {
+        console.error("Failed to parse saved plan", err);
+      }
+    }
   }, []);
 
-  const addWater = () => {
-    const newVal = waterIntake + 500;
+  const updateWater = async (ml) => {
+    const newVal = waterIntake + ml;
     setWaterIntake(newVal);
-    localStorage.setItem(`water_${new Date().toDateString()}`, newVal);
+    // Silent background sync
+    try {
+      await apiCall('/hydration', 'POST', { amount: ml });
+    } catch (err) {
+      console.error("Failed to sync water", err);
+    }
   };
 
   return (
@@ -124,15 +188,15 @@ export default function Dashboard() {
 
           {/* Active Workout Card */}
           <motion.div
-            className="db-workout-card"
+            className={`db-workout-card ${activePlan ? 'has-active-plan' : ''}`}
             whileHover={{ y: -4 }}
             onClick={() => setIsWorkoutActive(true)}
           >
-            <div className="db-workout-badge">TODAY'S WORKOUT</div>
-            <h2 className="db-workout-title">{nextWorkoutName}</h2>
+            <div className="db-workout-badge">{activePlan ? 'ACTIVE PROTOCOL' : "TODAY'S RECOMMENDATION"}</div>
+            <h2 className="db-workout-title">{displayPlanName}</h2>
             <div className="db-workout-stats">
               <div className="db-stat">
-                <span className="db-stat-val">45</span>
+                <span className="db-stat-val">{activePlan?.duration || '45'}</span>
                 <span className="db-stat-lbl">MIN</span>
               </div>
               <div className="db-stat-divider" />
@@ -142,7 +206,7 @@ export default function Dashboard() {
               </div>
               <div className="db-stat-divider" />
               <div className="db-stat">
-                <span className="db-stat-val">ADV</span>
+                <span className="db-stat-val">{activePlan?.difficulty?.substring(0,3).toUpperCase() || 'ADV'}</span>
                 <span className="db-stat-lbl">LEVEL</span>
               </div>
             </div>
@@ -155,15 +219,15 @@ export default function Dashboard() {
           {/* Metrics Row */}
           <div className="db-metrics-row">
             {/* Calories */}
-            <div className="db-metric-card">
+            <div className="db-metric-card" onClick={() => navigate('/meal')}>
               <div className="db-metric-icon calories"><Flame size={20} /></div>
               <div className="db-metric-info">
                 <span className="db-metric-lbl">Calories Today</span>
-                <span className="db-metric-val">1,420 <small style={{fontSize:'0.8rem',color:'var(--text-dim)',fontWeight:600}}>/ 2,200</small></span>
+                <span className="db-metric-val">{consumedKcal.toLocaleString()} <small style={{fontSize:'0.8rem',color:'var(--text-dim)',fontWeight:600}}>/ {targetKcal.toLocaleString()}</small></span>
                 <div style={{width:'100%',height:'6px',background:'var(--border)',borderRadius:'10px',marginTop:'6px'}}>
-                  <div style={{width:'64%',height:'100%',background:'var(--gradient-main)',borderRadius:'10px'}} />
+                  <div style={{width:`${nutritionPct}%`,height:'100%',background:'var(--gradient-main)',borderRadius:'10px'}} />
                 </div>
-                <span style={{fontSize:'0.72rem',color:'var(--text-dim)',marginTop:'4px'}}>64% of daily goal</span>
+                <span style={{fontSize:'0.72rem',color:'var(--text-dim)',marginTop:'4px'}}>{nutritionPct}% of daily goal</span>
               </div>
             </div>
 
@@ -182,7 +246,7 @@ export default function Dashboard() {
                 </div>
                 <div style={{display:'flex',gap:'0.5rem'}}>
                   {[250,500,1000].map(ml => (
-                    <button key={ml} className="db-water-btn" onClick={(e)=>{e.stopPropagation();const nv=waterIntake+ml;setWaterIntake(nv);localStorage.setItem(`water_${new Date().toDateString()}`,nv);}}>
+                    <button key={ml} className="db-water-btn" onClick={(e)=>{e.stopPropagation(); updateWater(ml);}}>
                       +{ml<1000?ml+'ml':'1L'}
                     </button>
                   ))}
@@ -217,8 +281,17 @@ export default function Dashboard() {
           {/* Streak Matrix */}
           <div className="db-widget">
             <div className="db-widget-header">
-              <Activity size={18} className="db-widget-icon" />
-              <span>Weekly Streak</span>
+              <div style={{display:'flex',alignItems:'center',gap:'8px'}}>
+                <Activity size={18} className="db-widget-icon" />
+                <span>Weekly Streak</span>
+              </div>
+              <button 
+                className="fx-btn-text" 
+                style={{fontSize:'0.75rem', fontWeight:800}}
+                onClick={() => navigate('/schedule')}
+              >
+                Full Calendar
+              </button>
             </div>
 
             {/* Day Labels */}
@@ -228,15 +301,55 @@ export default function Dashboard() {
 
             {/* Streak Grid — 4 rows × 7 cols */}
             <div className="db-streak-grid">
-              {streakRows.map((row, ri) =>
-                row.map((cell, di) => (
-                  <div
-                    key={`${ri}-${di}`}
-                    className={`db-streak-cell${cell.active ? ' active' : ''}${cell.isToday ? ' today' : ''}`}
-                    title={cell.date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
-                  />
-                ))
-              )}
+              {streakRows.map((row, ri) => (
+                <div key={ri} className={`db-streak-row ${row.isPerfect ? 'perfect-week' : ''}`}>
+                  {row.cells.map((cell, di) => (
+                    <div
+                      key={di}
+                      className={`db-streak-cell lv-${cell.level}${cell.isToday ? ' today' : ''}${hoveredCell?.key === cell.key ? ' hovered' : ''}`}
+                      onMouseEnter={() => setHoveredCell(cell)}
+                      onMouseLeave={() => setHoveredCell(null)}
+                      onClick={() => setHoveredCell(hoveredCell?.key === cell.key ? null : cell)}
+                    >
+                      <span className="db-cell-num">{cell.date.getDate()}</span>
+                      {cell.isToday && <div className="today-marker" />}
+                      
+                      <AnimatePresence>
+                        {hoveredCell?.key === cell.key && !cell.isFuture && (
+                          <motion.div 
+                            className="db-streak-tooltip"
+                            initial={{ opacity: 0, scale: 0.9, y: 10 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.9, y: 10 }}
+                          >
+                            <div className="tooltip-date">{cell.date.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })}</div>
+                            <div className="tooltip-status">
+                              {cell.active ? (
+                                <>
+                                  <span className="status-dot online" />
+                                  Missions Completed
+                                </>
+                              ) : (
+                                <>
+                                  <span className="status-dot offline" />
+                                  Standby / Rest
+                                </>
+                              )}
+                            </div>
+                            {cell.protocols.length > 0 && (
+                              <div className="tooltip-protocols">
+                                {cell.protocols.map((p, i) => (
+                                  <div key={i} className="protocol-tag">{p}</div>
+                                ))}
+                              </div>
+                            )}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  ))}
+                </div>
+              ))}
             </div>
 
             <div className="db-streak-footer">

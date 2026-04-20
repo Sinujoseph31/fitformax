@@ -119,24 +119,27 @@ const BodyComposition = () => {
                 <p className="text-secondary">Log your detailed metrics or upload reference images to track your long-term progress visually.</p>
             </div>
 
-            <div className="composition-tabs">
+            <div className="fx-segmented-tabs">
                 <button 
-                    className={`comp-tab ${activeTab === 'body' ? 'active' : ''}`}
+                    className={`fx-segmented-tab ${activeTab === 'body' ? 'active' : ''}`}
                     onClick={() => setActiveTab('body')}
                 >
-                    <ImageIcon size={18} /> Body Image
+                    <ImageIcon size={20} />
+                    <span>Body Image</span>
                 </button>
                 <button 
-                    className={`comp-tab ${activeTab === 'receipt' ? 'active' : ''}`}
+                    className={`fx-segmented-tab ${activeTab === 'receipt' ? 'active' : ''}`}
                     onClick={() => setActiveTab('receipt')}
                 >
-                    <FileText size={18} /> BCA Receipt
+                    <FileText size={20} />
+                    <span>BCA Receipt</span>
                 </button>
                 <button 
-                    className={`comp-tab ${activeTab === 'manual' ? 'active' : ''}`}
+                    className={`fx-segmented-tab ${activeTab === 'manual' ? 'active' : ''}`}
                     onClick={() => setActiveTab('manual')}
                 >
-                    <Activity size={18} /> Manual Entry
+                    <Activity size={20} />
+                    <span>Manual Entry</span>
                 </button>
             </div>
 

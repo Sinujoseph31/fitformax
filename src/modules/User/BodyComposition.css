@@ -37,44 +37,7 @@
     font-weight: 600;
 }
 
-.composition-tabs {
-  display: flex;
-  background: #ffffff;
-  padding: 0.25rem;
-  border-radius: 50px;
-  border: 1.5px solid var(--border);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.02);
-  overflow-x: auto;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-
-.composition-tabs::-webkit-scrollbar {
-  display: none;
-}
-
-.comp-tab {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  flex-shrink: 0;
-  padding: 0.75rem 1.5rem;
-  border: none;
-  color: var(--text-main);
-  font-weight: 950;
-  font-size: 0.8rem;
-  border-radius: 50px;
-  cursor: pointer;
-  transition: all 0.2s;
-  white-space: nowrap;
-}
-
-.comp-tab.active {
-    background: var(--primary);
-    color: #ffffff;
-    box-shadow: 0 4px 12px var(--primary-glow);
-}
+/* Local tab styles removed - using global .fx-segmented-tabs */
 
 .comp-content {
     background: #ffffff;
@@ -212,7 +175,78 @@
 }
 
 @media (max-width: 600px) {
+  .composition-page {
+    padding: 1rem 0.75rem 6.5rem;
+  }
+
+  .composition-header h1 {
+    font-size: 1.85rem;
+  }
+
+  .fx-segmented-tabs {
+    border-radius: 16px;
+    padding: 0.5rem;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    overflow: visible;
+    min-height: 80px;
+  }
+
+  .fx-segmented-tab {
+    padding: 0.85rem 0.5rem;
+    font-size: 0.65rem;
+    border-radius: 12px;
+    flex-direction: column;
+    gap: 4px;
+    white-space: normal;
+    text-align: center;
+    line-height: 1.2;
+    min-width: 0;
+  }
+
+  .fx-segmented-tab svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .comp-content {
+    padding: 1.25rem;
+    border-radius: 20px;
+  }
+
+  .manual-grid {
+    grid-template-columns: 1fr 1fr; /* 2 columns for better data entry use on mobile */
+    gap: 0.75rem;
+  }
+
+  .form-group label {
+    font-size: 0.6rem;
+    letter-spacing: 0.5px;
+  }
+
+  .fx-input-premium {
+    padding: 0.75rem 0.85rem;
+    font-size: 0.85rem;
+  }
+
   .sample-images {
     grid-template-columns: 1fr;
+  }
+
+  .history-item {
+    padding: 0.75rem 1rem;
+    border-radius: 16px;
+  }
+
+  .history-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .stat-pill {
+    font-size: 0.6rem;
+    padding: 2px 6px;
   }
 }

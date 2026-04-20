@@ -18,6 +18,7 @@ export default function WorkoutLibrary() {
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [isBuilderOpen, setIsBuilderOpen] = useState(false);
   const [isAIOpen, setIsAIOpen] = useState(false);
+  const [editingPlan, setEditingPlan] = useState(null);
   const { userProfile } = useApp();
 
   // Load custom plans from API
@@ -44,13 +45,34 @@ export default function WorkoutLibrary() {
 
   const handleSaveCustom = async (newPlan) => {
     try {
-      const saved = await apiCall('/plans/workout', 'POST', newPlan);
-      setCustomPlans([saved, ...customPlans]);
+      // If editing an approved plan, it goes back to pending
+      if (newPlan.status === 'approved') {
+        newPlan.status = 'pending';
+      }
+
+      if (newPlan._id || newPlan.id) {
+        // Update existing - targeting the workout specific PATCH route
+        const id = newPlan._id || newPlan.id;
+        const saved = await apiCall(`/plans/workout/${id}`, 'PATCH', newPlan);
+        setCustomPlans(customPlans.map(p => (p._id === id || p.id === id) ? saved : p));
+      } else {
+        // Create new
+        const saved = await apiCall('/plans/workout', 'POST', newPlan);
+        setCustomPlans([saved, ...customPlans]);
+      }
+      
       setIsBuilderOpen(false);
       setIsAIOpen(false);
+      setEditingPlan(null);
+      setSelectedPlan(null);
     } catch (e) {
       console.error("Failed to save plan", e);
     }
+  };
+
+  const handleEdit = (plan) => {
+    setEditingPlan(plan);
+    setIsBuilderOpen(true);
   };
 
   const handleDelete = async (id) => {
@@ -135,20 +157,20 @@ export default function WorkoutLibrary() {
           <div key={plan.id || plan._id} className={`workout-card glass-card ${plan.status === 'pending' ? 'pending' : ''}`} onClick={() => setSelectedPlan(plan)}>
             <div className="card-top-row">
               <div className="card-title-group">
-                <h3>{highlightText(plan.name, searchTerm)}</h3>
+                <h3 className="protocol-title">{highlightText(plan.name, searchTerm)}</h3>
                 {plan.type === 'custom' && (
                   <div className="status-badge-row">
                     <span className={`lib-status-badge ${plan.status}`}>
                       {plan.status === 'pending' ? 'Under Review' : plan.status}
                     </span>
-                    {plan.user?.name && (
-                      <span className="creator-badge">By: {plan.user.name}</span>
-                    )}
+                    <span className="creator-badge">By: {plan.user?.name || 'You'}</span>
                   </div>
                 )}
               </div>
-              <div className={`card-badge ${plan.type === 'custom' ? 'user-created-tag' : plan.difficulty.toLowerCase()}`}>
-                 {plan.type === 'custom' ? 'User Created' : plan.difficulty}
+              <div className="card-top-right">
+                <div className={`card-badge ${plan.type === 'custom' ? 'user-created-tag' : plan.difficulty.toLowerCase()}`}>
+                  {plan.type === 'custom' ? 'User Created' : plan.difficulty}
+                </div>
               </div>
             </div>
             <div className="card-main">
@@ -179,13 +201,18 @@ export default function WorkoutLibrary() {
           onClose={() => setSelectedPlan(null)}
           onDeploy={handleDeploy}
           onDelete={selectedPlan.type === 'custom' ? handleDelete : null}
+          onEdit={selectedPlan.type === 'custom' ? handleEdit : null}
         />
       )}
 
       {isBuilderOpen && (
         <WorkoutBuilderModal 
+          initialData={editingPlan}
           onSave={handleSaveCustom} 
-          onClose={() => setIsBuilderOpen(false)} 
+          onClose={() => {
+            setIsBuilderOpen(false);
+            setEditingPlan(null);
+          }} 
         />
       )}
 

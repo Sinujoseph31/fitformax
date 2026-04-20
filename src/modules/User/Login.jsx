@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Button from '../../components/Button';
 import Input from '../../components/Input';
@@ -12,6 +12,7 @@ export default function Login({ onSwitchToSignup }) {
     email: '',
     password: ''
   });
+  const [serverStatus, setServerStatus] = useState('checking'); // 'online', 'offline', 'checking'
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -19,9 +20,27 @@ export default function Login({ onSwitchToSignup }) {
     try {
       await login(credentials);
     } catch (err) {
-      // Error is caught and stored in AppContext
+      if (err.message === 'Failed to fetch') {
+        setError("⚠️ ERROR: Neural Engine Offline. Please start your backend server.");
+        setServerStatus('offline');
+      }
     }
   };
+
+  useEffect(() => {
+    const checkServer = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/');
+        if (response.ok) setServerStatus('online');
+        else setServerStatus('offline');
+      } catch (err) {
+        setServerStatus('offline');
+      }
+    };
+    checkServer();
+    const interval = setInterval(checkServer, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="auth-page">
@@ -86,6 +105,11 @@ export default function Login({ onSwitchToSignup }) {
               Create Account
             </button>
           </p>
+          
+          <div className={`server-status-pill ${serverStatus}`}>
+            <span className="status-dot"></span>
+            {serverStatus === 'online' ? 'Neural Engine: Ready' : (serverStatus === 'offline' ? 'Neural Engine: Offline' : 'Verifying Connection...')}
+          </div>
         </div>
       </motion.div>
     </div>

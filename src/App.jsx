@@ -12,9 +12,11 @@ import Diet from './modules/Diet/Diet';
 import DietLibrary from './modules/DietLibrary/DietLibrary';
 import WorkoutLibrary from './modules/Workout/WorkoutLibrary';
 import WorkoutSession from './modules/Workout/WorkoutSession';
+import TrainingSchedule from './modules/Workout/TrainingSchedule';
 
 import BodyMetricsSetup from './modules/User/BodyMetricsSetup';
 import BodyComposition from './modules/User/BodyComposition';
+import Settings from './modules/User/Settings';
 import AdminPanel from './modules/Admin/AdminPanel';
 import { useApp } from './context/AppContext';
 import NotificationService from './services/NotificationService';
@@ -39,34 +41,48 @@ function App() {
 
   if (isInitializing) return <LoadingOverlay />;
 
-  if (!isAuthenticated) {
-    return <AuthContainer />;
-  }
-
-  // Force onboarding if logged in but missing core body metrics
-  if (isAuthenticated && userProfile && (!userProfile.gender || !userProfile.bmi)) {
-    return <BodyMetricsSetup />;
-  }
-
   return (
-    <AppLayout>
-      <Routes>
-        <Route path="/" element={<Dashboard />} />
-        <Route path="/workout" element={<WorkoutHistory />} />
-        <Route path="/session" element={<WorkoutSession onFinish={() => window.location.href = '/workout'} />} />
-        <Route path="/exercises" element={<ExerciseLibrary />} />
-        <Route path="/track" element={<Progress />} />
-        <Route path="/composition" element={<BodyComposition />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/meal" element={<Diet />} />
-        <Route path="/diets" element={<DietLibrary />} />
-        <Route path="/workouts" element={<WorkoutLibrary />} />
-        <Route path="/coach" element={<Coach />} />
-        {userProfile?.role === 'admin' && <Route path="/admin" element={<AdminPanel />} />}
-        <Route path="/settings" element={<div>Settings Component (TBD)</div>} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </AppLayout>
+    <Routes>
+      {/* AUTHENTICATION GATEWAY */}
+      <Route 
+        path="/login" 
+        element={!isAuthenticated ? <AuthContainer /> : <Navigate to="/" replace />} 
+      />
+
+      {/* PROTECTED ECOSYSTEM */}
+      <Route
+        path="/*"
+        element={
+          isAuthenticated ? (
+            userProfile && (!userProfile.gender || !userProfile.bmi) ? (
+              <BodyMetricsSetup />
+            ) : (
+              <AppLayout>
+                <Routes>
+                  <Route path="/" element={<Dashboard />} />
+                  <Route path="/workout" element={<WorkoutHistory />} />
+                  <Route path="/schedule" element={<TrainingSchedule />} />
+                  <Route path="/session" element={<WorkoutSession onFinish={() => window.location.href = '/workout'} />} />
+                  <Route path="/exercises" element={<ExerciseLibrary />} />
+                  <Route path="/track" element={<Progress />} />
+                  <Route path="/composition" element={<BodyComposition />} />
+                  <Route path="/profile" element={<Profile />} />
+                  <Route path="/meal" element={<Diet />} />
+                  <Route path="/diets" element={<DietLibrary />} />
+                  <Route path="/workouts" element={<WorkoutLibrary />} />
+                  <Route path="/coach" element={<Coach />} />
+                  {userProfile?.role === 'admin' && <Route path="/admin" element={<AdminPanel />} />}
+                  <Route path="/settings" element={<Settings />} />
+                  <Route path="*" element={<Navigate to="/" replace />} />
+                </Routes>
+              </AppLayout>
+            )
+          ) : (
+            <Navigate to="/login" replace />
+          )
+        }
+      />
+    </Routes>
   );
 }
 

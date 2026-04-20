@@ -28,13 +28,21 @@ export function AppProvider({ children }) {
   // Initial Load
   useEffect(() => {
     const init = async () => {
-      if (isAuthenticated) {
-        await loadAllData();
+      const token = localStorage.getItem('fx_token');
+      if (token) {
+        try {
+          await loadAllData();
+        } catch (err) {
+          console.error("Auto-initialization failed", err);
+          logout(); // Immediate decertification
+        }
+      } else {
+        setIsAuthenticated(false);
       }
       setIsInitializing(false);
     };
     init();
-  }, [isAuthenticated]);
+  }, []); // Run once on startup
 
   const loadAllData = async () => {
     try {
@@ -50,11 +58,14 @@ export function AppProvider({ children }) {
       setPhotos(photoData);
       setWorkouts(workoutData);
       setCompositions(compData);
+      setIsAuthenticated(true);
     } catch (err) {
-      if (err.message.includes('authorized') || err.message.includes('token')) {
+      if (err.message.toLowerCase().includes('authorized') || 
+          err.message.toLowerCase().includes('token') ||
+          err.status === 401) {
         logout();
       }
-      setError(err.message);
+      throw err;
     }
   };
 

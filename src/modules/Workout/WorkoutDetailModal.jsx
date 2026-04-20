@@ -1,10 +1,10 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Clock, Play, Dumbbell, Calendar, Trash2 } from 'lucide-react';
+import { X, Clock, Play, Dumbbell, Calendar, Trash2, Edit2 } from 'lucide-react';
 import { EXERCISES } from '../../data/exercises';
 import './WorkoutDetailModal.css';
 
-export default function WorkoutDetailModal({ plan, onClose, onDeploy, onDelete }) {
+export default function WorkoutDetailModal({ plan, onClose, onDeploy, onDelete, onEdit }) {
   if (!plan) return null;
 
   return (
@@ -74,11 +74,18 @@ export default function WorkoutDetailModal({ plan, onClose, onDeploy, onDelete }
         </div>
 
         <div className="dossier-footer">
-           {onDelete && (
-             <button className="btn-delete-custom" onClick={() => onDelete(plan._id || plan.id)}>
-                <Trash2 size={20} />
-             </button>
-           )}
+           <div className="footer-left-actions">
+            {onDelete && (
+              <button className="btn-delete-custom" onClick={() => onDelete(plan._id || plan.id)}>
+                  <Trash2 size={20} />
+              </button>
+            )}
+            {onEdit && (
+              <button className="btn-edit-custom" onClick={() => onEdit(plan)}>
+                  <Edit2 size={20} />
+              </button>
+            )}
+           </div>
            <button className="btn-deploy-workout" onClick={() => onDeploy(plan)}>
               <Play size={20} fill="currentColor" /> Deploy Program
            </button>

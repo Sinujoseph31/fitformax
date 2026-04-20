@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Users, X, ShieldCheck, Trash2, UserCog, Check, Ban, Clock } from 'lucide-react';
+import { Users, X, ShieldCheck, Trash2, UserCog, Check, Ban, Clock, LayoutGrid, ShieldAlert } from 'lucide-react';
 import { apiCall } from '../../utils/api';
 import './AdminPanel.css';
 
@@ -101,26 +101,47 @@ const AdminPanel = () => {
                    <h1>⚙ Protocol Governance</h1>
                    <span className="admin-badge">ADMIN MODE</span>
                 </div>
-                <div className="admin-tabs">
-                    <button className={tab === 'users' ? 'active' : ''} onClick={() => setTab('users')}>Users</button>
-                    <button className={tab === 'library' ? 'active' : ''} onClick={() => setTab('library')}>Library Approvals</button>
+                <div className="fx-segmented-tabs">
+                    <button 
+                        className={`fx-segmented-tab ${tab === 'users' ? 'active' : ''}`} 
+                        onClick={() => setTab('users')}
+                    >
+                        <Users size={20} />
+                        <span>Users</span>
+                    </button>
+                    <button 
+                        className={`fx-segmented-tab ${tab === 'library' ? 'active' : ''}`} 
+                        onClick={() => setTab('library')}
+                    >
+                        <ShieldAlert size={20} />
+                        <span>Library Approvals</span>
+                    </button>
                 </div>
             </div>
 
             {tab === 'users' ? (
                 <>
                     <div className="admin-stats">
-                        <div className="admin-stat-card">
-                            <div className="stat-num">{users.length}</div>
-                            <div className="stat-lbl">Total Users</div>
+                        <div className="admin-stat-card node-primary">
+                            <div className="stat-icon-wrap"><Users size={24} /></div>
+                            <div className="stat-content">
+                                <div className="stat-num">{users.length}</div>
+                                <div className="stat-lbl">Active Agents</div>
+                            </div>
                         </div>
-                        <div className="admin-stat-card">
-                            <div className="stat-num">{totalAdmins}</div>
-                            <div className="stat-lbl">Admins</div>
+                        <div className="admin-stat-card node-success">
+                            <div className="stat-icon-wrap"><ShieldCheck size={24} /></div>
+                            <div className="stat-content">
+                                <div className="stat-num">{totalAdmins}</div>
+                                <div className="stat-lbl">Council Members</div>
+                            </div>
                         </div>
-                        <div className="admin-stat-card">
-                            <div className="stat-num">{recentUsers}</div>
-                            <div className="stat-lbl">New (7 days)</div>
+                        <div className="admin-stat-card node-accent">
+                            <div className="stat-icon-wrap"><Clock size={24} /></div>
+                            <div className="stat-content">
+                                <div className="stat-num">{recentUsers}</div>
+                                <div className="stat-lbl">Recent Onboardings</div>
+                            </div>
                         </div>
                     </div>
 

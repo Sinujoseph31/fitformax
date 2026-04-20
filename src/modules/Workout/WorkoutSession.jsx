@@ -33,6 +33,7 @@ export default function WorkoutSession({ onFinish }) {
   const [activeCoachExercise, setActiveCoachExercise] = useState(null);
   
   const [activeDayIdx, setActiveDayIdx] = useState(null);
+  const [expandedInstanceId, setExpandedInstanceId] = useState(null);
   
   // Timer State
   const [isTimerRunning, setIsTimerRunning] = useState(false);
@@ -40,14 +41,13 @@ export default function WorkoutSession({ onFinish }) {
   const timerRef = useRef(null);
 
   useEffect(() => {
-    // Load Deployed Plan if exists
+    // ONE-TIME INITIALIZATION
     const deployedPlanStr = localStorage.getItem('fx_workout_plan');
     if (deployedPlanStr) {
       try {
         const plan = JSON.parse(deployedPlanStr);
         setWorkoutName(plan.name);
         
-        // Find the specific day we should be training (first non-completed day)
         const completedDays = JSON.parse(localStorage.getItem('fx_completed_days') || '[]');
         const planId = plan.id || plan.name?.replace(/\s+/g, '_').toLowerCase() || 'default_plan';
         
@@ -65,7 +65,7 @@ export default function WorkoutSession({ onFinish }) {
             return {
               ...(exData || {}),
               id: exRef.id,
-              instanceId: Math.random() + Date.now(),
+              instanceId: Math.random() + Date.now() + Math.random(),
               sets: Array(parseInt(exRef.sets) || 3).fill(null).map(() => ({
                 weight: '',
                 reps: exRef.reps || '10',
@@ -74,19 +74,25 @@ export default function WorkoutSession({ onFinish }) {
             };
           });
           setActiveExercises(exercisesToLoad);
+          if (exercisesToLoad.length > 0) {
+            setExpandedInstanceId(exercisesToLoad[0].instanceId);
+          }
         }
       } catch (err) {
         console.error("Failed to load deployed plan", err);
       }
     }
+  }, []); // Run ONLY once on mount
 
+  // RESET TIMER LOGIC
+  useEffect(() => {
     if (isTimerRunning && timerSeconds > 0) {
       timerRef.current = setInterval(() => {
         setTimerSeconds(s => s - 1);
       }, 1000);
     } else if (timerSeconds === 0) {
       setIsTimerRunning(false);
-      HapticService.notification(); // Vibrate when timer ends
+      HapticService.notification(); 
     }
     return () => clearInterval(timerRef.current);
   }, [isTimerRunning, timerSeconds]);
@@ -97,11 +103,13 @@ export default function WorkoutSession({ onFinish }) {
   };
 
   const addExercise = (exercise) => {
-    setActiveExercises([...activeExercises, {
+    const newEx = {
       ...exercise,
       instanceId: Date.now(),
       sets: [{ weight: '', reps: '', isCompleted: false }]
-    }]);
+    };
+    setActiveExercises([...activeExercises, newEx]);
+    setExpandedInstanceId(newEx.instanceId);
     setShowExercisePicker(false);
     setSearchQuery('');
   };
@@ -177,14 +185,22 @@ export default function WorkoutSession({ onFinish }) {
       exercises: activeExercises.map(ex => ({
         exerciseId: ex.id,
         name: ex.name,
-        sets: ex.sets.filter(s => s.weight && s.reps)
-      }))
+        sets: ex.sets
+          .filter(s => s.reps > 0 || s.isCompleted) // Take anything logged or checked
+          .map(s => ({
+            weight: Number(s.weight) || 0,
+            reps: Number(s.reps) || 0,
+            isCompleted: s.isCompleted
+          }))
+      })).filter(ex => ex.sets.length > 0) // Only save exercises with sets
     };
 
     const success = await saveWorkout(workoutData);
     if (success) {
       HapticService.notification();
       onFinish();
+    } else {
+      alert("⚠️ SAVE FAILED: The Neural Engine (Backend Server) appears to be offline. Please ensure your backend is running on port 5000.");
     }
   };
 
@@ -238,6 +254,9 @@ export default function WorkoutSession({ onFinish }) {
                   <span className={`timer-value ${timerSeconds < 10 ? 'critical' : ''}`}>
                     {Math.floor(timerSeconds / 60)}:{(timerSeconds % 60).toString().padStart(2, '0')}
                   </span>
+                  <button className="skip-timer-btn" onClick={() => setIsTimerRunning(false)}>
+                    SKIP
+                  </button>
                 </div>
                 <div className="timer-progress">
                   <motion.div 
@@ -278,8 +297,10 @@ export default function WorkoutSession({ onFinish }) {
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.95 }}
-                    className="exercise-block glass-card"
+                    className={`exercise-block glass-card ${expandedInstanceId === ex.instanceId ? 'expanded' : 'collapsed'}`}
+                    onClick={() => setExpandedInstanceId(ex.instanceId)}
                   >
+                    <div className="status-indicator-bar" />
                     <div className="ex-block-header">
                       <div className="ex-title">
                         <span className="ex-icon">{ex.icon}</span>
@@ -293,56 +314,67 @@ export default function WorkoutSession({ onFinish }) {
                       </button>
                     </div>
 
-                    <div className="ex-actions">
-                      <button 
-                        className="ai-coach-trigger glass"
-                        onClick={() => setActiveCoachExercise(ex)}
-                      >
-                        <Activity size={14} /> <span>AI Form Coach</span>
-                      </button>
-                    </div>
+                    <AnimatePresence>
+                      {expandedInstanceId === ex.instanceId && (
+                        <motion.div 
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          className="expanded-ex-content"
+                        >
+                          <div className="ex-actions">
+                            <button 
+                              className="ai-coach-trigger glass"
+                              onClick={(e) => { e.stopPropagation(); setActiveCoachExercise(ex); }}
+                            >
+                              <Activity size={14} /> <span>AI Form Coach</span>
+                            </button>
+                          </div>
 
-                    <div className="sets-table">
-                      <div className="table-row labels">
-                        <span>SET</span>
-                        <span>KG</span>
-                        <span>REPS</span>
-                        <span>DONE</span>
-                      </div>
-                      {ex.sets.map((set, sIdx) => (
-                        <div key={sIdx} className={`table-row ${set.isCompleted ? 'completed' : ''}`}>
-                          <span className="set-num">{sIdx + 1}</span>
-                          <div className="input-with-glow">
-                            <input 
-                              type="number" 
-                              placeholder="0"
-                              value={set.weight}
-                              onChange={e => updateSet(ex.instanceId, sIdx, 'weight', e.target.value)}
-                            />
-                          </div>
-                          <div className="input-with-glow">
-                            <input 
-                              type="number" 
-                              placeholder="0"
-                              value={set.reps}
-                              onChange={e => updateSet(ex.instanceId, sIdx, 'reps', e.target.value)}
-                            />
-                          </div>
-                          <button 
-                            className={`check-btn ${set.isCompleted ? 'checked' : ''}`}
-                            onClick={() => toggleSetComplete(ex.instanceId, sIdx)}
-                          >
-                            <div className="check-inner">
-                              {set.isCompleted ? <Check size={16} strokeWidth={4} /> : null}
+                          <div className="sets-table">
+                            <div className="table-row labels">
+                              <span>SET</span>
+                              <span>KG</span>
+                              <span>REPS</span>
+                              <span>DONE</span>
                             </div>
-                          </button>
-                        </div>
-                      ))}
-                    </div>
+                            {ex.sets.map((set, sIdx) => (
+                              <div key={sIdx} className={`table-row ${set.isCompleted ? 'completed' : ''}`} onClick={(e) => e.stopPropagation()}>
+                                <span className="set-num">{sIdx + 1}</span>
+                                <div className="input-with-glow">
+                                  <input 
+                                    type="text" 
+                                    placeholder="0"
+                                    value={set.weight}
+                                    onChange={e => updateSet(ex.instanceId, sIdx, 'weight', e.target.value)}
+                                  />
+                                </div>
+                                <div className="input-with-glow">
+                                  <input 
+                                    type="text" 
+                                    placeholder="0"
+                                    value={set.reps}
+                                    onChange={e => updateSet(ex.instanceId, sIdx, 'reps', e.target.value)}
+                                  />
+                                </div>
+                                <button 
+                                  className={`check-btn ${set.isCompleted ? 'checked' : ''}`}
+                                  onClick={(e) => { e.stopPropagation(); toggleSetComplete(ex.instanceId, sIdx); }}
+                                >
+                                  <div className="check-inner">
+                                    {set.isCompleted ? <Check size={16} strokeWidth={4} /> : null}
+                                  </div>
+                                </button>
+                              </div>
+                            ))}
+                          </div>
 
-                    <button className="add-set-btn-premium" onClick={() => addSet(ex.instanceId)}>
-                      <Plus size={16} /> <span>Add Set</span>
-                    </button>
+                          <button className="add-set-btn-premium" onClick={(e) => { e.stopPropagation(); addSet(ex.instanceId); }}>
+                            <Plus size={16} /> <span>Add Set</span>
+                          </button>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </motion.div>
                 ))}
                 
