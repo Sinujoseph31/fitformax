@@ -18,6 +18,9 @@ import BodyMetricsSetup from './modules/User/BodyMetricsSetup';
 import BodyComposition from './modules/User/BodyComposition';
 import Settings from './modules/User/Settings';
 import AdminPanel from './modules/Admin/AdminPanel';
+import LandingPage from './modules/Public/LandingPage';
+import LegalHub from './modules/Public/LegalHub';
+import Support from './modules/Public/Support';
 import { useApp } from './context/AppContext';
 import NotificationService from './services/NotificationService';
 import './styles/global.css';
@@ -43,10 +46,21 @@ function App() {
 
   return (
     <Routes>
+      {/* PUBLIC SECTOR (AdSense Compliance) */}
+      <Route path="/" element={!isAuthenticated ? <LandingPage /> : <Navigate to="/dashboard" replace />} />
+      <Route path="/privacy" element={<LegalHub />} />
+      <Route path="/terms" element={<LegalHub />} />
+      <Route path="/about" element={<Support />} />
+      <Route path="/contact" element={<Support />} />
+
       {/* AUTHENTICATION GATEWAY */}
       <Route 
         path="/login" 
-        element={!isAuthenticated ? <AuthContainer /> : <Navigate to="/" replace />} 
+        element={!isAuthenticated ? <AuthContainer /> : <Navigate to="/dashboard" replace />} 
+      />
+      <Route 
+        path="/signup" 
+        element={!isAuthenticated ? <AuthContainer /> : <Navigate to="/dashboard" replace />} 
       />
 
       {/* PROTECTED ECOSYSTEM */}
@@ -59,7 +73,8 @@ function App() {
             ) : (
               <AppLayout>
                 <Routes>
-                  <Route path="/" element={<Dashboard />} />
+                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/" element={<Navigate to="/dashboard" replace />} />
                   <Route path="/workout" element={<WorkoutHistory />} />
                   <Route path="/schedule" element={<TrainingSchedule />} />
                   <Route path="/session" element={<WorkoutSession onFinish={() => window.location.href = '/workout'} />} />
@@ -78,7 +93,7 @@ function App() {
               </AppLayout>
             )
           ) : (
-            <Navigate to="/login" replace />
+            <Navigate to="/" replace />
           )
         }
       />

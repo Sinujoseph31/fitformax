@@ -1,0 +1,207 @@
+.support-wrap {
+    background: #ffffff;
+    min-height: 100vh;
+}
+
+.support-container {
+    max-width: 1200px;
+    margin: 4rem auto;
+    padding: 0 20px;
+}
+
+/* About Sector */
+.about-sector {
+    text-align: center;
+    max-width: 900px;
+    margin: 0 auto 8rem;
+    padding: 6rem 0;
+}
+
+.about-sector h1 {
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    font-weight: 950;
+    letter-spacing: -2px;
+    margin-bottom: 1.5rem;
+}
+
+.about-lead {
+    font-size: 1.25rem;
+    color: var(--text-dim);
+    font-weight: 600;
+    line-height: 1.6;
+    margin-bottom: 4rem;
+}
+
+.about-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.about-card {
+    background: #f8fafc;
+    border: 1.5px solid var(--border);
+    border-radius: 24px;
+    padding: 3rem;
+    text-align: left;
+    transition: all 0.3s;
+}
+
+.about-card:hover {
+    border-color: var(--primary);
+    transform: translateY(-5px);
+}
+
+.about-icon {
+    width: 50px;
+    height: 50px;
+    background: rgba(255, 51, 102, 0.1);
+    color: var(--primary);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+}
+
+.about-card h3 {
+    font-size: 1.25rem;
+    font-weight: 900;
+    margin-bottom: 1rem;
+}
+
+.about-card p {
+    color: var(--text-dim);
+    font-weight: 600;
+    line-height: 1.6;
+}
+
+/* Contact Sector */
+.contact-sector {
+    background: #f8fafc;
+    border-radius: 40px;
+    border: 1px solid var(--border);
+    padding: 6rem;
+    margin-bottom: 8rem;
+}
+
+.contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 6rem;
+    align-items: center;
+}
+
+.contact-intel h2 {
+    font-size: 3rem;
+    font-weight: 950;
+    letter-spacing: -1.5px;
+    margin-bottom: 1.5rem;
+}
+
+.contact-intel p {
+    font-size: 1.1rem;
+    color: var(--text-dim);
+    font-weight: 600;
+    line-height: 1.6;
+    margin-bottom: 4rem;
+}
+
+.contact-methods {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.method {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.m-icon {
+    width: 50px;
+    height: 50px;
+    background: #fff;
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+}
+
+.m-intel {
+    display: flex;
+    flex-direction: column;
+}
+
+.m-intel span {
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.m-intel strong {
+    font-size: 1.1rem;
+    font-weight: 900;
+    color: var(--text-main);
+}
+
+/* Contact Form */
+.contact-form {
+    background: #fff;
+    padding: 3rem;
+    border-radius: 24px;
+    border: 1px solid var(--border);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.02);
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.input-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.input-field label {
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+textarea.fx-input {
+    resize: none;
+}
+
+/* Responsive */
+@media (max-width: 1000px) {
+    .contact-grid {
+        grid-template-columns: 1fr;
+        gap: 4rem;
+    }
+    
+    .contact-sector {
+        padding: 3rem;
+    }
+    
+    .contact-intel {
+        text-align: center;
+    }
+    
+    .contact-intel h2 { font-size: 2.5rem; }
+    
+    .contact-methods { align-items: center; }
+}
+
+@media (max-width: 600px) {
+    .about-sector { padding: 4rem 0; }
+    
+    .contact-form { padding: 1.5rem; }
+}

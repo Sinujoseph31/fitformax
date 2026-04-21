@@ -176,9 +176,22 @@ export function AppProvider({ children }) {
     }
   };
 
+  const deleteAccount = async () => {
+    setLoading(true);
+    try {
+      await apiCall('/user/profile', 'DELETE');
+      logout();
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <AppContext.Provider value={{
-      isAuthenticated, signup, login, logout, updateProfile,
+      isAuthenticated, signup, login, logout, updateProfile, deleteAccount,
       userProfile, photos, addPhoto,
       weights, addWeight, deleteWeight,
       workouts, saveWorkout,

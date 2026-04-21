@@ -24,8 +24,11 @@ const Settings = () => {
     setHapticsEnabled, 
     biometricsEnabled, 
     setBiometricsEnabled,
+    deleteAccount,
     loading 
   } = useApp();
+
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const [formData, setFormData] = useState({
     name: userProfile?.name || '',
@@ -194,12 +197,34 @@ const Settings = () => {
             </div>
           </section>
 
-          <button className="fx-btn-danger outline full-width" onClick={logout} style={{ marginTop: 'auto' }}>
-            <LogOut size={16} />
-            Terminte Active Session
+          <button className="fx-btn-danger outline full-width" onClick={() => setShowDeleteConfirm(true)} style={{ marginTop: 'auto' }}>
+            <RotateCcw size={16} />
+            Purge Biological Profile
           </button>
         </div>
       </div>
+
+      {/* Delete Account Modal */}
+      {showDeleteConfirm && (
+        <div className="fx-modal-overlay">
+          <div className="fx-modal-content">
+            <h3>Tactical Purge Required</h3>
+            <p>You are about to irreversibly decertify your entire biological profile, training logs, and metabolic history. This action cannot be undone.</p>
+            <div className="fx-modal-actions">
+              <button className="fx-btn-secondary" onClick={() => setShowDeleteConfirm(false)}>Abort Protocol</button>
+              <button 
+                className="fx-btn-danger" 
+                onClick={async () => {
+                  await deleteAccount();
+                  setShowDeleteConfirm(false);
+                }}
+              >
+                Confirm Irreversible Purge
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
