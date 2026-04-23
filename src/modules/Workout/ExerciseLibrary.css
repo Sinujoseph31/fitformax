@@ -212,3 +212,157 @@
   .library-header h1 { font-size: 1.8rem; }
   .exercise-grid { grid-template-columns: 1fr; }
 }
+
+/* Custom Exercise Modal Styling (Dark Theme - Protocol Architect) */
+.custom-ex-modal {
+  background: #0f1012 !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 30px 100px rgba(0, 0, 0, 0.8) !important;
+}
+
+.custom-ex-modal .modal-header-simple {
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.custom-ex-modal .modal-title {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #ffffff !important;
+  letter-spacing: -0.5px;
+  margin-bottom: 6px;
+  background: linear-gradient(135deg, #ffffff, #a78bfa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.custom-ex-modal .modal-subtitle {
+  font-size: 0.85rem;
+  color: #a78bfa;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.custom-ex-modal .custom-ex-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.custom-ex-modal .input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.custom-ex-modal .input-group label {
+  font-size: 0.8rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: #a78bfa;
+  margin-bottom: 10px;
+}
+
+.custom-ex-modal .input-row-grid {
+  display: grid;
+  grid-template-columns: 1fr 80px;
+  gap: 16px;
+}
+
+.custom-ex-modal .input-row-grid.split {
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.custom-ex-form input, 
+.custom-ex-form select, 
+.custom-ex-form textarea {
+  width: 100%;
+  padding: 14px 18px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ffffff;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.custom-ex-form input:focus, 
+.custom-ex-form select:focus, 
+.custom-ex-form textarea:focus {
+  border-color: #8b5cf6;
+  background: rgba(139, 92, 246, 0.05);
+  box-shadow: 0 0 15px rgba(139, 92, 246, 0.2);
+}
+
+.custom-ex-form select option {
+  background: #0f1012;
+  color: #fff;
+}
+
+.emoji-input {
+  text-align: center;
+  padding: 12px 0 !important;
+}
+
+.desc-textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.custom-ex-modal .modal-actions-fixed {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.custom-ex-modal .btn-modal-cancel {
+  flex: 1;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.custom-ex-modal .btn-modal-cancel:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.custom-ex-modal .btn-modal-save {
+  flex: 1.5;
+  padding: 15px;
+  background: linear-gradient(135deg, #8b5cf6, #d946ef);
+  border: none;
+  border-radius: 14px;
+  font-weight: 900;
+  font-size: 1rem;
+  color: #fff !important;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.custom-ex-modal .btn-modal-save:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 15px 35px rgba(139, 92, 246, 0.4);
+}
+
+@media (max-width: 500px) {
+  .input-row-grid.split {
+    grid-template-columns: 1fr;
+  }
+  .modal-actions-fixed {
+    flex-direction: column-reverse;
+  }
+}

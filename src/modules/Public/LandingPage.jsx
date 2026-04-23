@@ -1,5 +1,5 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Zap, 
   Target, 
@@ -15,12 +15,16 @@ import {
   FileText,
   Mail,
   Instagram,
-  Facebook
+  Facebook,
+  Menu,
+  X
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import './LandingPage.css';
 
 const LandingPage = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   return (
     <div className="landing-wrap">
       {/* Navigation Node */}
@@ -30,14 +34,41 @@ const LandingPage = () => {
             <Zap className="logo-icon" />
             <span>FitformaX</span>
           </div>
-          <div className="nav-links">
+
+          {/* Desktop Links */}
+          <div className="nav-links desktop-only">
             <a href="#why">Why FitformaX?</a>
             <a href="#how">How it Works</a>
             <a href="#faq">FAQ</a>
             <Link to="/login" className="nav-btn-login">Login</Link>
             <Link to="/signup" className="nav-btn-signup">Get Started</Link>
           </div>
+
+          {/* Mobile Toggle */}
+          <button className="mobile-menu-toggle mobile-only" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
         </div>
+
+        {/* Mobile Menu Overlay */}
+        <AnimatePresence>
+          {isMenuOpen && (
+            <motion.div 
+              className="mobile-menu-overlay"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+            >
+              <div className="mobile-menu-links">
+                <a href="#why" onClick={() => setIsMenuOpen(false)}>Why FitformaX?</a>
+                <a href="#how" onClick={() => setIsMenuOpen(false)}>How it Works</a>
+                <a href="#faq" onClick={() => setIsMenuOpen(false)}>FAQ</a>
+                <Link to="/login" className="nav-btn-login" onClick={() => setIsMenuOpen(false)}>Login</Link>
+                <Link to="/signup" className="nav-btn-signup" onClick={() => setIsMenuOpen(false)}>Get Started</Link>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </nav>
 
       {/* Hero Sector */}

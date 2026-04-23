@@ -78,7 +78,7 @@ export function AppProvider({ children }) {
         password: userData.password
       });
       localStorage.setItem('fx_token', data.token);
-      setIsAuthenticated(true);
+      await loadAllData();
     } catch (err) {
       setError(err.message);
       throw err;
@@ -92,7 +92,7 @@ export function AppProvider({ children }) {
     try {
       const data = await apiCall('/auth/login', 'POST', credentials);
       localStorage.setItem('fx_token', data.token);
-      setIsAuthenticated(true);
+      await loadAllData();
     } catch (err) {
       setError(err.message);
       throw err;

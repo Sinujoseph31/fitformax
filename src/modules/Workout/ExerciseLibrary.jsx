@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Filter, Info, ChevronRight, PlayCircle, Sparkles, Plus } from 'lucide-react';
+import { Search, Filter, Info, ChevronRight, PlayCircle, Sparkles, Plus, X } from 'lucide-react';
 import { EXERCISES, MUSCLE_GROUPS, EQUIPMENT } from '../../data/exercises';
 import ExerciseDetail from './ExerciseDetail';
 import './ExerciseLibrary.css';
@@ -13,8 +13,8 @@ export default function ExerciseLibrary() {
   const [isAddingCustom, setIsAddingCustom] = useState(false);
   
   const defaultCustomEx = { 
-    name: '', category: 'Chest', equipment: 'Bodyweight', 
-    muscles: '', description: '', steps: '', mistakes: '', icon: '💪' 
+    muscles: '', description: '', steps: '', mistakes: '', icon: '💪',
+    gifUrl: ''
   };
   const [newCustomEx, setNewCustomEx] = useState(defaultCustomEx);
 
@@ -44,6 +44,7 @@ export default function ExerciseLibrary() {
       muscles: newCustomEx.muscles ? newCustomEx.muscles.split(',').map(m => m.trim()) : [newCustomEx.category],
       steps: newCustomEx.steps ? newCustomEx.steps.split('\n').filter(s => s.trim()) : ['Perform the movement with control'],
       mistakes: newCustomEx.mistakes ? newCustomEx.mistakes.split('\n').filter(m => m.trim()) : ['Improper form'],
+      gifUrl: newCustomEx.gifUrl || '',
       type: 'custom'
     };
     const updated = [newEx, ...customExercises];
@@ -191,77 +192,101 @@ export default function ExerciseLibrary() {
 
       {isAddingCustom && (
         <div className="ed-overlay" onClick={() => setIsAddingCustom(false)}>
-          <div className="ed-modal" onClick={e => e.stopPropagation()} style={{ padding: '2rem', height: 'auto', maxHeight: '90vh', overflowY: 'auto' }}>
-            <h2 style={{ marginBottom: '1.5rem', color: 'white' }}>Create Custom Exercise</h2>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 70px', gap: '1rem' }}>
-                <input 
-                  type="text" 
-                  placeholder="Exercise Name" 
-                  value={newCustomEx.name}
-                  onChange={e => {
-                    const val = e.target.value;
-                    setNewCustomEx({...newCustomEx, name: val, icon: guessEmoji(val)});
-                  }}
-                  style={{ padding: '12px', borderRadius: '8px', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border)', color: 'white', fontSize: '1rem', outline: 'none' }}
-                />
-                <input 
-                  type="text" 
-                  placeholder="Emoji" 
-                  title="Emoji Icon"
-                  value={newCustomEx.icon}
-                  onChange={e => setNewCustomEx({...newCustomEx, icon: e.target.value})}
-                  style={{ padding: '12px', borderRadius: '8px', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border)', color: 'white', fontSize: '1rem', outline: 'none', textAlign: 'center' }}
-                />
+          <div className="ed-modal custom-ex-modal" onClick={e => e.stopPropagation()}>
+            <button className="ed-close" style={{ top: '1.5rem', right: '1.5rem', background: 'rgba(255,255,255,0.05)', color: 'white', border: '1px solid rgba(255,255,255,0.1)' }} onClick={() => setIsAddingCustom(false)}>
+              <X size={18} />
+            </button>
+            <div className="ed-scroll-content" style={{ padding: '2rem' }}>
+              <div className="modal-header-simple">
+                <h2 className="modal-title">Create Custom Exercise</h2>
+                <p className="modal-subtitle">Add your unique protocol to the neural library.</p>
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                <select
-                  value={newCustomEx.category}
-                  onChange={e => setNewCustomEx({...newCustomEx, category: e.target.value})}
-                  style={{ padding: '12px', borderRadius: '8px', background: '#111827', border: '1px solid var(--border)', color: 'white', fontSize: '1rem', outline: 'none' }}
-                >
-                  <option value="" disabled>Select Category</option>
-                  {MUSCLE_GROUPS.map(cat => <option key={cat} value={cat}>{cat}</option>)}
-                </select>
-                <select
-                  value={newCustomEx.equipment}
-                  onChange={e => setNewCustomEx({...newCustomEx, equipment: e.target.value})}
-                  style={{ padding: '12px', borderRadius: '8px', background: '#111827', border: '1px solid var(--border)', color: 'white', fontSize: '1rem', outline: 'none' }}
-                >
-                  <option value="" disabled>Select Equipment</option>
-                  {EQUIPMENT.map(eq => <option key={eq} value={eq}>{eq}</option>)}
-                </select>
+              
+              <div className="custom-ex-form">
+                <div className="input-group">
+                  <label>Basic Information</label>
+                  <div className="input-row-grid">
+                    <input 
+                      type="text" 
+                      placeholder="Exercise Name" 
+                      value={newCustomEx.name}
+                      onChange={e => {
+                        const val = e.target.value;
+                        setNewCustomEx({...newCustomEx, name: val, icon: guessEmoji(val)});
+                      }}
+                    />
+                    <input 
+                      type="text" 
+                      placeholder="Emoji" 
+                      className="emoji-input"
+                      value={newCustomEx.icon}
+                      onChange={e => setNewCustomEx({...newCustomEx, icon: e.target.value})}
+                    />
+                  </div>
+                </div>
+
+                <div className="input-group">
+                  <label>Classification</label>
+                  <div className="input-row-grid split">
+                    <select
+                      value={newCustomEx.category}
+                      onChange={e => setNewCustomEx({...newCustomEx, category: e.target.value})}
+                    >
+                      <option value="" disabled>Category</option>
+                      {MUSCLE_GROUPS.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+                    </select>
+                    <select
+                      value={newCustomEx.equipment}
+                      onChange={e => setNewCustomEx({...newCustomEx, equipment: e.target.value})}
+                    >
+                      <option value="" disabled>Equipment</option>
+                      {EQUIPMENT.map(eq => <option key={eq} value={eq}>{eq}</option>)}
+                    </select>
+                  </div>
+                </div>
+
+                <div className="input-group">
+                  <label>Targeting & Visuals</label>
+                  <input 
+                    type="text" 
+                    placeholder="Muscles (e.g. Quads, Glutes)" 
+                    value={newCustomEx.muscles}
+                    onChange={e => setNewCustomEx({...newCustomEx, muscles: e.target.value})}
+                  />
+                  <input 
+                    type="text" 
+                    placeholder="Video/GIF URL (Direct Link)" 
+                    value={newCustomEx.gifUrl}
+                    onChange={e => setNewCustomEx({...newCustomEx, gifUrl: e.target.value})}
+                  />
+                </div>
+
+                <div className="input-group">
+                  <label>Institutional Knowledge</label>
+                  <textarea 
+                    placeholder="Description" 
+                    value={newCustomEx.description}
+                    onChange={e => setNewCustomEx({...newCustomEx, description: e.target.value})}
+                    className="desc-textarea"
+                  />
+                  <div className="input-row-grid split">
+                    <textarea 
+                      placeholder="Steps (1 per line)" 
+                      value={newCustomEx.steps}
+                      onChange={e => setNewCustomEx({...newCustomEx, steps: e.target.value})}
+                    />
+                    <textarea 
+                      placeholder="Mistakes (1 per line)" 
+                      value={newCustomEx.mistakes}
+                      onChange={e => setNewCustomEx({...newCustomEx, mistakes: e.target.value})}
+                    />
+                  </div>
+                </div>
               </div>
-              <input 
-                type="text" 
-                placeholder="Target Muscles (comma separated, e.g. Upper Chest, Triceps)" 
-                value={newCustomEx.muscles}
-                onChange={e => setNewCustomEx({...newCustomEx, muscles: e.target.value})}
-                style={{ padding: '12px', borderRadius: '8px', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border)', color: 'white', fontSize: '1rem', outline: 'none' }}
-              />
-              <textarea 
-                placeholder="Description" 
-                value={newCustomEx.description}
-                onChange={e => setNewCustomEx({...newCustomEx, description: e.target.value})}
-                style={{ padding: '12px', borderRadius: '8px', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border)', color: 'white', minHeight: '60px', fontSize: '1rem', outline: 'none', resize: 'vertical' }}
-              />
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                <textarea 
-                  placeholder="Steps (1 per line)" 
-                  value={newCustomEx.steps}
-                  onChange={e => setNewCustomEx({...newCustomEx, steps: e.target.value})}
-                  style={{ padding: '12px', borderRadius: '8px', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border)', color: 'white', minHeight: '100px', fontSize: '0.9rem', outline: 'none', resize: 'vertical' }}
-                />
-                <textarea 
-                  placeholder="Common Mistakes (1 per line)" 
-                  value={newCustomEx.mistakes}
-                  onChange={e => setNewCustomEx({...newCustomEx, mistakes: e.target.value})}
-                  style={{ padding: '12px', borderRadius: '8px', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border)', color: 'white', minHeight: '100px', fontSize: '0.9rem', outline: 'none', resize: 'vertical' }}
-                />
-              </div>
-              <div style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem' }}>
-                <button onClick={() => setIsAddingCustom(false)} style={{ flex: 1, padding: '12px', background: 'transparent', border: '1px solid var(--border)', color: 'white', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}>Cancel</button>
-                <button onClick={handleAddCustom} style={{ flex: 1, padding: '12px', background: 'var(--primary)', border: 'none', color: 'black', fontWeight: 'bold', borderRadius: '8px', cursor: 'pointer' }}>Save Exercise</button>
+
+              <div className="modal-actions-fixed">
+                <button className="btn-modal-cancel" onClick={() => setIsAddingCustom(false)}>Cancel</button>
+                <button className="btn-modal-save" onClick={handleAddCustom}>Initialize Exercise</button>
               </div>
             </div>
           </div>
